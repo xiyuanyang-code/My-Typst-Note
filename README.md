@@ -18,6 +18,20 @@ For the template, I use [dvdtyp](https://github.com/DVDTSB/dvdtyp).
 
 ## Usage
 
+To create a new note, run the following command, replacing `"<note title>"` with your desired title:
+
+```bash
+cargo run -- m "<note title>"
+```
+
+This will create a new `<note title>.typ` file in the current directory. The file's title will also be set to `<note title>`.
+
+To compile a note into a PDF, run:
+
+```bash
+cargo run -- compile "<note title>.typ"
+```
+
 ## Todo List
 
 - Finish Rust File for simple CLI tools usage.

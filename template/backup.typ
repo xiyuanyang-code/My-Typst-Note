@@ -42,13 +42,13 @@
       if here().page() == 1 {
         return
       }
-      box(stroke: (bottom: 0.7pt), inset: 0.2em)[#text(font: "New Computer Modern Sans")[#author #h(1fr)#title]]
+      box(stroke: (bottom: 0.7pt), inset: 0.2em)[#text(font: "Noto Serif")[#author #h(1fr)#title]]
     },
   )
 
   set heading(numbering: "1.")
   show heading: it => {
-    set text(font: "New Computer Modern Sans")
+    set text(font: ("Noto Serif"))
     set par(first-line-indent: 0em)
 
     if it.numbering != none {
@@ -66,13 +66,13 @@
 
   // Title row.
   align(center)[
-    #set text(font: "New Computer Modern Sans")
+    #set text(font: "Noto Serif")
     #block(text(weight: 700, 25pt, title))
     #v(0.4em, weak: true)
     #if subtitle != none [#text(18pt, weight: 500)[#subtitle]]
     #v(0.3em, weak: true)
-    #if author != none [#text(14pt)[#author]]\
-    #text(14pt)[#datetime.today().display("[year].[month].[day]")]
+    #if author != none [#text(13pt)[#author]]\
+    #text(12pt)[#datetime.today().display("[year].[month].[day]")]
   ]
 
   if abstract != none [#align(center)[#abstract]]
@@ -83,10 +83,10 @@
   show outline: set par(first-line-indent: 0em)
 
   show outline.entry.where(level: 1): it => {
-    text(font: "New Computer Modern Sans", accent)[#strong[#it]]
+    text(font: "Noto Serif", accent)[#strong[#it]]
   }
   show outline.entry: it => {
-    text(font: "New Computer Modern Sans", accent)[#it]
+    text(font: "Noto Serif", accent)[#it]
   }
 
 
@@ -100,10 +100,10 @@
 }
 
 #let thmtitle(t, color: rgb("#000000")) = {
-  text(font: "New Computer Modern Sans", weight: "semibold", fill: color)[#t]
+  text(font: "Noto Serif", weight: "semibold", fill: color)[#t]
 }
 #let thmname(t, color: rgb("#000000")) = {
-  text(font: "New Computer Modern Sans", fill: color)[(#t)]
+  text(font: "Noto Serif", fill: color)[(#t)]
 }
 
 #let thmtext(t, color: rgb("#000000")) = {
