@@ -6,7 +6,21 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 
 ## Installations
 
-Need to install Cargo and Typst first.
+Need to install Cargo first.
+
+### Build From Source
+
+First, build the release version of the application:
+
+```bash
+cargo build --release
+```
+
+Then, install the executable by moving it to a directory in your system's PATH. For example, you can move it to `/usr/local/bin`:
+
+```bash
+sudo cp target/release/note /usr/local/bin/
+```
 
 ## Template
 
@@ -21,7 +35,7 @@ For the template, I use [dvdtyp](https://github.com/DVDTSB/dvdtyp).
 To create a new note, run the following command, replacing `"<note title>"` with your desired title:
 
 ```bash
-cargo run -- m "<note title>"
+note --create "<note title>"
 ```
 
 This will create a new `<note title>.typ` file in the current directory. The file's title will also be set to `<note title>`.
@@ -29,7 +43,7 @@ This will create a new `<note title>.typ` file in the current directory. The fil
 To compile a note into a PDF, run:
 
 ```bash
-cargo run -- compile "<note title>.typ"
+note --release "<note title>.typ"
 ```
 
 ## Todo List

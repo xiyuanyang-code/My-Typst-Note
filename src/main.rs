@@ -8,7 +8,7 @@ fn main() {
 
     if args.len() > 1 {
         match args[1].as_str() {
-            "create" => {
+            "--create" => {
                 if args.len() > 2 {
                     let title = &args[2];
                     let filename = format!("{}.typ", title);
@@ -18,7 +18,7 @@ fn main() {
                         Ok(content) => {
                             let new_content = content.replace(
                                 "title: \"Basic Formatting Style for Typst\"",
-                                &format!("title: \"{}\"", title)
+                                &format!("title: \"{}\"", title),
                             );
 
                             match fs::write(&filename, new_content) {
@@ -29,16 +29,14 @@ fn main() {
                         Err(e) => eprintln!("Error reading template file: {}", e),
                     }
                 } else {
-                    println!("Usage: typstnote m \"<note title>\"");
+                    println!("Usage: note --create \"<note title>\"");
                 }
             }
-            "compile" => {
+            "--release" => {
                 if args.len() > 2 {
-                    let filename = &args[2];
-                    let status = Command::new("typst")
-                        .arg("compile")
-                        .arg(filename)
-                        .status();
+                    let title = &args[2];
+                    let filename = format!("{}.typ", title);
+                    let status = Command::new("typst").arg("compile").arg(&filename).status();
 
                     match status {
                         Ok(status) => {
@@ -51,7 +49,7 @@ fn main() {
                         Err(e) => eprintln!("Error executing typst command: {}", e),
                     }
                 } else {
-                    println!("Usage: typstnote compile <filename.typ>");
+                    println!("Usage: note --release <filename.typ>");
                 }
             }
             _ => print_usage(),
@@ -63,6 +61,6 @@ fn main() {
 
 fn print_usage() {
     println!("Usage:");
-    println!("  typstnote m \"<note title>\"      - Create a new note");
-    println!("  typstnote compile <filename.typ> - Compile a note to PDF");
+    println!("  note --create \"<note title>\"      - Create a new note");
+    println!("  note --release <filename.typ>       - Compile a note to PDF");
 }
