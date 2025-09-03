@@ -6,9 +6,24 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 
 ## Installation
 
-First, ensure you have [Rust](https://www.rust-lang.org/tools/install) and [Typst](https://github.com/typst/typst#installation) installed.
+First, ensure you have [Rust](https://www.rust-lang.org/tools/install) and [Cargo](https://doc.rust-lang.org/cargo/) installed.
 
-Then, from the project root, build the self-contained executable:
+```bash
+bash scripts/install.sh
+```
+
+<details>
+<summary>
+If you want it to be installed manually...
+</summary>
+
+Firstly, install typst-cli using cargo:
+
+```bash
+cargo install typst-cli
+```
+
+From the project root, build the self-contained executable:
 
 ```bash
 cargo build --release
@@ -19,6 +34,9 @@ Finally, install the executable by moving it to a directory in your system's PAT
 ```bash
 sudo cp target/release/note /usr/local/bin/
 ```
+</details>
+
+Then restart your terminal with `source ~/.zshrc`, etc.
 
 ## Usage
 
@@ -33,11 +51,15 @@ This will create a new `<note title>.typ` file in the current directory.
 To compile a note into a PDF, run:
 
 ```bash
-note pdf "<note title>.typ"
+note pdf "<note title>"
 ```
 
-## Todo List
+For example:
 
-- Finish Rust File for simple CLI tools usage.
+```bash
+note new algebra
+# it will create a new algebra.typ file in current working directory
 
-- Create empty file for templating.
+note pdf algebra
+# compile algebra.typ into algebra.pdf
+```

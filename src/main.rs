@@ -24,8 +24,9 @@ fn main() {
             }
             "pdf" => {
                 if args.len() > 2 {
-                    let filename = &args[2];
-                    let status = Command::new("typst").arg("compile").arg(filename).status();
+                    let title = &args[2];
+                    let filename = format!("{}.typ", title);
+                    let status = Command::new("typst").arg("compile").arg(&filename).status();
                     match status {
                         Ok(status) => {
                             if status.success() {
@@ -49,5 +50,5 @@ fn main() {
 fn print_usage() {
     println!("Usage:");
     println!("  note new \"<note title>\"      - Create a new note");
-    println!("  note pdf <filename.typ> - Compile a note to PDF");
+    println!("  note pdf <filename>            - Compile a note to PDF");
 }
