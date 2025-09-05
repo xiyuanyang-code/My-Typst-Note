@@ -48,7 +48,7 @@
 
   set heading(numbering: "1.")
   show heading: it => {
-    set text(font: ("Noto Serif"))
+    set text(font: "Noto Serif")
     set par(first-line-indent: 0em)
 
     if it.numbering != none {
@@ -200,26 +200,34 @@
   ..builderargs,
 )
 
-#let problem-style = builder-thmbox(color: colors.at(16), shadow: (offset: (x: 2pt, y: 2pt), color: luma(70%)))
+// ========== several boxes ============
 
+#let problem-style = builder-thmbox(color: colors.at(16), shadow: (offset: (x: 2pt, y: 2pt), color: luma(70%)))
 #let problem = problem-style("problem", "Problem")
 
 #let theorem-style = builder-thmbox(color: colors.at(6), shadow: (offset: (x: 3pt, y: 3pt), color: luma(70%)))
-
 #let theorem = theorem-style("theorem", "Theorem")
-
 #let lemma = theorem-style("lemma", "Lemma")
 #let corollary = theorem-style("corollary", "Corollary")
 
 #let definition-style = builder-thmline(color: colors.at(8))
-
 #let definition = definition-style("definition", "Definition")
 #let proposition = definition-style("proposition", "Proposition")
 #let remark = definition-style("remark", "Remark")
 #let observation = definition-style("observation", "Observation")
 
-#let example-style = builder-thmline(color: colors.at(16))
+#let todolist-style = builder-thmline(color: colors.at(15))
+#let todolist = todolist-style("todolist", "Todo List")
 
+#let recordings-style = builder-thmline(color: colors.at(3))
+#let recordings = recordings-style("recording", "Recordings").with(numbering: none)
+
+#let success-style = builder-thmline(color: colors.at(10))
+#let success = success-style("success", "Success")
+#let fail-style = builder-thmline(color: colors.at(1))
+#let fail = fail-style("fail", "Fail")
+
+#let example-style = builder-thmline(color: colors.at(16))
 #let example = example-style("example", "Example").with(numbering: none)
 
 #let proof(body, name: none) = {
