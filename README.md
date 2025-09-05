@@ -4,9 +4,17 @@
 
 A simple CLI tool for quickly generating formatted notes written in typst and deploying them in PDF.
 
+## Template
+
+We use [dvdtyp](https://github.com/DVDTSB/dvdtyp) as the template for notes. Really awesome template!
+
+> Several modifications based on personal needs are made.
+
 ## Installation
 
 First, ensure you have [Rust](https://www.rust-lang.org/tools/install) and [Cargo](https://doc.rust-lang.org/cargo/) installed.
+
+For Linux system or WSL, just run the quick scripts below to install all the dependencies.
 
 ```bash
 bash scripts/install.sh
@@ -33,6 +41,8 @@ Finally, install the executable by moving it to a directory in your system's PAT
 
 ```bash
 sudo cp target/release/note /usr/local/bin/
+# target/release/note is the built binary file.
+# you can use it directly in your command line 
 ```
 </details>
 
