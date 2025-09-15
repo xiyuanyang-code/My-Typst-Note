@@ -1,2 +1,5 @@
 /target
 .vscode
+
+# ignore all pdf files when compiling
+*.pdf
