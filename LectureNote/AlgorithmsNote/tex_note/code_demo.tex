@@ -2,14 +2,48 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{indentfirst}
 \usepackage{xeCJK}
+\usepackage[
+    top=1cm,
+    bottom=1cm,
+    left=1.5cm,
+    right=1.5cm,
+    headheight=13.6pt,
+    a4paper 
+]{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    citecolor=green
+}
+
 % for Chinese fonts, use Simsum
 \usepackage{fontspec} 
 \setCJKmainfont{SimSun}
 
 % 伪代码宏包
 \usepackage{algorithm}
-\usepackage{algpseudocode}
+% \usepackage{algpseudocode}
+\usepackage{algorithmicx}
+\usepackage[noEnd=false,spaceRequire=false,italicComments=true]{algpseudocodex}
+
+
+\lstset{
+    language=Python,         
+    basicstyle=\ttfamily,    
+    numbers=left,            
+    numberstyle=\tiny\color{gray}, 
+    frame=single,            
+    breaklines=true,         
+    keywordstyle=\color{blue}\bfseries, 
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red!70!black} 
+}
 
 \title{Simple Demo for Pseudocode and Algorithms}
 \author{Xiyuan Yang}
@@ -26,7 +60,11 @@ Algorithm rules the world!
 % use Chinese
 我爱算法、我爱算法课。
 
-\section{Simple Demo for Pseudocode}
+\section{Pseudocode}
+
+\subsection{Simple Demo}
+
+In this section, we will discuss the code for writing formatted and well-defined pseudocode.
 
 \begin{algorithm}[H]
     \caption{Algorithm for sum}
@@ -38,9 +76,11 @@ Algorithm rules the world!
         % ensure: 保证结果
         \Ensure the sum of all the elements in the list
         \State sum $\gets 0$
+        \LComment{The next two lines
+            increment both $x$ and $y$.}
         \For{element $x$ in List $L$}
-            \State sum $\gets$ sum $+ x$
-            \Comment{add new number x to the sum}
+        \State sum $\gets$ sum $+ x$
+        \Comment{add new number x to the sum}
         \EndFor
         \State \textbf{Return} sum
     \end{algorithmic}
@@ -58,18 +98,18 @@ Let'e making it more \textbf{complex}!
         \State $low \gets 1$
         \State $high \gets \text{length}(A)$
         \While{$low \le high$}
-            \State $mid \gets \text{floor}((low + high) / 2)$
-            \Comment{Calculate the middle index}
-            \If{$A[mid] = t$}
-                \State \textbf{Return} $mid$
-                \Comment{Target found, return index}
-            \ElsIf{$A[mid] < t$}
-                \State $low \gets mid + 1$
-                \Comment{Target is in the right half, update low index}
-            \Else
-                \State $high \gets mid - 1$
-                \Comment{Target is in the left half, update high index}
-            \EndIf
+        \State $mid \gets \text{floor}((low + high) / 2)$
+        \Comment{Calculate the middle index}
+        \If{$A[mid] = t$}
+        \State \textbf{Return} $mid$
+        \Comment{Target found, return index}
+        \ElsIf{$A[mid] < t$}
+        \State $low \gets mid + 1$
+        \Comment{Target is in the right half, update low index}
+        \Else
+        \State $high \gets mid - 1$
+        \Comment{Target is in the left half, update high index}
+        \EndIf
         \EndWhile
         \State \textbf{Return} $-1$
         \Comment{Loop finished, target not found}
@@ -79,9 +119,141 @@ Let'e making it more \textbf{complex}!
 
 \subsection{Detailed Manuals}
 
+Official Docs: \href{https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/algpseudocodex/algpseudocodex.pdf}{algpseudocodex.pdf}.
+
+\subsubsection{Algorithmic Block}
+
+\begin{algorithm}[H]
+    \caption{Algorithmic Block}
+    \begin{algorithmic}[1]
+        \State $E = mc^2$
+    \end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Several Sentences}
+
+\begin{algorithm}[H]
+    \caption{Several Sentences}
+    \begin{algorithmic}[1]
+        \State It is a state
+        \Statex It is a statex
+        \Comment{This is a comment}
+
+        \State Hello world
+        \State \Call{hello}{$a_1$, $a_2$}
+        \Comment{This is a function}
+        \State \Return Hello world
+    \end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Loops and Other keywords}
+
+\begin{algorithm}[H]
+    \caption{Loops and Other keywords}
+    \begin{algorithmic}[1]
+        \State While Loops
+        \While{$x \le 1$}
+        \State \Call{Test}{$x$}
+        \EndWhile
+
+        \State For Loop
+        \For{$n = 1, \dots, 10$}
+        \State body
+        \EndFor
+
+        % Use single \State for empty line
+        \State
+
+        \ForAll{$n \in \{1, \dots, 10\}$}
+        \State body
+        \EndFor
+
+        \State
+
+        \Loop
+        \State body
+        \EndLoop
+
+        \State
+
+        % indent is not necessary
+        \If{condition}
+        \State body
+        \ElsIf{condition}
+        \State body
+        \Else
+        \State body
+        \EndIf
+
+
+        \State
+
+        \Procedure{name}{parameters}
+        \State body
+        \EndProcedure
+
+        \State
+
+        \Function{name}{parameters}
+        \State body
+        \EndFunction
+
+    \end{algorithmic}
+\end{algorithm}
+
+
+% \subsection{Boxes}
+
+% \begin{algorithm}[H]
+%     \begin{algorithmic}[1]
+%         \BeginBox[draw=blue, fill=yellow] % 放在这里，框住整个算法
+%         \State first line
+%         \State second line
+%         \State another line
+%         \State last line
+%         \EndBox
+%     \end{algorithmic}
+% \end{algorithm}
+
+% \begin{algorithmic}
+%     \State first line
+%     \State second line with
+%     \BoxedString[fill=yellow]{box}
+%     \State last line
+% \end{algorithmic}
+
+% \begin{algorithm}[H]
+%     \begin{algorithmic}[1]
+%         \BeginBox % 外部大框
+%             \State first line
+%             \BeginBox[fill=yellow] % 内部小框
+%                 \State second line
+%                 \State another line
+%             \EndBox
+%         \EndBox
+%         \BeginBox[draw=blue,dashed]
+%             \State last line
+%         \EndBox
+%     \end{algorithmic}
+% \end{algorithm}
+
+
+
+
 \section{Simple Demo for Listings}
 
+\begin{lstlisting}[caption=My first Python code]
+# A simple function
+def greet(name):
+    """
+    This function greets the person passed in as a parameter.
+    """
+    print("Hello," + name + "!")
 
+# Call the function
+greet("World")
+\end{lstlisting}
 
 
 
