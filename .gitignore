@@ -2,4 +2,5 @@
 .vscode
 
 # ignore all pdf files when compiling
-*.pdf
+**/*.pdf
+**/*.synctex.gz

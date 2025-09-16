@@ -1,0 +1,89 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xeCJK}
+% for Chinese fonts, use Simsum
+\usepackage{fontspec} 
+\setCJKmainfont{SimSun}
+
+% 伪代码宏包
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\title{Simple Demo for Pseudocode and Algorithms}
+\author{Xiyuan Yang}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\section{Introduction}
+
+% use english
+Algorithm rules the world!
+
+% use Chinese
+我爱算法、我爱算法课。
+
+\section{Simple Demo for Pseudocode}
+
+\begin{algorithm}[H]
+    \caption{Algorithm for sum}
+    \label{alg:sum_algorithm}
+    \begin{algorithmic}[1]
+        % require: 前置条件
+        \Require A list of numbers $L$
+
+        % ensure: 保证结果
+        \Ensure the sum of all the elements in the list
+        \State sum $\gets 0$
+        \For{element $x$ in List $L$}
+            \State sum $\gets$ sum $+ x$
+            \Comment{add new number x to the sum}
+        \EndFor
+        \State \textbf{Return} sum
+    \end{algorithmic}
+\end{algorithm}
+
+Let'e making it more \textbf{complex}!
+
+\begin{algorithm}[H]
+    \caption{Binary Search Algorithm}
+    \label{alg:binary_search}
+    \begin{algorithmic}[1]
+        \Require A sorted list of numbers $A$
+        \Require A target value $t$ to find
+        \Ensure If $t$ exists in list $A$, return its index; otherwise, return $-1$
+        \State $low \gets 1$
+        \State $high \gets \text{length}(A)$
+        \While{$low \le high$}
+            \State $mid \gets \text{floor}((low + high) / 2)$
+            \Comment{Calculate the middle index}
+            \If{$A[mid] = t$}
+                \State \textbf{Return} $mid$
+                \Comment{Target found, return index}
+            \ElsIf{$A[mid] < t$}
+                \State $low \gets mid + 1$
+                \Comment{Target is in the right half, update low index}
+            \Else
+                \State $high \gets mid - 1$
+                \Comment{Target is in the left half, update high index}
+            \EndIf
+        \EndWhile
+        \State \textbf{Return} $-1$
+        \Comment{Loop finished, target not found}
+    \end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Detailed Manuals}
+
+\section{Simple Demo for Listings}
+
+
+
+
+
+\end{document}
+
