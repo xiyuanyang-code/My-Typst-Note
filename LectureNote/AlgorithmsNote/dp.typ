@@ -135,3 +135,5 @@ $ B(i) = max{B(i + 1), v_i + B(i + 1), v_i · v_i+1 + B(i + 2)} $
 - Often (but not always) the nonrecursive work to compute the relation is equal to the number of answers we're trying
 
 = Conclusion
+
+DP is really a fantastic algorithms!
