@@ -82,12 +82,8 @@ LectureNote
 ├── AlgorithmsNote
 │   ├── algorithm.typ
 │   ├── bowling.png
-│   ├── dp.pdf
-│   ├── dp.synctex.gz
 │   ├── dp.typ
 │   └── tex_note
-│       ├── code_demo.pdf
-│       ├── code_demo.synctex.gz
 │       └── code_demo.tex
 ├── MachineLearning
 │   ├── AI1811.typ
