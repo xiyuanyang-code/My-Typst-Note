@@ -37,12 +37,11 @@ From the project root, build the self-contained executable:
 cargo build --release
 ```
 
-Finally, install the executable by moving it to a directory in your system's PATH. This makes the `note` command available system-wide. For example:
+Finally, install the executable locally using `cargo install --path .`:
 
 ```bash
-sudo cp target/release/note /usr/local/bin/
-# target/release/note is the built binary file.
-# you can use it directly in your command line 
+# install locally
+cargo install --path .
 ```
 </details>
 
@@ -72,4 +71,40 @@ note new algebra
 
 note pdf algebra
 # compile algebra.typ into algebra.pdf
+```
+
+## Lecture Notes
+
+All my lecture notes written in typst will be stored in `./LectureNote` folder, including there courses...
+
+```text
+LectureNote
+├── AlgorithmsNote
+│   ├── algorithm.typ
+│   ├── bowling.png
+│   ├── dp.pdf
+│   ├── dp.synctex.gz
+│   ├── dp.typ
+│   └── tex_note
+│       ├── code_demo.pdf
+│       ├── code_demo.synctex.gz
+│       └── code_demo.tex
+├── MachineLearning
+│   ├── AI1811.typ
+│   └── ML
+│       ├── Dimensionality_reduction.md
+│       ├── Model_selection.md
+│       ├── Parameter_Estimation.md
+│       ├── classification.md
+│       ├── clustering.md
+│       ├── intro.md
+│       └── regression.md
+├── NumericalAnalysis
+│   ├── AI1807.typ
+│   └── src
+│       └── demo.py
+├── Probability
+│   └── MATH1207.typ
+└── SoftwareEngineering
+    └── CS3604.typ
 ```

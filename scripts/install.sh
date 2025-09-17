@@ -7,4 +7,6 @@ cargo install typst-cli
 echo "Now installing and building projects..."
 cargo build --release
 
-sudo cp target/release/note /usr/local/bin/
+# install locally
+cargo install --path .
+
