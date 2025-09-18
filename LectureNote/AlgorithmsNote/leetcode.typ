@@ -157,4 +157,35 @@ public:
 };
 ```
 
+=== T121 Best Time to Buy Stocks
+
+#problem("T121")[
+  You are given an array prices where prices`[i]` is the price of a given stock on the ith day.
+
+  You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+
+  Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+]
+
+==== Method1 Using Dynamic Programming
+
+为了简化问题和状态转移方程，如果能给 dp 数组降维就需要降维。同样，对于离散的状态标记，也可以增加一个维度来存储，这不会提高时间复杂度。
+
+考虑 `L[i][j]`:
+- i 代表天数：`i = 0,1,2,...,n-1`
+- j 代表状态，即当天是否持有股票（因为只允许交易一次股票，即一次买入和一次卖出）
+- 这个值代表该天持有或者不持有股票可能会产生的最大利润。
+- 最终状态，在最终，我们肯定是需要卖掉股票，这样才可以回本，因此我们需要计算 `L[n-1][0]`
+
+状态转移方程：
+
+- 如果在第 i 天持有：
+  - `dp[i][1] = max(dp[i-1][1], -prices[i])`
+- 如果在第 i 天不持有：
+  - `dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])`
+
+
+
+==== Method2 Better Algorithms
+
 = Conclusion
