@@ -4,6 +4,53 @@
 
 A simple CLI tool for quickly generating formatted notes written in typst and deploying them in PDF.
 
+## File Structure
+
+```
+.
+├── Cargo.lock
+├── Cargo.toml
+├── LectureNote
+│   ├── AlgorithmsNote
+│   │   ├── algorithm.typ
+│   │   ├── bowling.png
+│   │   ├── dp.typ
+│   │   ├── leetcode.typ
+│   │   └── tex_note
+│   │       └── code_demo.tex
+│   ├── MachineLearning
+│   │   ├── AI1811.typ
+│   │   └── ML
+│   │       ├── Dimensionality_reduction.md
+│   │       ├── Model_selection.md
+│   │       ├── Parameter_Estimation.md
+│   │       ├── classification.md
+│   │       ├── clustering.md
+│   │       ├── intro.md
+│   │       └── regression.md
+│   ├── NumericalAnalysis
+│   │   ├── AI1807.typ
+│   │   └── src
+│   │       └── demo.py
+│   ├── Probability
+│   │   └── MATH1207.typ
+│   └── SoftwareEngineering
+│       └── CS3604.typ
+├── README.md
+├── images
+│   └── demo.png
+├── scripts
+│   ├── install.sh
+│   └── refresh.py
+├── src
+│   └── main.rs
+└── template
+    ├── backup.typ
+    ├── empty.typ
+    ├── format.typ
+    └── image.png
+```
+
 ## Template
 
 We use [dvdtyp](https://github.com/DVDTSB/dvdtyp) as the template for notes. Really awesome template!
