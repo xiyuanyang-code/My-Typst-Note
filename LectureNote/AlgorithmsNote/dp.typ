@@ -97,7 +97,7 @@ $ text("dist")[v] = min(text("dist")[v], text("dist")[u] + w(u,v)) $
 #example("Bowling Example")[
   #figure(
     image("bowling.png"),
-    caption: [Bowling Problems Demo]
+    caption: [Bowling Problems Demo],
   )
 ]
 
@@ -112,7 +112,7 @@ IF the input is a sequence:
 
 - Sub problem: $B(i) arrow text("[i:]")$
 - We need to compute B(0)
-- relate: 
+- relate:
 $ B(i) = max{B(i + 1), v_i + B(i + 1), v_i · v_i+1 + B(i + 2)} $
 - Classical Bottom DP from bottom-up!
 
@@ -133,6 +133,55 @@ $ B(i) = max{B(i + 1), v_i + B(i + 1), v_i · v_i+1 + B(i + 2)} $
 - The key for efficiency is for the question to have a small (polynomial) number of possible answers, so brute forcing is not too expensive
 
 - Often (but not always) the nonrecursive work to compute the relation is equal to the number of answers we're trying
+
+= Dynamic Programming Sub-Problems
+
+#recordings("Why Sub problems?")[
+  - Recursion and Reuse
+  - When sub problems overlap
+  - careful brute force. (Or clever brute force)
+]
+
+== Longest Common Subsequence (LCS)
+
+#problem("Basic LCS")[
+  Given two strings A and B, find a longest (*not necessarily contiguous*) subsequence of A that is also a subsequence of B.
+]
+
+Define sub problems for multiple inputs: using a matrix, which is the *product of multiple sub problem spaces*.
+
+For example, in this case, we define two sub-problems which are the suffixes for string A and suffixes for string B, the final sub problem space is the doc product of two independent sub-problem spaces. Of course, we can define matrix with higher dimensions for more complex problems.
+
+Thus, define:
+
+$ L(i,j) = text("LCS")(A[i:], B[j:]), 0 <= i <= |A|, 0 <= j <= |B| $
+
+For `A[|A|:]`, it means an empty string, it is easy to construct the initial statement.
+
+Then, for the state transition equation:
+
+We have:
+
+$ max(L(i,j+1), L(i+1,j)) <= L(i,j) <= min(L(i,j+1), L(i+1,j)) + 1 $
+
+if $A(i) == B(j)$:
+- We can prove that `L(i,j) = L(i+1, j+1) + 1`
+else:
+- at least one of `A[i]` and `B[j]` are not in the LCS.
+- Thus, transform this problem into smaller sub problems.
+- $max(L(i,j+1), L(i+1,j))$
+
+#recordings("Finding state transition equation")[
+  - 问题的关键在于新加入的字母，这些字母往往会在状态转移方程中出现或者作为分支的判定条件
+  - 要思考在什么状态下，该问题可以被修改成为更小的子问题进行运算
+]
+
+== Longest Increasing Subsequence (LIS)
+
+#problem("LIS problems")[
+  Given a string A, find a longest (not necessarily contiguous) subsequence of A that strictly
+  increases (lexicographically)
+]
 
 = Conclusion
 
