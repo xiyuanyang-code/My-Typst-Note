@@ -134,7 +134,7 @@ $ B(i) = max{B(i + 1), v_i + B(i + 1), v_i · v_i+1 + B(i + 2)} $
 
 - Often (but not always) the nonrecursive work to compute the relation is equal to the number of answers we're trying
 
-= Dynamic Programming Sub-Problems
+= Dynamic Programming Sub-Problems: LCS & LIS & Coins
 
 #recordings("Why Sub problems?")[
   - Recursion and Reuse
@@ -183,6 +183,91 @@ else:
   increases (lexicographically)
 ]
 
+Still using the suffixes:
+
+$ L(i) = text("LIS")(A [i:]) $
+
+- final statement, we need to solve `L(0)`
+- initial statement, `L(length_A) = 0` for it is an empty string.
+- transition:
+  - if i is in the longest sequence:
+    - `L(i) = L(i+1) + 1`
+  - if not:
+    - `L(i) = L(i+1)`
+
+However, it is not easy to find the "if" statement, thus, we need to *change the definition of sub problems*
+
+We define: $x(i)$ = length of longest increasing subsequence of suffix `A[i :]` that includes `A[i]`. Then, we solve it again:
+
+- final statement: result is the maximum value of ${x(i)|i in {1,2,3,dots,n}}$
+
+- initial statement: `x(length_A)` = 0
+
+- transition:
+  - if `s[i]` < `s[i+1]`:
+    - `x(i) = x(i+1) + 1`
+  - else:
+    - it is still difficult
+    - $x(i) = max{1 + x(j) | i < j < |A|, A[j] > A[i]} union {1}$
+    - We need to traverse the processed string, which concat thr added `s[i]` into the current strings.
+
+== Alternating Coin Game
+
+#problem("Alternating coin games")[
+  Given sequence of $n$ coins of value $v_0, v_1, dots, v_(n-1)$
+  - Two players (“me” and “you”) take turns
+  - In a turn, take first or last coin among remaining coins
+  - My goal is to maximize total value of my taken coins, where I go first
+]
+
+The structure of the sub-problems are quite simple: we just need to define $L(i,j)$ as the optimal total value I can get for the substring of `[i..j]`($i <= j$)
+
+- final statement: `L[0, n-1]`
+- initial statement: `L[i,i]`
+
+However, it is hard to write the transition!
+
+Thus, we will change to another solution:
+
+$x(i,j,p)$ = maximum total value I can take when player $p in {text("me"), text("you")}$ starts from coins of values $v_i dots v_j$.
+- me is p = 0
+- you is p = 1
+
+#recordings("Adding a new dimension")[
+  We can add a new dimension when solving complex dp tasks.
+]
+
+- final statement: $x(0, n-1, 0)$
+- initial statement:
+  - $x(i,i,0) = s[i]$
+  - $x(i,i,1) = 0$
+- Then, the transition is:
+$ L(i,j,0) = max(L(i, j-1, 1) + a[j], L(i+1, j,1) + a[i]) $
+$ L(i,j,1) = min(L(i, j-1, 0) + a[j], L(i+1, j,0) + a[i]) $
+- We must assume the component is clever enough.
+
+Thus, we finish this problem in $O(n^2)$ running time.
+
+= SubProblems Constraints and Expansions
+
+== Bellman-Ford Expansion SSSP
+
+== APSP
+
+== Arithmetic Parenthesization
+
+== Piano Fingering
+
+== Guitar Fingering
+
+= Pseudopolynomial
+
+== Rod Cutting
+
+== SubSet Sum
+
 = Conclusion
+
+== Main Features of Dynamic Programs
 
 DP is really a fantastic algorithms!
