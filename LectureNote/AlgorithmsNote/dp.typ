@@ -96,7 +96,7 @@ $ text("dist")[v] = min(text("dist")[v], text("dist")[u] + w(u,v)) $
 
 #example("Bowling Example")[
   #figure(
-    image("bowling.png"),
+    image("/LectureNote/AlgorithmsNote/images/bowling.png"),
     caption: [Bowling Problems Demo],
   )
 ]

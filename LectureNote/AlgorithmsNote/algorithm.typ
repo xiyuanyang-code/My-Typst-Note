@@ -104,7 +104,20 @@ For example, birthday matching problems.
 ]
 
 
-== Detailed Contents
+== RoadMap
+
+#recordings("RoadMaps")[
+  - 基本概念，算法复杂度和正确性分析
+  - 分治法
+  - 排序算法
+  - 哈希表
+  - 贪心算法
+  - 动态规划
+  - 图搜索算法
+  - 回溯法
+  - 分支界限
+  - 启发式算法
+]
 
 === Greedy algorithms
 
@@ -133,6 +146,78 @@ For example, birthday matching problems.
 - when encountering large solve space
 - optimize (or tradeoff) for traditional searching algorithms.
 - great for NP-hard problems.
+
+= Correctness of the algorithms
+
+给定输入-输出组 $(x,y)$，给出一个 judger function，返回一个布尔值是否正确。
+
+#recordings("Judger Functions")[
+  - 一般而言，算法求解的复杂度是更被关注的部分，算法求解的复杂度会高于算法验证正确性的复杂度
+  - 但是 Evaluation is also important!
+]
+
+== 算法正确性证明
+
+=== 数学归纳法
+
+归纳法将问题的结构简化为了两个部分的证明：
+
+#definition("数学归纳法")[
+  - 基础情况的证明成立
+  - 递推关系的证明成立
+    - 在递推关系中，存在“假设”，相当于多添加了一个前提条件。
+]
+
+#example("Birthday Example")[
+  #figure(
+    image(
+      "/LectureNote/AlgorithmsNote/images/birthday.png",
+    ),
+    caption: [Demo for the correctness of algorithms for birthday],
+  )
+]
+
+= Complexity & Efficiency
+
+时间复杂度的衡量为了摆脱硬件性能的约束和影响，在衡量算法复杂度的时候，往往使用原子操作来代表基本的时间步：
+
+- Number of atomic operations.
+
+- 常数开销 $O(1)$ 的操作：例如加减乘除
+  - $O(1)$ 生万物
+
+== Asymptotic Notation
+
+#definition("Asymptotic Notation")[
+  - $O$: Upper Bound
+  - $Omega$: Lower Bound
+  - $Theta$: 紧界
+    - $f(n) = Theta(g(n))$ 表示 $f(n)$ 和 $g(n)$ 的增长速度相同。
+]
+
+- Polynomial Complexity: $O(n^k)$
+- Exponential Complexity: $O(k^n)$
+  - X-hard problems
+
+== Model of Computation
+
+上述 $O(1)$ 生万物 的计算模型基于 WordRAM 计算模型：
+- 整数运算
+  - 浮点数？理论上不是，但是基本上是。
+- 逻辑运算
+- 位运算
+- 内存访问（给定地址的特定内存块的读取和写入）
+
+上述的运算都为 $O(1)$ 的时间复杂度。
+
+== 系统字节数
+
+32 位系统和 64 位系统标定的是内存地址的长度
+
+- 32 位系统：4GB
+- 64 位系统：16EB
+  - 保证给 16 EB 的内存寻址，在 $O(1)$ 的时间复杂度进行存址
+
 
 
 = Conclusion
