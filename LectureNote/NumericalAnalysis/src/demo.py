@@ -85,7 +85,9 @@ def get_significant_figure(ref: str, est: str) -> int:
     """
     try:
         ref_val = float(ref)
+        print(ref_val)
         est_val = float(est)
+        print(est_val)
     except ValueError:
         raise ValueError("输入必须是有效的实数字符串。")
 
