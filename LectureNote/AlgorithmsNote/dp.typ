@@ -252,13 +252,125 @@ Thus, we finish this problem in $O(n^2)$ running time.
 
 == Bellman-Ford Expansion SSSP
 
+=== DAG Shortest Path
+
+It is time when we solve the DAG problems using relaxation!
+
+- Define sub problems:
+
+$delta_k (s,v)$ means the weight of shortest path from $s$ to $v$ using at most $k$ edges.
+
+- We want to solve:
+
+$ delta_(|E|)(s,v) $
+
+- What we have:
+
+$ delta_0 (s,v) = 0 , forall v in V $
+
+$ delta_i (s,s) = 0, forall i in {0,1,2,dots, |V|} $
+
+- Status transform
+
+$ delta(s, v) = min {delta(s, u) + w(u,v) | u in "Adj"^-(v) } union { delta_(k-1)(s,u)} $
+
+#recordings("When to use DP?")[
+  - 动态规划的状态转移方程经常出现 min max 等求最大最小值的组合
+  - 这是因为动态规划经常子问题定义的是一个最优化问题
+  - 而最优化问题的处理基本逻辑就是暴力枚举+取最值
+    - 因此检查动态规划的正确性（尤其遇到最大最小值）可以看所有枚举情况是否被包含
+    - 这也是为什么更复杂的动态规划需要分类讨论而不可以直接取最值，因为有时候并不是简单的枚举！
+]
+
+
 == APSP
+
+For all pairs shortest path: *Floyd-Warshall*
+
+- For simple SSSP:
+  - $O(|V|^2 |E|) = O(|V|^4)$
+
+$d(u, v, k)$ = minimum weight of a path from $u$ to $v$ that only uses vertices from ${1, 2, . . . , k} union {u, v}$
+
+- What we want to solve: $d(u,v,|V|)$
+- What we have:
+  - $d(u,v,0) = w(u,v)$ if $(u,v) in E$
+  - $d(u,v,0) = w(u,v)$, otherwise
+- transformation:
+  - If $k$ is in the shortest path: $d(u,v,k) = d(u,k,k-1) + d(k,v,k-1)$
+  - If not: $d(u,v,k) = d(u,v,k-1)$
+$ d(u,v,k) = min(d(u,v,k-1), d(k,v,k-1) + d(u,k,k-1)) $
+- Time complexity: $O(|V|^3)$
 
 == Arithmetic Parenthesization
 
+#problem("Arithmetic Parenthesization")[
+  - 给定一个数字序列，两个数字之间存在加号或者乘号
+  - 你可以任意改变运算优先级（加括号）
+  - 求解：最终最大的输出值
+  - Allow negative numbers
+]
+
+Idea: find the operations from the root.
+Sub-Problems: using substring!
+
+Define sub problems:
+
+$x(i,j "opt")$ = opt value with sub string from [i..j)
+
+- $0 <= i,j <= n$ and $"opt" in {"min", "max"}$
+
+- What we have:
+  - $x(i,i,"opt") = 0$
+  - $x(i,i+1,"opt") = a_i$
+
+- Original Problems: $x(0,n,"max")$
+
+$ x(i, j, "opt") = "opt" {x(i, k, "opt"') ∗ k x(k, j, "opt"'')) | i < k < j; "opt"' , "opt"'' in {min, max}} $
+
+
+
 == Piano Fingering
 
+#problem("Piano Fingering")[
+  #figure(
+    image("images/piano.png"),
+    caption: [Piano Fingering],
+  )
+]
+
+$x(i, f)$ = minimum total difficulty for playing notes $t_i$, $t_(i+1)$, . . . , tn−1 starting with finger f on note $t_i$.
+
+Define: $x(i,f)$ is $min{x(i + 1, f') + d(t_i, f, t_(i+1), f') | 1 ≤ f' ≤ F }$
+
+
+Time Complexity: $O(n times F^2)$
+
 == Guitar Fingering
+
+
+#problem("Guitar Fingering")[
+  #figure(
+    image("images/guitar.png"),
+    caption: [Guitar Fingering],
+  )
+]
+
+$F arrow F times S$
+
+Time Complexity: $O(n F^2 S^2)$
+
+
+=== Multiple Notes at Once
+
+$t_i$ is a set of notes to play at time $i$.
+
+$f_i$ is a mapping of placing notes with different fingers: $t_i arrow {1,2,3,dots,F}$
+
+For each fingering $f_i$, at most $T^F$ choices, $T = max_i |t_i|$
+
+Time Complexity: $O(n T^(2F))$
+
 
 = Pseudopolynomial
 
