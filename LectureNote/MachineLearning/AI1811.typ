@@ -466,7 +466,17 @@ $ y/(1-y) > 1 $
 
 $ y/(1-y) > m^+/m^- $
 
+具体而言，我们可以对模型的输出值再加一个*Rescaling*，即：
 
+$ y'/(1-y') = m^-/m^+ y/(1-y) $
+
+#recordings("Rescaling")[
+  - 在理想情况下，这个方法是理论可行的，但是这个的前提是 训练集必须是真实样本的无偏估计的理想假设
+  - 这一个假设在偏斜数据集的场景下更难满足
+  - 具体的，也可以使用欠采样或者过采样的方式使模型的正反例的样本数基本相同
+    - 欠采样：使用集成学习机制，将反例划分为不同的集合供学习器使用，类似于 Kfold 的思想
+    - 过采样：插值增加采样数据
+]
 
 = Chapter 4 Decision Tree
 
@@ -562,9 +572,90 @@ $ text("Gain")(D,a) = text("Ent")(D) - sum^(V)_(v = 1) (|D^v|)/(|D|) text("Ent")
 
 $ "Gain"(D,a) = rho "Gain"(tilde(D), a) $
 
-= Naive Bayes
+= Chapter 6: SVM (Support Vector Machine)
 
-= SVM (Support Vector Machine)
+
+= Chapter 7: Naive Bayes
+
+
+= Ensemble Learning
+
+
+= Clustering
+
+= Dimension Reduction
+
+== Linear Dimension Reduction
+
+考虑更加一般的线性降维方法，对于待降维的矩阵 $X = (x_1, x_2, dots, x_m) in RR^(d times m)$
+
+我们需要构造一个线性变换矩阵 $W in RR^(d times d')$
+
+而降维的过程就是简单的线性变换的矩阵乘法：$Y = W^T X in RR^(d' times m)$
+
+#recordings("Why Linear?")[
+  - 线性变换矩阵的列向量是降维后新坐标系的基向量
+  - 数据之间的线性关系得以保留
+  - 更特殊的情况，如果施加的是正交变换：
+    - 基向量构成了一组标准正交基
+    - 形成了低维的标准正交子空间
+    - 而正交矩阵本质上就是 rotation 操作！因此带来了保持距离和角度的良好性质。
+]
+
+下面将逐一介绍一些很经典的线性降维和非线性降维的方法。
+
+=== Multiple Dimensional Scaling
+
+定义原始距离矩阵 D 代表 $m$ 个样本的原始空间的距离矩阵，每个元素代表两个特定数据点的距离表示。我们构建的目标是构建降维后的 m 个样本点的坐标，而保持任意两个样本的欧氏距离保证等于原始空间的距离。（距离矩阵作为不变量）
+
+考虑样本在低维空间中的表示：$Z in RR^(d' times m)$，计算内积矩阵 $B = Z^T Z in RR^(m times m)$
+
+$b_(i,j) = z_i^T z_j$
+
+考虑降维后的样本被中心化，则内积矩阵具有良好的性质：每一行和每一列都是和为0的。
+
+#figure(
+  image("ML/MDS.png"),
+  caption: [MDS Proof],
+)
+
+#recordings("MDS")[
+  - 求解 MDS 的过程首先求解内积矩阵
+  - 保证距离的不变形这就会导致内积矩阵的很多完美性质
+    - 最终可以保证内积矩阵的每一个元素都被不变量的距离所表示
+    - 这是内积所带来的！
+  - 求出内积矩阵之后再使用特征值分解
+]
+
+求得内积矩阵 B 之后，很显然这并不是一个满秩矩阵，因此可以做矩阵的满秩分解。在这里我们做特征值分解：
+#let diag = math.op("diag")
+$ B = V diag(lambda_1, lambda_2, dots, lambda_d) V^T $
+
+
+假设其中有 $d^*$ 个非零特征值（或者在实际运算，可以手动截断前几个最大的特征值），那么 Z 就可以表达为：
+
+$ Z = sqrt(diag(lambda_1, lambda_2, dots, lambda_(d^*))) V_*^T $
+
+
+=== PCA
+
+我们希望寻找一个超平面：
+
+- 最近重构性：样本点到这个超平面的距离足够近
+- 最大可分性：样本在超平面上的投影离的足够远
+
+#figure(
+  image("ML/PCA_1.png"),
+)
+
+== Non-Linear Dimension Reduction
+
+=== Kernelized PCA
+
+=== Manifold Learning
+
+= Metric Learning
+
 
 = Conclusion
 
