@@ -28,7 +28,7 @@
   - Classification
     - Decision Trees
     - Logistic regression
-    - Support Vector Machine
+    - Support accenttor Machine
 - Dimensional Reduction
   - PCA
   - Locally Linear Embeddings
@@ -374,12 +374,12 @@ $ cal(l)(beta) = sum_(i=1)^m (-y_i beta^T hat(x)_i + ln(1+e^(beta^T hat(x)_i))) 
 
 经典的使用投影的思想解决问题：
 
-给定高维数据集 $D = {(x_i, y_i)}^(m)_{i=1}$:
+给定高维数据集 $D = ((x_i, y_i))^(m)_(i=1)$:
 
 - 将一个数据点投影到一条直线 $w$：
-  - 高维空间下的直线：$r(t) = r_0 + t vec(v)$
+  - 高维空间下的直线：$r(t) = r_0 + t accent(v, arrow)$
     - 其中 $r_0$ 代表的固定点 P，为一个高维向量
-    - $vec(v)$ 代表一个方向向量，也是高维的
+    - $accent(v,arrow)$ 代表一个方向向量，也是高维的
   - 在这里默认直线经过原点（为了后续简化计算），因此可以使用一个向量代表直线
   - 投影点的坐标 $w^T mu_0$
 - 在上文的例子中 $mu_0$ 代表着均值向量
@@ -503,7 +503,7 @@ $ y'/(1-y') = m^-/m^+ y/(1-y) $
 
 $ text("Ent")(D) = - sum^(|cal(Y)|)_(k=1) p_k log_2 p_k $
 
-从简单情况出发，考虑某一个离散属性 $a in A$, which has several possible values: ${a^1, a^2, dots, a^V}$, then it will split the current tree into $V$ new branches, then the input $D$ is split into $V$ partitions: $D_1, D_2, dots, D_V$.
+从简单情况出发，考虑某一个离散属性 $a in A$, which has several possible values: $(a^1, a^2, dots, a^V)$, then it will split the current tree into $V$ new branches, then the input $D$ is split into $V$ partitions: $D_1, D_2, dots, D_V$.
 
 我们希望这是一个有效的划分而不是一个随机的划分，因此我们定义信息增益并希望最大化信息增益：
 
@@ -572,7 +572,7 @@ $ text("Gain")(D,a) = text("Ent")(D) - sum^(V)_(v = 1) (|D^v|)/(|D|) text("Ent")
 
 $ "Gain"(D,a) = rho "Gain"(tilde(D), a) $
 
-= Chapter 6: SVM (Support Vector Machine)
+= Chapter 6: SVM (Support accenttor Machine)
 
 
 = Chapter 7: Naive Bayes
@@ -644,9 +644,108 @@ $ Z = sqrt(diag(lambda_1, lambda_2, dots, lambda_(d^*))) V_*^T $
 - 最近重构性：样本点到这个超平面的距离足够近
 - 最大可分性：样本在超平面上的投影离的足够远
 
+==== Prof1 for PCA
+
 #figure(
   image("ML/PCA_1.png"),
 )
+
+下面我们来对上式进行具体证明：
+
+考虑降维前已经归一化的样本 $accent(x_i, arrow)$，我们希望降维后的样本为 $accent(hat(x_i),arrow)$
+
+For the linear transformation:
+
+$ hat(X) = W^T X $
+
+- 其中 $W^T$ 是有标准正交基组成的，并且维度为无损压缩的最大上限，这也是矩阵的秩。
+- 但是在实际建模的过程中，我们选择 $d' <= d$
+
+$ accent(z_i, arrow) = (z_(i 1), z_(i 2), dots, z_(i d')) = W^T accent(x_i,arrow) $
+
+$ accent(hat(x_i),arrow) = sum^(d')_(j=1) z_(i j) accent(w_j,arrow) = sum^(d')_(j=1) accent(w_j^T,arrow) accent(x_i,arrow) accent(w_j,arrow) = WW^T x_i $
+
+$ x_i in RR^d $
+  $ W = (w_1, w_2, dots, w_(d')) in RR^(d times d') $ (新坐标系基向量), 且 $ W^T W = I_(d') $ (标准正交基)。
+  $ z_i = W^T x_i in RR^(d') $ (降维坐标), 其中 $ z_( ) = w_j^T x_i $。
+  $ hat(x)_i = sum_(j=1)^(d') z_(i j) w_j = W z_i = W W^T x_i $
+  重构误差平方和 $L$：
+  $ L = sum_(i=1)^(m) norm(hat(x)_i - x_i)^2_2 = sum_(i=1)^(m) norm(sum_(j=1)^(d') z_(i j) w_j - x_i)^2_2 $
+
+利用二范数展开式
+  根据 $norm(a-b)^2_2 = norm(a)^2_2 - 2 a^T b + norm(b)^2_2$，其中 $a=hat(x)_i$ 且 $b=x_i$。
+  $ L = sum_(i=1)^(m) norm(hat(x)_i)^2_2 - 2 hat(x)_i^T x_i + norm(x_i)^2_2 $
+
+最后一项 $sum_(i=1)^(m) norm(x_i)^2_2$
+  $ sum_(i=1)^(m) norm(x_i)^2_2 = "const" $
+
+第二项 $sum_(i=1)^(m) hat(x)_i^T x_i$
+  代入 $hat(x)_i = W W^T x_i$ 并利用 $ (W W^T)^T = W W^T $ (对称性)：
+  $ sum_(i=1)^(m) hat(x)_i^T x_i = sum_(i=1)^(m) (W W^T x_i)^T x_i = sum_(i=1)^(m) x_i^T (W W^T)^T x_i = sum_(i=1)^(m) x_i^T W W^T x_i $
+
+第一项 $sum_(i=1)^(m) norm(hat(x)_i)^2_2$
+  代入 $hat(x)_i = W W^T x_i$ 并利用 #text(weight: "bold")[$ W^T W = I $] (标准正交性)：
+  $
+  sum_(i=1)^(m) norm(hat(x)_i)^2_2 &= sum_(i=1)^(m) hat(x)_i^T hat(x)_i 
+  &= sum_(i=1)^(m) (W W^T x_i)^T (W W^T x_i) 
+  &= sum_(i=1)^(m) x_i^T (W W^T)^T (W W^T) x_i 
+  &= sum_(i=1)^(m) x_i^T (W W^T W W^T) x_i 
+  &= sum_(i=1)^(m) x_i^T W (underbrace(W^T W, I)) W^T x_i 
+  &= sum_(i=1)^(m) x_i^T W W^T x_i
+  $
+
+  将 A、B、C 三项组合回 $L$:
+  $ L = sum_(i=1)^(m) (underbrace(x_i^T W W^T x_i, "项 C")) - 2 (underbrace(x_i^T W W^T x_i, "项 B"))  + "const" $
+  合并：
+  $ L = sum_(i=1)^(m) - x_i^T W W^T x_i + "const" = - sum_(i=1)^(m) x_i^T W W^T x_i + "const"$
+
+  利用迹的性质：
+  1. 标量 $a = text(tr)(a)$。
+  2. 循环置换性质：$text(tr)(A B C) = text(tr)(B C A) = text(tr)(C A B)$。
+  对于每一项 $x_i^T W W^T x_i$ (它是一个标量)：
+  $ x_i^T W W^T x_i = text(tr)(x_i^T W W^T x_i) $
+  利用循环置换性质 (将 $x_i^T$ 挪到最后，将 $x_i$ 挪到最前)：
+  $ text(tr)(x_i^T W W^T x_i) = text(tr)(W^T x_i x_i^T W) $
+  因此，总和可以写成：
+  $ sum_(i=1)^(m) x_i^T W W^T x_i = sum_(i=1)^(m) text(tr)(W^T x_i x_i^T W) $
+  由于迹和求和运算的线性性质，可以交换顺序：
+  $ = text(tr) W^T  sum_(i=1)^(m) x_i x_i^T  W  $
+
+  将此结果代回 $L$:
+  $ L = - text(tr) W^T  sum_(i=1)^(m) x_i x_i^T  W  + "const" $
+  因此，最小化重构误差 $L$ 等价于：
+  $ min_W - text(tr) W^T  sum_(i=1)^(m) x_i x_i^T  W  $
+  这等价于最大化负号后面的项：
+  $ max_W text(tr) W^T  sum_(i=1)^(m) x_i x_i^T  W  quad text(s.t. )  W^T W = I $
+
+
+==== Prof 2 for PCA
+
+从第二个角度来推导主成分分析，我们可以考虑投影样本点的方差最大化，而这个的数据表征就是协方差矩阵。
+
+$ sum = ("Cov"(x_i, x_j))_(i,j) $
+
+对于原来的矩阵，投影到一个方向上可以得到一个向量，向量的每一个元素代表该方向的值：
+
+$ y = w^T X $
+
+投影后数据的方差计算，注意样本已经被归一化：
+
+$ "Var"(y) = EE[(y - EE[y])^2] = EE[y^2] $
+
+$ "Var"(y) = 1/m sum^m_(i=1) y_i^2 = 1/m sum^m_(i=1) (w^T x_i)^2 =  1/m sum^m_(i=1)  (w^T x_i) (w^T x_i)^T $
+
+$ "Var"(y) = 1/m sum^m_(i=1) w^T (x_i x_i^T) w = w^T (1/m sum^m_(i=1) x_i x_i^T) w $
+
+$ C = 1/m sum^m_(i=1) x_i x_i^T = "Cov"(X) $
+
+- 注意上面的是指只对中心化的矩阵成立！
+
+因此，从两种优化目标出发，PCA 最终得到了同一个一般的约束条件和最小化目标！
+
+对于具体的求解过程，我们只是需要求解协方差矩阵 $X^T X$ 的特征值分解并取最大的若干特征值对应的归一化的特征向量。对于实对称矩阵，其特征向量天然的保证正交性。
+
+
 
 == Non-Linear Dimension Reduction
 
