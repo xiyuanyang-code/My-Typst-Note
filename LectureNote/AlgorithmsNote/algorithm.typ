@@ -147,7 +147,7 @@ For example, birthday matching problems.
 - optimize (or tradeoff) for traditional searching algorithms.
 - great for NP-hard problems.
 
-= Correctness of the algorithms
+== Correctness of the algorithms
 
 给定输入-输出组 $(x,y)$，给出一个 judger function，返回一个布尔值是否正确。
 
@@ -177,7 +177,7 @@ For example, birthday matching problems.
   )
 ]
 
-= Complexity & Efficiency
+== Complexity & Efficiency
 
 时间复杂度的衡量为了摆脱硬件性能的约束和影响，在衡量算法复杂度的时候，往往使用原子操作来代表基本的时间步：
 
@@ -232,5 +232,15 @@ $ H(N) = Theta(log N) $
 
 $ integral^1_0 1/x "d"x <= sum^n_(i=1) 1/i <= integral^1_0 1/x "d"x + 1 $
 
+
+= Divide and Conquer
+
+
+
+= Computational Complexity
+
+Lecture notes for MIT 6.006 Lecture 19: Complexity
+
+= Future of Algorithms
 
 = Conclusion
