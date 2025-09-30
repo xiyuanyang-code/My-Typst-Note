@@ -371,15 +371,65 @@ For each fingering $f_i$, at most $T^F$ choices, $T = max_i |t_i|$
 
 Time Complexity: $O(n T^(2F))$
 
-
 = Pseudopolynomial
+
+#definition("Pseudopolynomial Time")[
+  - 真多项式时间：$T = O("poly"(N))$，其中 $N$ 代表着输入数据的编码长度。
+    - 编码长度就是二进制字符串的长度
+  - 伪多项式时间：$T = O("poly"(U))$, 其中 $U$ 代表这个输入数据的最大值。
+    - 例如经典的背包问题
+]
 
 == Rod Cutting
 
+#problem("Rod Cutting Problems")[
+  - 给定一个长度为 L 的钢条，现在允许将钢条切割成若干长度
+  - 每一个长度的子钢条都对应一个价值
+  - 求最大的价值长度
+]
+
+经典的动态规划算法：
+
+$ X(l) = max{v(p) + X(l - p) | p in [1,l]} $
+
 == SubSet Sum
+
+#problem("Subset Sum problem")[
+  - 给定一个集合有 n 个数字
+  - 求解集合的子集，子集内所有元素的和为目标数字 target
+]
+
+动态规划本身并不复杂：
+
+$x(i, t)$: any subset of $A[i :]$ sum to t
+
+- What we have:
+  - $x(i,0)$ = True
+  - $x(n,t)$ = False (t != 0)
+
+- Transformation:
+$ x(n,t) = x(n+1,t) or (t-a[n] >= 0 and x(n+1, t-a[n])) $
+
+Time Complexity: $O(n T)$
+
+Is it polynomial?
+
+- Input size: $n+1$, not polynomial in input size!
+- for w-bit word RAM model: $T <= 2^w$ and $w >= log(n+1)$
+- for the least cases: $w approx n$
+- Then the time complexity: $O(n 2^n)$
+
+#recordings("Why not polynomial?")[
+  - 在这里很复杂的一点是算法的运行时间同时和两个变量决定
+    - 输入的数据量
+    - 给定的目标值的大小
+  - 因此，这不是一个单变量的多项式运行时间
+  - 而对于输入编码 $w$ 来说，这个数字是指数级增长的！
+]
 
 = Conclusion
 
-== Main Features of Dynamic Programs
-
-DP is really a fantastic algorithms!
+#figure(
+  image("images/dp_summary.png"),
+  caption: [Summarization for all DP problems],
+)

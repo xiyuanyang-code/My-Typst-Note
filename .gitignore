@@ -4,3 +4,5 @@
 # ignore all pdf files when compiling
 **/*.pdf
 **/*.synctex.gz
+
+!/result/**/*.pdf

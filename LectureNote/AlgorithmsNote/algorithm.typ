@@ -218,6 +218,19 @@ For example, birthday matching problems.
 - 64 位系统：16EB
   - 保证给 16 EB 的内存寻址，在 $O(1)$ 的时间复杂度进行存址
 
+== 算法时间复杂度证明
+
+记：
+
+$ H_n = sum^n_(i=1) 1/i $
+
+求证：
+
+$ H(N) = Theta(log N) $
+
+使用积分不等式：
+
+$ integral^1_0 1/x "d"x <= sum^n_(i=1) 1/i <= integral^1_0 1/x "d"x + 1 $
 
 
 = Conclusion
