@@ -132,8 +132,129 @@ $
   V_k^pi (s) = sum_a pi(a|s) [R(s,a) + gamma sum_(s' in S) p(s'|s,a)V^pi_(k-1) (s')]
 $
 
+=== Policy Search
+
+对于确定状态空间下的确定性策略下，穷举搜索所有可行性策略的总数为 $O(|A|^(|S|))$，这是非常大的搜索空间！
+
+确定性策略 $pi$ 的时间复杂度为一个从状态到动作的映射函数。
 
 
+==== MDP Policy Iteration
+
+
+The intuition of MDP Policy Iteration is about *evaluation* and *improvement*. That is, a good policy may bring high values, and in turn leads to better policy optimizations.
+
+#definition("MDP Policy Iteration")[
+  - Initialize $pi_0 (s)$ for random policy selection.
+  - If `i == 0` and $||pi_i - pi_(i-1)||_1 > 0$ (L1-norm):
+    - Do evaluation for policy $pi_k$, and update the value of $V^(pi_k)$
+      - Using *Bellman Equations*
+  $
+    V_k^pi (s) = sum_a pi(a|s) [R(s,a) + gamma sum_(s' in S) p(s'|s,a)V^pi_(k-1) (s')]
+  $
+  - Do *Policy Improvement*: calculate Q function (state, action, reward function) and update $pi_(k+1)$
+
+  $
+    Q^pi (s,a) = R(s,a) + gamma sum_(s') P(s'|s,a) V^(pi_k)(s')
+  $
+  $
+    pi_(k+1)(s) = attach("argmax", b: a) (R(s,a) + gamma sum_(s') P(s'|s,a) V^(pi_k)(s')) = attach("argmax", b: a) Q^(pi_i)(s,a)
+  $
+
+  - `i++`
+]
+
+==== Policy Improvement
+
+Let's see the core function: the Q function!
+
+$
+  Q^pi (s,a) = R(s,a) + gamma sum_(s') P(s'|s,a) V^(pi_k)(s')
+$
+
+Actually, it is the greedy search (selecting $max_(a) Q^(pi_i) (s,a)$)!
+
+$
+  max_(a) Q^(pi_i) (s,a) >= R(s, pi_i(s)) + gamma sum_(s' in S) P(s'|s, pi_i(s)) V^(pi_i)(s') = V^(pi_i)(s)
+$
+
+- $Q^(pi_i) (s,a)$，在当前状态下执行动作 $a$，并且在下一时刻严格开始遵循当前策略 $pi_i$ 获得的期望总回报
+- $V^(pi_i)(s)$：当前状态下严格执行当前策略 $pi_i$ 获得的期望总回报。
+  - 只有当且仅当最优策略对应的 action 就是 $pi_i(s)$ 的时候，两者取到等号。
+
+==== Monotonic Improvement
+
+#definition("Judgement between value functions")[
+  $
+    V^(pi_1) >= V^(pi_2): V^(pi_1)(s) >= V^(pi_2)(s), forall s in S
+  $
+
+  下面，我们希望证明我们的更新方法是单调的，这也是我们动态规划正确性的基础！
+]
+
+#proof()[
+
+  We need to prove: $V^(pi_(i+1)) >= V^(pi_i)$.
+
+  $
+    V^(pi_(i+1)) = Q^(pi_(i+1)) = (s, pi_(i+1)(s)) = R(s, pi_(i+1)(s)) + underbrace(sum_(s' in S) P(s'|s,pi_(i+1)(s)) V^(pi_(i+1))(s'), "注意是"pi_(i+1))
+  $
+
+  $
+    Q^(pi_i)(s, pi_(i+1)(s)) = max_a Q^(pi_i) (s,a) = R(s, pi_(i+1)(s)) + underbrace(gamma sum_(s' in S) P(s'|s,pi_(i+1)(s)) V^(pi_(i))(s'), "注意是"pi_i)
+  $
+
+  下面我们证明的目标是：$V^(pi_(i+1)) >= V^(pi_i)$
+
+  $
+    V^(pi_i)(s) <= max_a Q^(pi_i) (s,a) = Q^(pi_i)(s, pi_(i+1)(s)) \
+    = R(s, pi_(i+1)(s)) + gamma sum_(s' in S) P(s'|s,a) V^(pi_i)(s') \
+  $
+
+  $
+    V^(pi_i)(s') <= Q^(pi_i)(s', pi_(i+1)(s'))
+  $
+
+  将上式不断展开，最终将会得到 $V^(pi_(i+1))(s)$，这也就是最终迭代更新后的价值函数！
+]
+
+#figure(
+  image(
+    "policy_improvement.png",
+  ),
+  caption: [Proof for policy improvement.],
+)
+
+因此，我们最终证明了两件事情：
+
+- 基于上述算法的优化是单调的
+  - 可以证明对于任何一个状态，更新后的价值函数所获得的期望收益会高于更新前的期望  收益
+  - 证明了马尔科夫算子压缩映射的不动点的存在性
+- 策略函数的选择是有限的
+
+因此，最终我们会收敛到最优的策略函数 $pi^*$
+
+=== Value Iteration
+
+- Policy iteration computes infinite horizon value of a policy and then improves that policy
+- Value iteration is another technique
+  - Idea: Maintain optimal value of starting in a state s if have a finite number of steps $k$ left in the episode
+  - Iterate to consider longer and longer episodes
+
+For the algorithm:
+- Waiting loop for convergence: $||V_(k+1) - V(k)||_infinity <= epsilon$
+
+- 迭代的关键使用贝尔曼优化算子，输入一个价值函数，输出一个更新后的价值函数。
+
+$
+  V_(k+1)(s) = cal(T)(V_(k)(s))
+$
+
+而这个价值策略函数的迭代过程也包含隐式策略改进：
+
+$
+  pi_(k+1)(s) = "argmax"_a [R(s,a) + gamma sum_(s' in S)P(s'|s,a) V_k (s')]
+$
 
 = Conclusion
 
