@@ -88,7 +88,113 @@ $
 
 == Convex Hall
 
-Given $n$ points in the plane, the goal is to find the smallest polygon containing all points in $S = {(x_i, y_i)|i = 1,2,dots,n}$
+=== Brute force for Convex Hull
+
+$C^2_n$ segments, testing each segment:
+
+- All other points are on the single side: correct
+- Else: false
+
+Time Complexity: $O(n^3)$
+
+=== Gift Wrapping Algorithms
+
+Given $n$ points in the plane, the goal is to find the smallest polygon containing all points in $S = {(x_i, y_i)|i = 1,2,dots,n}$. We ensure no two points share the same x coordinates or the y coordinates, no three points are in the same line.
+
+Intuition: Gift wrapping algorithms.
+
+#recordings("Simple Gift Wrapping Algorithms")[
+  - Select the initial point
+    - Find the point which has the smallest $x$ coordinates or the smallest $y$ coordinates.
+  - 找到旋转角度最大的点，作为凸包上的点选入
+    - 这也可以看做是一种橡皮筋手搓生成凸包的过程
+  - Time Complexity: $O(n dot h)$
+]
+
+=== Divide and Conquer for Convex Hall
+
+#recordings("When to use Divide and Conquer")[
+  - 分治最关键的是两个步骤：
+    - 分解成若干个子问题（递）
+    - 把子问题的结果合并起来（归）
+  - 如果使用分治法，那务必重视的一点是递归的终点（最简单的情况）必须是简单可解的。($O(1)$ Time Complexity)
+]
+
+For simple condition: when $n <= 3$, the convex hall is quite simple! All the points are the vertices of the convex hall.
+
+Now, we need to solve two things:
+
+- When to divide
+  - With x coordinates
+  - More like half splitting!
+
+- When to conquer
+  - The most critical step!
+  - We need to finding the bridges (Upper Bridge and Lower Bridge) to form the bigger convex hall.
+    - *Two Finger Algorithms*
+
+#recordings("Two Finger Algorithms")[
+  - 基本思路类似于双指针法实现线性扫描
+  - 基本思想还是不断旋转找到最外部的切线
+]
+
+#figure(
+  image("images/convexhall.png"),
+  caption: [Convex Hall Conquering Steps],
+)
+
+Time Complexity:
+
+$
+  T(n) = 2 T(n/2) + Theta(n)
+$
+
+For the compute of this time complexity, we can use Master Theorem.
+
+== Master Theorem
+
+For simple cases:
+
+$
+  T(n) = a T(n/b)
+$
+
+To compute this complexity, we use the recursive tree to solve this:
+
+$
+  T(n) = a^k T(n / b^k)
+$
+
+For the recursion endpoint, $n/b^k = 1$, we can compute:
+
+$
+  T(n) = a^(log_b n) T(1) = n ^ (log_b a) T(1) = O(n ^ (log_b a))
+$
+
+For general cases:
+
+$
+  T(n) = a T(n/b) + f(n)
+$
+
+We need to compare $f(n)$ and $n^(log_b a)$.
+
+=== The Work at the Leaves Dominates
+
+$
+  f(n) = O(n^(log_b (a-epsilon)))
+$
+
+=== The Work is Balanced
+
+=== The Work at the Root Dominates
+
+
+
+
+
+
+
 
 
 
