@@ -149,6 +149,8 @@ $
   T(n) = 2 T(n/2) + Theta(n)
 $
 
+Thus total time complexity: $Theta(n log n)$
+
 For the compute of this time complexity, we can use Master Theorem.
 
 == Master Theorem
@@ -168,7 +170,7 @@ $
 For the recursion endpoint, $n/b^k = 1$, we can compute:
 
 $
-  T(n) = a^(log_b n) T(1) = n ^ (log_b a) T(1) = O(n ^ (log_b a))
+  T(n) = a^(log_b n) T(1) = n^(log_b a) T(1) = O(n^(log_b a))
 $
 
 For general cases:
@@ -185,14 +187,178 @@ $
   f(n) = O(n^(log_b (a-epsilon)))
 $
 
+Then it means that recursion part dominates! ($T(n) = a T(n/b)$). Thus, the time complexity is:
+
+$
+  T(n) = a T(n/b) + f(n) = a T(n/b) + O(n^(log_b (a-epsilon))) = Theta(n^(log_b a))
+$
+
 === The Work is Balanced
+
+$
+  f(n) = Theta(n^(log_b a) dot log^(k)n)
+$
+
+Then it means the two parts are both the dominant parts! The total time complexity remains the same.
+
+$
+  T(n) = a T(n/b) + f(n) = a T(n/b) + Theta(n^(log_b a) dot log^(k)n) = Theta(n^(log_b a) dot log^(k+1) n)
+$
 
 === The Work at the Root Dominates
 
 
+$
+  f(n) = Omega(n^(log_b a + epsilon))
+$
+
+and:
+
+$
+  exists c in R, exists N_0 in NN, forall n > N_0: a f(n/b) <= c f(n)
+$
+
+#recordings("Regular Condition")[
+  - 这个条件说明划归到子问题的时候时间复杂度可能很大，但是对于大问题“分而治之”的复杂度是非常昂贵的。
+  - 总复杂度有递归的最高层（根节点）的代价决定，这也保证该情况下时间复杂度的量级为 $Theta(f(n))$
+]
+
+Then the total time complexity:
+
+$
+  T(n) = Theta(f(n))
+$
+
+#example("Example for the work at the root dominates")[
+  例如如果递归的时间复杂度为：
+  $
+    T(n) = 3 T(n/4) + n^2
+  $
+
+  $a=3$,$b=4$, $T(n) = Theta(n^2)$
+]
+
+== Median Finding
+
+#problem("Median Finding")[
+  Given set of $n$ numbers, define $"rank"(x)$ as number of numbers in the set that are $≤ x$.
+  Find element of rank $floor (n+1)/2 floor.r$ (lower median) and $ceil (n+1)/2 ceil.r$ (upper median).
+]
+
+Obviously, we can use *sorting algorithms* to solve this! The time complexity is $Theta(n log n)$.
+
+Simple Algorithms: Define problem as `Select(S,i)` to find the `i` th element value in the set S.
+
+- Pick $x in S$
+  - We just pick it cleverly
+- Compute $k = "rank"(x)$
+- $B = {y in S|y < x}$
+- $C = {y in S|y > x}$
+- algorithms:
+  - If $k = i$: `return x`
+  - If $k < i$: `return Select(C,i-k)`
+  - If $k > i$: `return Select(B,i)`
+
+For dummy choices for selecting $x in S$, for the worse case, the time complexity is $Theta(n^2)$.
+
+=== Picking $x$ cleverly
+
+- Arrange S into columns of size 5 ($ceil n/5 ceil.r$ cols).
+- Sort each columns in linear time.
+- Find *medians of medians* as the selected $x$.
+
+#recordings("Why selecting this?")[
+  - 对于简单的取常数或者中间值的方法在极端情况下会退化到平方时间复杂度，因为我们难以知道全局数据的分布特征，因此我们很难选择一个好的 splitting
+  - 和快速排序很类似！我们希望选择一个好的 splitting，这样让递归算法变成对数级别的。
+  - 而下面的选择可以保证 splitting 的效率，即至少有 $3 ( ceil n/10 ceil.r -2 )$ 的点被分到左边并且至少有 $3 ( ceil n/10 ceil.r -2 )$ 的点被分到右边。
+]
 
 
+#figure(
+  image("images/median.png"),
+  caption: [SELECT for medians of medians],
+)
 
+
+Recurrence:
+
+$
+  T(n) = T(ceil n/5 ceil.r) + T((7 n)/10 + 6) + Theta(n)
+$
+
+- $T(ceil n/5 ceil.r)$ 是找到中位数的中位数的算法时间
+- $Theta(n)$ 是分组线性扫描需要的时间复杂度
+- $(7 n)/10 + 6$ 代表子问题的规模，因为我们保证$3 ( ceil n/10 ceil.r -2 )$ 会被分到对应的组，因此最坏情况就是 $(7 n)/10 + 6$
+
+Solving this recurrence.
+
+#figure(
+  image("images/induction-proof.jpg"),
+  caption: [Induction proof for median finding algorithms],
+)
+
+== Matrix Multiplication
+
+For simple matrix multiplication, the time complexity is $O(n^3)$.
+
+$
+  c_(i,j) = sum^p_(k=1) a_(i,k) b_(k,j)
+$
+
+- $n^3$ times multiplication.
+- $n^3- n^2$ times addiction.
+
+=== Strassen Algorithms
+
+$
+  A = mat(A_11, A_12; A_21, A_22), B = mat(B_11, B_12; B_21, B_22), C = mat(C_11, C_12; C_21, C_22)
+$
+
+For simple divide and conquer algorithms:
+
+$
+  C_11 = A_11 B_11 + A_12 B_21 \
+  C_12 = A_11 B_12 + A_12 B_22 \
+  C_21 = A_21 B_11 + A_22 B_21 \
+  C_22 = A_21 B_12 + A_22 B_22
+$
+
+这个是基本的分治算法，对于子矩阵，需要进行 8 次 子矩阵的乘法和 4 次子矩阵的加法。
+
+$
+  T(n) = 8 T(n/2) + Theta(n^2)
+$
+
+Based on Master theorem, the time complexity is $O(n^3)$, remains unchanged!
+
+The break through for strassen algorithms are reducing matrix multiplication from 8 times into 7 times by reducing repeated computation!
+
+$
+  M_1 = (A_11 + B_22)(B_11 + B_22)\
+  M_2 = (A_21 + A_22)B_11\
+  M_3 = A_11 (B_12 - B_21)\
+  M_4 = A_22 (B_21 - B_11)\
+  M_5 = (A_11 + A_12) B_22\
+  M_6 = (A_21 - A_11)(B_11 + B_12)\
+  M_7 = (A_12 - A_22)(B_21 + B_22)
+$
+
+7 times matrix multiplication ($n/2 times n/2$), and 18 times addiction.
+
+$
+  C_11 = M_1 + M_4 - M_5 + M_7\
+  C_12 = M_3 + M_5\
+  C_21 = M_2 + M_4\
+  C_22 = M_1 - M_2 + M_3 + M_6
+$
+
+Thus the time complexity:
+
+$
+  T(n) = 7 T(n/2) + Theta(n^2) = Theta(n^(log_2 7)) approx Theta(n^2.807)
+$
+
+== FFT
 
 
 
