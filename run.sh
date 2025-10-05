@@ -9,8 +9,6 @@ git push
 # compile and make
 python scripts/update_notes/compile.py
 
-exit 0
-
 # generate new tags
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 VERSION_NO_V=$(echo "$LATEST_TAG" | sed 's/^v//')
