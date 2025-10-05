@@ -4,6 +4,7 @@
 LATEST_TIMESTAMP=$(git log -1 --format=%at)
 git add .
 git commit -m "Auto Commit: $LATEST_TIMESTAMP"
+git push
 
 # compile and make
 python scripts/update_notes/compile.py
