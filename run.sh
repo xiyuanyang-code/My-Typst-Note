@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # commit changes
-LATEST_TIMESTAMP=$(git log -1 --format=%at)
+LATEST_TIMESTAMP=$(git log -1 --format=%cd)
 git add .
 git commit -m "Auto Commit: $LATEST_TIMESTAMP"
 git push
