@@ -100,21 +100,44 @@ $ epsilon^*_r = epsilon^* / (|x^*|) $
 
 === Significant Figures
 
+==== Quick Judgement
+
+- 对于四舍五入的有效数字评判（这也是一般情况），可以按照数数位的方式进行判断有效数字的位数 $n$
+
 - 有效数字的设计和科学计数法无关，可以实现科学计数法的归一化
 $ x^* = plus.minus 10^m (a_1.a_2 a_3a_4 dots a_n) $
 
-上式中的 $m$ 代表着一个数字转化成科学计数法的表现形式需要提取的 10 的幂次。
+==== Strict Definition
 
-计算误差限要看小数点后的位数
+Given the original number $x$ and the truncated number $x^*$:
+
+$
+  x^* = plus.minus 10^m (a_1.a_2 a_3a_4 dots a_n), a_i in {0,1,2,dots,9}
+$
 
 $ epsilon^*_x = |x - x^*| <= 1/2 times 10^(m-n+1) $
 
-$ 1/2 times 10^(m-n+1) $ 为有效数字定义的相对误差限。而我们 $n$ 就是有效数字。
+- 相对误差限：$1/2 times 10^(m-n+1)$ 为有效数字定义的相对误差限。
+- 有效数字：$n$
 
 #recordings("Significant figures")[
   - 找有效数字 $n$ 的方法和高中一样
   - 找移位 $m$ 的方法就是转变成科学计数法
   - 找相对误差限 $m+n-1$ 看小数点后有几位数字
+]
+
+#example("An Example for significant figure")[
+  考虑 $x = 3.14159265357$ and different $x^*$:
+
+  - $x^* = 3.1416$:
+    - $x^* = 10^0 times 3.1416$, $m = 0$
+    - $abs(x - x^*) approx 0.0000073 <= 0.00005 = 1/2 times 10^(-4)$, $m-n+1 = -4$
+    - $n = 5$
+
+  - $x^* = 3.1415$:
+    - $x^* = 10^0 times 3.1415$, $m = 0$
+    - $abs(x - x^*) approx 0.0000927 <= 0.0005 = 1/2 times 10^(-3)$, $m-n+1 = -3$
+    - $n = 4$
 ]
 
 
