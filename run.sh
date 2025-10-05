@@ -20,6 +20,10 @@ PATCH=${VERSION_ARRAY[2]}
 NEXT_PATCH=$((PATCH + 1))
 NEW_TAG="v$MAJOR.$MINOR.$NEXT_PATCH"
 
+git add .
+git commit -m "Auto Commit: $LATEST_TIMESTAMP"
+git push
+
 # pushing new tags
 git tag "$NEW_TAG"
 git push origin "$NEW_TAG"
