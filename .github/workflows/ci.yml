@@ -4,21 +4,24 @@ permissions:
 
 on:
   push:
-    branches:
-      - master
-      - main
+    tags:
+      - 'v*'   # Only trigger on tag push
+
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
         with:
-          python-version: 3.x
-
-      - run: pip3 install -U -r requirements.txt
-      - run: mkdocs gh-deploy --force
+          body: |
+            Less is More.
+          files: |
+            ./result/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
