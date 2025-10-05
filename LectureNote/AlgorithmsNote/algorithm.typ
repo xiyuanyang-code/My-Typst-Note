@@ -119,14 +119,16 @@ For example, birthday matching problems.
   - 启发式算法
 ]
 
+=== Divide and Conquer
+
+- Like the merge sort and recursion.
+- Split bigger problems into smaller ones.
+
+
 === Greedy algorithms
 
 - making the *locally optimal choice* at each stage with the hope of finding a global optimum.
 
-=== Divide and Conquer
-
-- Like the merge sort!
-- Split bigger problems into smaller ones.
 
 === Dynamic Programming
 
