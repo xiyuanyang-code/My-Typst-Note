@@ -6,49 +6,42 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 
 ## File Structure
 
-```
+```text
 .
 ├── Cargo.lock
 ├── Cargo.toml
 ├── LectureNote
 │   ├── AlgorithmsNote
-│   │   ├── algorithm.typ
-│   │   ├── bowling.png
-│   │   ├── dp.typ
-│   │   ├── leetcode.typ
+│   │   ├── AI1804-Algorithm.typ
+│   │   ├── Leetcode.typ
+│   │   ├── MIT6006-DP.typ
+│   │   ├── MIT6046J-Algorithm.typ
 │   │   └── tex_note
 │   │       └── code_demo.tex
 │   ├── MachineLearning
-│   │   ├── AI1811.typ
+│   │   ├── AI1811-ML.typ
 │   │   └── ML
-│   │       ├── Dimensionality_reduction.md
-│   │       ├── Model_selection.md
-│   │       ├── Parameter_Estimation.md
-│   │       ├── classification.md
-│   │       ├── clustering.md
-│   │       ├── intro.md
-│   │       └── regression.md
 │   ├── NumericalAnalysis
-│   │   ├── AI1807.typ
+│   │   ├── AI1807-Numerical.typ
 │   │   └── src
 │   │       └── demo.py
 │   ├── Probability
-│   │   └── MATH1207.typ
-│   └── SoftwareEngineering
-│       └── CS3604.typ
-├── README.md
-├── images
-│   └── demo.png
+│   │   └── MATH1207-Probability.typ
+│   └── RL
+│       └── CS234-RL.typ
+├── Makefile
+├── run.sh
 ├── scripts
 │   ├── install.sh
-│   └── refresh.py
+│   ├── refresh.py
+│   └── update_notes
+│       └── compile.py
 ├── src
 │   └── main.rs
 └── template
     ├── backup.typ
     ├── empty.typ
-    ├── format.typ
-    └── image.png
+    └── format.typ
 ```
 
 ## Template
@@ -124,30 +117,18 @@ note pdf algebra
 
 All my lecture notes written in typst will be stored in `./LectureNote` folder, including there courses...
 
-```text
-LectureNote
-├── AlgorithmsNote
-│   ├── algorithm.typ
-│   ├── bowling.png
-│   ├── dp.typ
-│   └── tex_note
-│       └── code_demo.tex
-├── MachineLearning
-│   ├── AI1811.typ
-│   └── ML
-│       ├── Dimensionality_reduction.md
-│       ├── Model_selection.md
-│       ├── Parameter_Estimation.md
-│       ├── classification.md
-│       ├── clustering.md
-│       ├── intro.md
-│       └── regression.md
-├── NumericalAnalysis
-│   ├── AI1807.typ
-│   └── src
-│       └── demo.py
-├── Probability
-│   └── MATH1207.typ
-└── SoftwareEngineering
-    └── CS3604.typ
-```
+For all the lecture notes, see [Release Page](https://github.com/xiyuanyang-code/My-Typst-Note/releases/latest) for more information!
+
+Finished Courses:
+
+- MIT 6.006 Dynamic Programming
+
+Current Updating Courses:
+
+- SJTU-AI1807 Numerical Analysis
+- SJTU-AI1804 Analysis of Algorithms
+- LeetCode Daily Problems
+- SJTU-AI1811 Machine Learning
+- SJTU-MATH1207 Probability
+- MIT6046J Analysis of Algorithms
+- CS234 Reinforcement Learning
