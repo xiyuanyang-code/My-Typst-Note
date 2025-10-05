@@ -120,3 +120,4 @@ def compile(input_files):
 
 if __name__ == "__main__":
     cleanup_orphaned_pdfs()
+    compile(input_files=get_all_notes())
