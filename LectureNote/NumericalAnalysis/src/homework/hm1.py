@@ -148,8 +148,7 @@ def get_significant_figure(ref, est):
     diff_digits, diff_exponent = abs_diff_in_sci(ref, est)
     # print(diff_digits, diff_exponent)
     if diff_digits == "0":
-        # todo if ref == est?
-        return -1
+        return len(ref_digits)
 
     # get the first element of diff_digits
     diff_first = int(diff_digits[0])
@@ -164,7 +163,7 @@ def get_significant_figure(ref, est):
     else:
         y = diff_exponent + 2
 
-    return max(x - y + 1, 0)
+    return min(max(x - y + 1, 0), len(ref_digits))
 
 
 if __name__ == "__main__":
@@ -177,6 +176,7 @@ if __name__ == "__main__":
     assert get_significant_figure("-3.1415926", "-3.1415") == 4
     assert get_significant_figure("2.2530", "2.3000") == 2
     assert get_significant_figure("3.14", "3.1416") == 3
+    assert get_significant_figure("3.1415", "3.1415") == 5
 
     # 长小数测试：300位有效数字
     ref = "3." + "14159" * 60  # 3.14159... 重复到大约 300 位
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     # 极小数：1e-200 和近似值
     ref = "1e-200"
     est = "1.00001e-200"
-    assert get_significant_figure(ref, est) == 5
+    assert get_significant_figure(ref, est) == 1
 
     # 极大数：1000位整数
     ref = "9" * 1000  # 999...999 (1000位9)
