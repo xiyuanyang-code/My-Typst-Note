@@ -17,9 +17,6 @@
 
 = Introduction
 
-
-
-
 = Chapter1: Random Events and Probability
 
 == 基本概念
@@ -236,9 +233,61 @@ $ lim_(x arrow - infinity) F(x) = 0 $
 - F(x) 右连续
 
 $ P(a < X <= b) = F(b) - F(a) $
-$ P(X = x_0) = lim_(Delta x arrow 0) P(x_0 - Delta x < X <= x_0) = F(x_0) - lim_(Delta x arrow 0) F(x_0 - Delta x) $ 
+$ P(X = x_0) = lim_(Delta x arrow 0) P(x_0 - Delta x < X <= x_0) = F(x_0) - lim_(Delta x arrow 0) F(x_0 - Delta x) $
 
 - 右连续，但是左极限未知！
+
+== 离散型随机变量及其概率分布
+
+$
+  P(X = x_k) - p_k
+$
+
+- 非负性
+- 规范性
+
+离散型随机变量对应的分布函数图像是阶梯函数。
+
+=== 常见离散型随机变量的分布
+
+- 两点分布
+- n 重伯努利实验
+
+#recordings("伯努利实验")[
+  $
+    X tilde.basic B(n,p)
+  $
+
+  $
+    P(X = k) = C_n^k p^k (1-p)^(n-k)
+  $
+
+  - 当 $(n+1)p$ 为整数的时候，在 $(n+1)p$, $(n+1)p-1$ 两处取得相同的最大值。
+  - 如果不是整数，$floor (n+1)p floor.r$
+]
+
+- 帕斯卡分布
+
+
+#example("帕斯卡分布")[
+  一门大炮对目标进行射击，假定此目标必须被击中 $r$次才能被摧毁.若每次击中目标的概率为 $p$ ($0 < p < 1$), 且各次射击相互独立，一次一次
+  地射击直到摧毁目标为止.求所需射击次数 $X$ 的概率分布
+
+  - 可以分成两段来看，保证最后一次肯定击中目标
+
+  $
+    P(X = k) = C_(k-1)^(r-1) p^(r-1) (1-p)^(k-r) p
+  $
+]
+
+==== Poisson Distribution
+
+
+
+
+
+
+
 
 
 
