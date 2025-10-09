@@ -639,16 +639,213 @@ $
 
 == Prototype Based Clustering
 
+也称为基于中心点的聚类方法，每个簇的代表向量都有原型（中心点）的位置向量来表示。
+
 === K-Means
+
+$
+  {C_1, dots, C_k} = "argmin" sum^K_(k=1) sum_(x_i in C_k) ||x_i - mu_k||^2
+$
+
+#figure(
+  image("ML/kmeans.png"),
+)
+
+Recommended Websites:
+
+https://www.naftaliharris.com/blog/visualizing-k-means-clustering/
+
+
+Kmeans 算法最大的局限性在于其最终的聚类结果和初始点的分布高度相关
+
+#recordings("Initialization for KMeans Algorithms")[
+  The target optimization for K-means is:
+  $
+    "SSE" = sum^(K)_(j=1) sum_(x in C_j) ||x - mu_j||^2
+  $
+
+  - This will let KMeans falling into local minima, although it converges in the end!
+]
 
 === K-Means++
 
-=== Expectation–Maximization/GMM
+K-means++ 算法专门用来解决 K-means 初始化陷入局部最优解的问题，他希望使用一定计算方法构造出初始点，而不是依赖随机生成。
+
+- 随机选择第一个簇中心
+- 在后续的选择中，希望保证初始化的点尽可能远离
+
+$
+  P(x_i) = (D(x_i)^2)/(sum_j D(x_j)^2), D(x_i) = min_k ||x_i - mu_k||
+$
+
+按照上面式子的概率选择后续的质心分布。很显然，如果某个点距离已经被选择的质心距离都相对比较大，则他被选择成为新质心的概率也会很大。
+
+上述解释是基于直觉的，在数学上可证明 K-means++ 很好的缓解了 K-means 初始化带来的问题：
+
+https://theory.stanford.edu/~sergei/papers/kMeansPP-soda.pdf
+
+#theorem("Theory for the Upper Bound")[
+  $
+    EE[phi] <= 8(ln k + 2) phi_"OPT"
+  $
+]
+
+=== Expectation–Maximization
+
+EM算法是一种对隐变量进行参数推测的方法。
+
+定义 $X$ 为已观测变量，$Z$ 隐变量，我们希望对模型参数 $Theta$ 进行估计。
+
+使用最大化对数似然：
+
+$
+  "LL"(Theta|X,Z) = ln P(X,Z|Theta)
+$
+
+注意，$Z$ 是隐变量，因此上面的式子难以直接求解。因此，我们希望通过观测期望来近似估计隐变量，相当于最大化已观测数据的对数边际似然。
+
+$
+  "LL"(Theta|X) = ln P(X|Theta) = ln sum_Z P(X,Z|Theta)
+$
+
+#definition("EM")[
+  - E steps:
+    - If $Theta$ is known, then we can calculate the expectations of $Z$: $Z_t$
+  - Maximization:
+    - 做极大似然估计
+
+  Define Q-function: 对数似然函数的条件期望(后验概率分布)
+
+  $
+    Q(Theta, Theta_t) = EE_(Z|X, Theta_t) "LL"(Theta|X,Z) = EE_(Z|X, Theta_t) ln P(X,Z|Theta)
+  $
+
+  Using Bayes:
+
+  $
+    P(Z|X,Theta^t) = (P(X,Z|Theta^t))/(P(X|Theta^t))
+  $
+
+  $
+    P(X,Z|Theta) = P(Z|Theta) P(X|Z,Theta)
+  $
+
+  Then, we can calculate:
+
+  $
+    Q(Theta, Theta_t) = sum_Z ln(P(Z, Theta) P(X|Z,Theta)) (P(X,Z|Theta^t))/(P(X|Theta^t))
+  $
+
+  在 E 步中，需要计算根据现有参数估计的后延概率，得到若干隐变量的概率分布，即计算
+
+  $
+    P(Z|X,Theta^t) = (P(X,Z|Theta^t))/(P(X|Theta^t))
+  $
+
+  在 M 步，根据隐变量的分布，使用下面的公式最大化 Theta（这也是 Q 函数在确定 Z 分布之后的唯一变量）
+
+  $
+    Theta^(t+1) = "argmax"_Theta Q(Theta|Theta^t)
+  $
+
+  这是一种非梯度的优化方法。
+]
+
+
+=== GMM
+
+K-means 分配方法是一种硬分配的聚类，每个点被分配到最近的簇中心。但是这会导致分类模型并不鲁棒，因此，EM 聚类提出了一种基于概率分配的软化聚类方法。数据点根据不同的概率属于所有的 $K$ 个簇。
+
+
+Gaussian Distribution:
+
+$
+  p(x) = 1/((2 pi)^(n/2) |sum|^(1/2)) e^(-1/2 (x - mu)^TT sum^(-1) (x-mu)) = p(x|mu, sum)
+$
+
+Mixed Gaussian Distribution:
+
+$
+  p_(M) (x) = sum^k_(i=1) alpha_i p(x|mu_i, sum_i)
+$
+
+在这里，每一个聚类可以看作是有某一个高斯成分 j 生成，计算后验概率：
+
+$
+  gamma_(i j) = P(z_i = j|x_i. Theta^t) = (alpha_j p(x_i|mu_j, sum_j))/(sum^K_(k=1)p(x_i|mu_k, sum_k) alpha_k)
+$
+
+上面这个式子的意义是样本 $x_i$ 是有第 $j$ 个高斯混合成分生成的。
+
+$
+  lambda_i = "argmax"_(j in {1,2,3,dots,k}) gamma_(i j)
+$
+
+在 M 步，需要最大化更新似然函数的参数：
+
+使用极大似然估计：
+
+$
+  "LL"(D) = ln(Pi^m_(j=1) p_M(x_j)) = sum^m_(j=1) ln(sum_(i=1)^k alpha_i p(x_j|mu_i, sum_i))
+$
+
+这也是 EM 算法中对应的 Q function。
+
+因为高斯分布的良好性质，可以求出参数的解析解：
+
+$
+  alpha_j^(t+1) = (sum^N_(i=1) gamma_(i j))/N
+$
+
+$
+  mu_j^(t+1) = (sum^N_(i=1) gamma(i j) x_i)/(sum^N_(i=1) gamma_(i j))
+$
+
+$
+  Sigma_k = (sum_i gamma_(i k) (x_i - mu_k)(x_i - mu_k)^TT)/(sum_i gamma_(i k))
+$
+
+#figure(
+  image("ML/GMM.png"),
+)
 
 == Density-Based Clustering
 
+原型聚类的方法显而易见存在局限性：
+
+- 对于非凸的簇难以识别，因为收到欧式度量的影响，算法更倾向寻找到凸型或者球形的簇
+- 原型聚类高度依赖质心，因此会导致鲁棒性很低
+  - 这一点在 GMM 算法的软分隔中得到缓解
+
+密度聚类的方法基于样本分布的紧密程度判断聚类的效果。这从根源上避免了原型聚类带来的问题！
+
 === DBS-CAN
 
+#definition("DBSCAN")[
+  簇被定义为数据空间中高密度的区域，这些区域被低密度的区域（噪声）隔开
+]
+
+- MinPts (Minimum Points)： 密度阈值。定义了一个区域要成为高密度区所需要的最小点数。
+
+- 核心点 (Core Point):在其 ϵ 半径内，至少有 MinPts 个数据点（包括自身）。	是高密度区域的核心，能“生成”簇。
+
+- 边界点 (Border Point)	在其 ϵ 半径内的数据点少于 MinPts 个，但它位于某个核心点的 ϵ 半径内。	是簇的边缘，依附于核心点，但本身密度不够高。
+
+- 噪声点 (Noise Point)	既不是核心点，也不是边界点。	异常值，不属于任何高密度区域。
+
+#definition("Density Reachable")[
+
+  - 密度可达 (Density-Reachable)： 如果一个点 p 沿着一系列核心点的路径可以到达点 q，那么 q 相对于 p 是密度可达的。
+
+  - 密度相连 (Density-Connected)： 如果两个点 p 和 q 都可以从同一个核心点 o 密度可达，那么 p 和 q 是密度相连的。
+
+]
+
+DBSCAN 的算法非常类似于寻找联通分量的 Tarjan 算法，实际上，这个问题本身也可以看做寻找联通分量。形式化来说，DBSCAN 实际上要找到由密度关系导出的最大的密度相连样本集合。
+
+#figure(
+  image("ML/dbscan.png"),
+)
 
 
 = Dimension Reduction
@@ -715,7 +912,7 @@ $ Z = sqrt(diag(lambda_1, lambda_2, dots, lambda_(d^*))) V_*^TT $
 ==== Prof1 for PCA
 
 #figure(
-  image("ML/PCA_1.png"),
+  image("ML/PCA_1.png",height: 10cm),
 )
 
 下面我们来对上式进行具体证明：
@@ -759,11 +956,11 @@ $
 代入 $hat(x)_i = W W^TT x_i$ 并利用 #text(weight: "bold")[$ W^TT W = I $] (标准正交性)：
 
 $
-  sum_(i=1)^(m) norm(hat(x)_i)^2_2 = sum_(i=1)^(m) hat(x)_i^TT hat(x)_i
+  sum_(i=1)^(m) norm(hat(x)_i)^2_2 = sum_(i=1)^(m) hat(x)_i^TT hat(x)_i\
   = sum_(i=1)^(m) (W W^TT x_i)^TT (W W^TT x_i)\
-  = sum_(i=1)^(m) x_i^TT (W W^TT)^TT (W W^TT) x_i
+  = sum_(i=1)^(m) x_i^TT (W W^TT)^TT (W W^TT) x_i\
   = sum_(i=1)^(m) x_i^TT (W W^TT W W^TT) x_i\
-  = sum_(i=1)^(m) x_i^TT W (underbrace(W^TT W, I)) W^TT x_i
+  = sum_(i=1)^(m) x_i^TT W (underbrace(W^TT W, I)) W^TT x_i\
   = sum_(i=1)^(m) x_i^TT W W^TT x_i
 $
 
@@ -951,7 +1148,7 @@ $
 具体来说，可以变成这个凸优化问题：
 
 $
-  min_(w_1, w_2, dots, w_m) sum^m_(i=1) norm((x_i - sum_(j in Q_i) w_(i j) x_j))\
+  min_(w_1, w_2, dots, w_m) sum^m_(i=1) norm((x_i - sum_(j in Q_i) w_(i j) x_j))
   "s.t." sum^m_(i=1) w_(i j) =1
 $
 
