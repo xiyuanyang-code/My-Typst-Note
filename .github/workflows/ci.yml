@@ -5,7 +5,7 @@ permissions:
 on:
   push:
     tags:
-      - 'v*'   # Only trigger on tag push
+      - 'v*.*.*'   # Only trigger on tag push
 
 
 jobs:
