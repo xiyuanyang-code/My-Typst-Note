@@ -210,6 +210,12 @@ $ A = union^n_(i=1) A B_i $
 - 随机变量具有概率性，可以表示更复杂的随机事件
 - 对于离散型随机变量，可以看做是连续性随机变量的特殊情况（取点）
 
+#recordings("随机变量")[
+  - 这里的变量是广义上的
+  - 一般来说，只需要对研究问题的样本空间的所有基本事件构成了一个映射，就可以认为是一个随机变量。
+  - 随机变量使用映射将难以使用数学语言刻画的样本空间转化为了易于表示的实数 $R$
+]
+
 === 分布函数
 
 ==== 分布函数的定义
@@ -233,9 +239,33 @@ $ lim_(x arrow - infinity) F(x) = 0 $
 - F(x) 右连续
 
 $ P(a < X <= b) = F(b) - F(a) $
-$ P(X = x_0) = lim_(Delta x arrow 0) P(x_0 - Delta x < X <= x_0) = F(x_0) - lim_(Delta x arrow 0) F(x_0 - Delta x) $
+$
+  P(X = x_0) = lim_(Delta x arrow 0) P(x_0 - Delta x < X <= x_0) = F(x_0) - lim_(Delta x arrow 0) F(x_0 - Delta x) = F(x_0) - F(x_0 - 0)
+$
 
 - 右连续，但是左极限未知！
+
+- 根据右连续可以推出下面的一些二级结论：
+
+$
+  P(a < X <= b) = F(b) - F(a)
+$
+
+$
+  P(X = a) = F(a) - F(a-0)
+$
+
+$
+  P(a <= X <= b) = F(b) - F(a - 0)
+$
+
+$
+  P(a < X < b) = F(b - 0) - F(a)
+$
+
+$
+  P(a <= X < b) = F(b-0) - F(a-0)
+$
 
 == 离散型随机变量及其概率分布
 
@@ -282,6 +312,22 @@ $
 
 ==== Poisson Distribution
 
+#recordings("Poisson Distribution")[
+  - 泊松分布本质上可以看成是一种针对二项分布的近似过程
+    - $X tilde B(n,p)$, $n$ is large and $p$ is small, and $n p = lambda$
+  - 在使用泊松分布的使用，不要忘了这个式子，有时可以化简无穷项的求和：
+$
+  sum^(infinity)_(k=0) e^(-lambda) lambda^k / k! = 1
+$
+]
+
+$
+  X tilde P(lambda)
+$
+
+$
+  P(X = k) = e^(-lambda) lambda^k/k!
+$
 
 
 
