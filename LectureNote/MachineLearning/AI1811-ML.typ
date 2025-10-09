@@ -584,6 +584,73 @@ $ "Gain"(D,a) = rho "Gain"(tilde(D), a) $
 
 = Clustering
 
+聚类需要把样本集 $D$ 划分成若干互不相交的子集，即样本簇。
+
+== Evaluation for Clustering
+
+Simply, for K-means clustering:
+
+$
+  {C_1, dots, C_k} = "argmin" sum^K_(k=1) sum_(x_i in C_k) ||x_i - mu_k||^2
+$
+
+=== External Index
+
+在给定参考模型的聚类结果，我们可以检查每一个数据点的聚类结果是否和 references model 相同来判断具体聚类的优劣。具体来说，两两配对得到 $(n(n+1))/2$ 的点对，考虑每个点对是否被正确的分类到相同或者不同的聚类中。
+
+#figure(
+  image("ML/clustering1.png"),
+)
+
+根据这些，可以推导一些聚类性能的外部指标。
+
+=== Internal Index
+
+Define these metrics:
+
+$
+  "avg"(C) = 2/(|C|(|C|-1)) sum_(1 <= i < j <= |C|) "dist"(x_i, x_j)
+$
+
+$
+  "diam"(C) = max_(1 <= i < j <= |C|) "dist"(x_i, x_j)
+$
+
+$
+  d_min (C_i, C_j) = min_(x_i in C_i, x_j in C_j) "dist"(x_i, x_j)
+$
+
+$
+  d_"cen" (C_i, C_j) = "dist"(mu_i, mu_j)
+$
+
+
+#recordings("All these metrics")[
+  - 这些指标无外乎实现两个优化目标：
+    - 不同簇之间要相隔尽量明显: inter-cluster similarity
+    - 相同簇之间要尽可能紧密: intra-cluster similarity
+  - 对于数据点的距离度量很重要。
+    - 使用公理化的方法定义 distance measure
+  $
+    "dist"_"mk" (x_i, x_j) = (sum^n_(u=1) |x_(i u) - x_(j u)|^p)^(1/p)
+  $
+  - distance metric learning
+]
+
+== Prototype Based Clustering
+
+=== K-Means
+
+=== K-Means++
+
+=== Expectation–Maximization/GMM
+
+== Density-Based Clustering
+
+=== DBS-CAN
+
+
+
 = Dimension Reduction
 
 == Linear Dimension Reduction
