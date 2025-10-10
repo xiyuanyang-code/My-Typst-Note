@@ -3,6 +3,7 @@
 
 # ignore all pdf files when compiling
 **/*.pdf
+images/
 **/*.synctex.gz
 
 !/result/**/*.pdf
