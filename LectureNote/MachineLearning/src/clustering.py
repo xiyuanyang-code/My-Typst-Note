@@ -4,7 +4,9 @@ from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import silhouette_score, homogeneity_score
-from sklearn.datasets import make_blobs
+from sklearn.datasets import make_blobs, make_moons
+import matplotlib.pyplot as plt
+import os
 
 
 class ClusterModel:
@@ -141,6 +143,54 @@ class DataProcessor:
         """
         return self.X_test, self.y_test_true
 
+
+class ClusteringVisualizer:
+    """
+    Handles the visualization of clustering results.
+    """
+
+    def __init__(self, output_dir="images"):
+        """
+        Initializes the visualizer and ensures the output directory exists.
+        """
+        self.output_dir = output_dir
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
+
+    def plot_clusters(
+        self,
+        X: np.ndarray,
+        y_pred: np.ndarray,
+        model_name: str,
+        y_true: np.ndarray = None,
+    ):
+        """
+        Generates and saves a scatter plot of the clustered data.
+        """
+        plt.figure(figsize=(12, 5))
+
+        # Plot predicted clusters
+        plt.subplot(1, 2, 1)
+        plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap="viridis", s=50, alpha=0.7)
+        plt.title(f"{model_name} - Predicted Clusters")
+        plt.xlabel("Feature 1")
+        plt.ylabel("Feature 2")
+
+        # Plot true clusters if available
+        if y_true is not None:
+            plt.subplot(1, 2, 2)
+            plt.scatter(X[:, 0], X[:, 1], c=y_true, cmap="viridis", s=50, alpha=0.7)
+            plt.title("Ground Truth")
+            plt.xlabel("Feature 1")
+            plt.ylabel("Feature 2")
+
+        # Save the combined plot
+        plot_path = os.path.join(self.output_dir, f"{model_name}_clusters.png")
+        plt.savefig(plot_path)
+        plt.close()
+        print(f"Saved plot to {plot_path}")
+
+
 class Prediction:
     """
     The main driver responsible for coordinating data, models, execution, and evaluation.
@@ -225,10 +275,46 @@ class Prediction:
 
 def run_clustering_framework():
     """
-    Runs the complete clustering prediction framework using GMM and KMeans++.
+    Runs the complete clustering prediction framework to demonstrate GMM's flexibility
+    with different covariance structures, as compared to KMeans.
     """
-    K_TRUE = 4
-    X, y = make_blobs(n_samples=500, centers=K_TRUE, cluster_std=1.0, random_state=42)
+    n_samples = 500
+    random_state = 170
+
+    # 1. Isotropic (Spherical) Cluster
+    X_iso, y_iso = make_blobs(
+        n_samples=n_samples,
+        centers=[[-3, -3]],
+        cluster_std=0.5,
+        random_state=random_state,
+    )
+
+    # 2. Diagonal (Axis-aligned Elliptical) Cluster
+    X_diag_raw, _ = make_blobs(
+        n_samples=n_samples,
+        centers=[[0, 5]],
+        cluster_std=0.5,
+        random_state=random_state,
+    )
+    transform_diag = [[2.5, 0], [0, 0.5]]
+    X_diag = np.dot(X_diag_raw, transform_diag)
+    y_diag = np.full(n_samples, 1)
+
+    # 3. Full Covariance (Rotated Elliptical) Cluster
+    X_full_raw, _ = make_blobs(
+        n_samples=n_samples,
+        centers=[[5, 0]],
+        cluster_std=0.5,
+        random_state=random_state,
+    )
+    transform_full = [[0.8, 0.6], [-0.7, 0.9]]
+    X_full = np.dot(X_full_raw, transform_full)
+    y_full = np.full(n_samples, 2)
+
+    # Combine the datasets
+    X = np.vstack((X_iso, X_diag, X_full))
+    y = np.concatenate((y_iso, y_diag, y_full))
+    K_TRUE = 3
 
     # 2. Initialize and run the Data Processor
     data_processor = DataProcessor()
@@ -240,15 +326,20 @@ def run_clustering_framework():
     framework = Prediction(data_processor)
     K = K_TRUE
 
+    # Initialize the visualizer
+    visualizer = ClusteringVisualizer()
+
     # --- Run GMM Model ---
-    GMM_NAME = "GMM_Model"
+    GMM_NAME = "GMM_Model_Full_Covariance"
     y_pred_gmm = framework.train_and_predict(GMM_NAME, "GMM", K)
     framework.evaluate(GMM_NAME, X_test, y_pred_gmm, y_true)
+    visualizer.plot_clusters(X_test, y_pred_gmm, GMM_NAME, y_true)
 
     # --- Run K-Means++ Model ---
     KMEANS_NAME = "KMeansPP_Model"
     y_pred_kmeans = framework.train_and_predict(KMEANS_NAME, "KMeans", K)
     framework.evaluate(KMEANS_NAME, X_test, y_pred_kmeans, y_true)
+    visualizer.plot_clusters(X_test, y_pred_kmeans, KMEANS_NAME, y_true)
 
 
 if __name__ == "__main__":
