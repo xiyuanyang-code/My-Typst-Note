@@ -1,11 +1,4 @@
 #!/bin/bash
-
-# commit changes
-LATEST_TIMESTAMP=$(git log -1 --format=%cd)
-git add .
-git commit -m "Auto Commit: $LATEST_TIMESTAMP"
-git push
-
 # compile and make
 python scripts/update_notes/compile.py
 
@@ -21,7 +14,7 @@ NEXT_PATCH=$((PATCH + 1))
 NEW_TAG="v$MAJOR.$MINOR.$NEXT_PATCH"
 
 git add .
-git commit -m "Auto Commit: $LATEST_TIMESTAMP"
+git commit -m "AutoCommit: Release Updates for $NEW_TAG"
 git push
 
 # pushing new tags
