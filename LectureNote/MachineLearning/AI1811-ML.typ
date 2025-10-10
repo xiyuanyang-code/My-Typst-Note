@@ -912,7 +912,7 @@ $ Z = sqrt(diag(lambda_1, lambda_2, dots, lambda_(d^*))) V_*^TT $
 ==== Prof1 for PCA
 
 #figure(
-  image("ML/PCA_1.png",height: 10cm),
+  image("ML/PCA_1.png", height: 10cm),
 )
 
 下面我们来对上式进行具体证明：
