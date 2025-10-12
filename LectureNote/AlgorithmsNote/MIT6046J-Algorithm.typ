@@ -360,8 +360,177 @@ $
 
 == FFT
 
+=== Polynomials
+
+All about polynomial:
+
+$
+  A(x) = sum_(k=1)^(n-1) a_k x^k = [a_0, a_k, dots, a_(n-1)]
+$
 
 
+=== Operations for $A(x)$
+
+
+==== Evaluation
+
+#definition("Evaluation")[
+  Given $x$, calculate $A(x)$.
+]
+
+
+#theorem("Horner's Rule")[
+  我们希望更少次数的乘法和加法
+  $
+    A(x) = a_0 + x(a_1 + x(a_2 + dots + x(a_(n-1))))
+  $
+
+  - Before: $Theta(n^2)$ times multiplication and $Theta(n)$ times addition.
+  - After: $Theta(n)$ times multiplication and $Theta(n)$ tines addition.
+  - Thus the time complexity: $O(n^2) arrow O(n)$
+]
+
+==== Addition
+
+#definition("Addition")[
+  $
+    C(x) = A(x) + B(x)
+  $
+
+  Obviously, the time complexity is $O(n)$ for addition.
+]
+
+==== Multiplication
+
+#definition("Multiplication")[
+  $
+    C(x) = A(x) times B(x), forall x in X
+  $
+]
+
+- Naive calculation: $O(n^2)$
+
+$
+  c_k = sum_(j=0)^K a_j b_(K-j)
+$
+
+
+We want to achieve $O(n log n)$
+
+#figure(image("images/poli.png", width: 10cm))
+
+
+=== Representations
+
+- Coefficient Vectors
+- Roots and a scale term
+- Samples
+
+=== Vendermonde Matrix
+
+
+$
+  V dot A = mat(1, x_0, x_0^2, dots, x_0^(n-1); 1, x_1, x_1^2, dots, x_1^(n-1); 1, x_2, x_2^2, dots, x_2^(n-1); dots.v, dots.v, dots.v, dots.down, dots.v; 1, x_(n-1), x_(n-1)^2, dots, x_(n-1)^(n-1)) vec(a_0, a_1, a_2, dots, a_(n-1)) = vec(y_0, y_1, y_2, dots, y_(n-1))
+$
+
+#recordings("多项式插值")[
+  - 这个本质上也可以看做是一种多项式插值的手段
+  - 我们希望从 sample 的形式转变为 coefficient 的形式
+  - 根据线性代数的知识，范德蒙行列式只有在 sample 的点均不相同的情况下才是不可逆的，因此只要 sample 了 n 个不相同的点，就可以保证能够求解可逆矩阵，但是可逆矩阵的时间复杂度是 $O(n^3)$，因此实际插值并不会采用这个原始的算法。
+
+  $
+    Pi_(0 <= i < j <= n-1) (x_j - x_i) = 0
+  $
+]
+
+We want to calculate A, thus we need to calculate:
+
+$
+  A = V^(-1) Y
+$
+
+=== Divide and Conquer for FFT
+
+The original input: $A_"eff"$ and $B_"eff"$ as two vectors, and we need to calculate $C_"eff"$ for the new coefficients after polynomial multiplications.
+
+We know, if we have $N$ samples for two polynomials, just calculate $A(x_k) dot B(x_k)$.
+
+因此，如果我们需要解决多项式乘法的问题，实际上我们可以将问题拆分为：
+
+- 预处理计算 $"FFT"(A)$ and $"FFT"(B)$: we want it to be $O(N log N)$
+- $C_"point" = A_"point" dot.circle B_"point"$: it is $O(N)$, not the bottleneck
+- $"IFFT"(C_"point")$: we want it to be $O(N log N)$
+
+==== How to divide?
+
+Divide into Even and Odd Coefficients $O(n)$
+
+$
+  A_"even" = sum_(k=0)^(ceil n/2 -1 ceil.r) a_(2k) x^(k) = [a_0, a_2, dots, a_(2l)]
+$
+$
+  A_"odd" = sum_(k=0)^(ceil n/2 -1 ceil.r) a_(2k+1) x^(k) = [a_1, a_3, dots, a_(2l)]
+$
+
+==== How to conquer
+
+$
+  A(x) = A_"even" (x^2) + x dot A_"odd" (x^2) "for" x in X
+$
+
+Thus, we need to recursively calculate $A_"even"(y), y in X^2 = {x^2 |x in X}$
+
+$
+  T(n, |X|) = 2 T(n/2, |X|) + O(n + |X|) = O(n^2)
+$
+
+Actually, the time complexity does not change... However, if we can achieve the conquer time complexity as follows, we can do a great improvement:
+
+$
+  T(n, |X|) & = 2 T(n/2, (|X|)/2) + O(n + |X|) \
+       T(n) & = 2 T(n/2) + O(n)
+$
+
+Thus, the time complexity is $O(n log n)$! We should select $X$ in a clever way in which it is *collapsing*, or we can say:
+
+$
+  |X^2| = (|X|)/2
+$
+
+for the base case, $X = {1}$ when $|X| = 1$.
+
+#recordings("Roots of Unity")[
+  - 从数值来讲，就是在复平面内不断求根
+  - 在复平面内就是不断的取中间的过程
+  $
+    (cos theta, sin theta) & = cos theta + i sin theta = e^(i theta) \
+                     theta & = 0, 1/n tau, 2/n tau, dots, (n-1)/n tau (tau = 2 pi)
+  $
+]
+
+Then, we successfully implement FFT with the time complexity for $O(n log n)$!
+
+- Well defined recursion
+- Selected $X$, for $x_k = e^((i tau k)/n)$
+
+=== Inverse Discrete Fourier Transform (IFFT)
+
+We want to return the coefficients from the multiplied samples. The transformation of this form is $A = V^(-1) Y$. Thus, all we need to do is calculate $V^(-1)$, or the inverse of Vendermonde Matrix!
+
+#theorem("Calculate the inverse")[
+  $
+    V^(-1) = 1/n overline(V)
+  $
+  where $overline(V)$ is the complex conjugate of $V$.
+]
+
+#figure(
+  image("images/ifft.png", width: 13.3cm)
+)
+
+#recordings("Inverse")[
+  - 换句话说，范德蒙行列式是可以快速求解的，因为旋转基本根的良好性质。
+]
 
 
 = Conclusion
