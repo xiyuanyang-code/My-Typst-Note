@@ -275,7 +275,7 @@ For dummy choices for selecting $x in S$, for the worse case, the time complexit
 
 
 #figure(
-  image("images/median.png"),
+  image("images/median.png", width: 10cm),
   caption: [SELECT for medians of medians],
 )
 
@@ -296,6 +296,62 @@ Solving this recurrence.
   image("images/induction-proof.jpg"),
   caption: [Induction proof for median finding algorithms],
 )
+
+#example("Medians of Medians")[
+  给定一个数组和 $k$ 值，尝试求解这个数组中的第 $k$ 大的元素。要求保证时间复杂度为 $O(n)$.
+]
+
+```python
+from typing import List
+
+class Solution:
+    def find_median_of_small_array(self, arr: List[int]) -> int:
+        # O(1) for constant length arrays
+        arr.sort()
+        return arr[len(arr) // 2]
+
+    def select_pivot(self, arr: List[int]) -> int:
+        n = len(arr)
+        if n <= 5:
+            return self.find_median_of_small_array(arr)
+
+        # splitting into sub-lists
+        sublists = [arr[i : i + 5] for i in range(0, n, 5)]
+        medians = [self.find_median_of_small_array(sublist) for sublist in sublists]
+
+        # ! very important recursion!
+        # That is the T(n/5) part
+        return self.findKthSmallest(medians, len(medians) // 2 + 1)
+
+    def findKthSmallest(self, arr: List[int], k: int) -> int:
+        n = len(arr)
+        if n == 1:
+            return arr[0]
+
+        pivot = self.select_pivot(arr)
+
+        # do partition based on selected pivot
+        less = [x for x in arr if x < pivot]
+        equal = [x for x in arr if x == pivot]
+        greater = [x for x in arr if x > pivot]
+
+        len_less = len(less)
+        len_equal = len(equal)
+
+        # the core recursion part remains unchanged
+        if k <= len_less:
+            return self.findKthSmallest(less, k)
+        elif k <= len_less + len_equal:
+            return pivot
+        else:
+            new_k = k - len_less - len_equal
+            return self.findKthSmallest(greater, new_k)
+
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        k_smallest = n - k + 1
+        return self.findKthSmallest(nums, k_smallest)
+```
 
 == Matrix Multiplication
 
@@ -525,7 +581,7 @@ We want to return the coefficients from the multiplied samples. The transformati
 ]
 
 #figure(
-  image("images/ifft.png", width: 13.3cm)
+  image("images/ifft.png", width: 13.3cm),
 )
 
 #recordings("Inverse")[
