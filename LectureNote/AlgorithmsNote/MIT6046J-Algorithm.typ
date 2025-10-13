@@ -238,6 +238,29 @@ $
   $a=3$,$b=4$, $T(n) = Theta(n^2)$
 ]
 
+=== Solving Master Theorem Using Recursive Tree
+
+#figure(
+  image("images/recursive_tree.png"),
+)
+
+- 每一个叶子结点代表被递归分解的小问题的规模
+- 每一个非叶子节点的时间复杂度为 $c f(n')$ (n' 代表当前层数 k的规模 $n/(b^(k-1))$)
+- 最终总的时间复杂度就是这个递归树的所有节点的时间复杂度的总和
+- 因此，只需要把这个递归树展开到最底层，并计算所有结点的代价，就是最终的时间复杂度。
+
+使用等比数列求和：
+
+$
+  T(n) = Theta(n^(log_b a)) + sum^(log_b (n)-1)_(j=0) a^j f(n/(b^j))
+$
+
+这就是为什么主定理需要比较 f 和这个的大小，在这里仅仅做主要阐述：特别考虑 boundary $f(n) = Theta(n^(log_b a))$
+
+$
+  T(n) = Theta(n^(log_b a)) + sum^(log_b n-1)_(j=0) a^j (n/(b^j))^(log_b a) = log_b n times n^(log_b a) = Theta(n^(log_b a) log n)
+$
+
 == Median Finding
 
 #problem("Median Finding")[
@@ -587,6 +610,162 @@ We want to return the coefficients from the multiplied samples. The transformati
 #recordings("Inverse")[
   - 换句话说，范德蒙行列式是可以快速求解的，因为旋转基本根的良好性质。
 ]
+
+== van Emde Boas Tree
+
+#definition("vEB Tree")[
+  Goal: We want to maintain $n$ elements of a *set* in the range ${0,1,2,dots,u-1}$ and perform *Insert*, *Delete* and *Successor* Operations in $O(log log u)$ time.
+  - Successor: 后继操作，即找到严格大于 $x$ 的最小元素。
+]
+
+By using an ordered binary search tree like AVL Tree, we can implement this query in $O(log n)$ time on average.
+
+For example,  this data structure can be used in Network Routing Tables, where u = Range of IP Addresses → port to send. (u = $2^(32)$ in IPv4)
+
+=== Intuition
+
+Where might the $O(log log u)$ bound arise?
+
+Binary search over $O(log u)$ elements.
+
+$
+      T(k) & = T(k/2) + O(1) = Theta(log n) \
+  T(log u) & = T((log u)/2) + O(1) \
+      T(u) & = T(sqrt(u)) + O(1)
+$
+
+Thus, we want to find the recurrence like:
+
+$
+  T(u) = T(sqrt(u)) + O(1)
+$
+
+=== Improvement
+
+==== Bit Vector (Hash and Bucket)
+
+Define a vector of size $u$, where $V[x] = 1 "iff" x in S$.
+
+- Insert & Delete: $O(1)$
+- Successor/Predecessor: Need to traverse all the bit vector, requires worst $O(n)$.
+
+==== Split Universe into Clusters
+
+#recordings("It is Chunking!")[
+  - 经典的分块思想
+  - 牺牲空间换取查询的更快时间复杂度
+  - 在这个具体的问题场景下，选择分块可以避免一些重复计算，先对整体的块进行操作而加速。
+]
+
+#figure(
+  image("images/cluster.png"),
+)
+
+- Insert: Set `V.cluster[i][j]` to 1, then mark cluster `high(x)` as no empty. $O(1)$
+- Successor: $O(sqrt(u))$
+  - Look within the cluster `i`
+  - Else, find next non-empty cluster `i`
+  - Find Minimum Entry `j` for that cluster
+  - Return `index(i,j)`
+
+
+==== Recurse
+
+- `V.cluster[i]` is a size-$sqrt(u)$ van Emde Boas structure ($∀ 0 ≤ i < u$)
+- `V.summary` is a size-$sqrt(u)$ van Emde Boas structure
+- `V.summary[i]` indicates whether `V.cluster[i]` is nonempty
+
+===== Insert
+
+`Insert(V,x)`:
+- `Insert(V.cluster[high(x)], low[x])`
+- Remark that this cluster is non-empty: `Insert(V.summary, high[x])`.
+
+Time complexity: $T(u) - 2 T(sqrt(u)) + O(1)$, thus the time complexity is $O(log u)$.
+
+===== Successor
+
+`SUCCESSOR(V, x)`:
+- i = high(x)
+- j = Successor(V.cluster[i], j)
+  - if j == ∞
+    - i = Successor(V.summary, i)
+    - j = Successor(V.cluster[i], −∞)
+- return index(i, j)
+
+Time complexity for the worse case:
+
+$
+  T(u) = 3 T(sqrt(u)) + O(1)
+$
+
+$
+  T(u) = O((log u)^(log_2 3)) approx O((log u)^1.585)
+$
+
+#recordings("Time complexity is not enough!")[
+  - 分块的思想在 Bit Vector 的基础之上空间换时间达到了 log 级别的时间复杂度优化，但是仍然不够！
+  - 如何进一步优化，根据主定理，我们优化的关键在于递归的分路数 $a$，缩减 $a$ 就有可能进一步缩减时间复杂度！
+]
+
+==== Maintain Min and Max
+
+We store the minimum and maximum entry in each structure. This gives an $O(1)$ time overhead for each Insert operation.
+
+`SUCCESSOR(V, x)`:
+- if x < V.min return V.min
+- i = high(x)
+- if low(x) < V.cluster[i].max:
+  j = Successor(V.cluster[i], low(x))
+- else:
+  - i = Successor(V.summary, i) $T(sqrt(n))$
+  - j = V.cluster[i].min $O(1)$
+- return index(i, j)
+
+Now the time complexity is:
+
+$
+  T(n) = T(sqrt(n)) + O(1) = O(log log u)
+$
+
+==== Don't Store min recursively
+
+#figure(
+  image("images/insert_veb.png"),
+  caption: [Divide and Conquer Algorithms for veb Tree insertion.],
+)
+
+#recordings("Pay Attention to min and max")[
+  - vEB 树最关键的地方在于每一个 vEB 树的最大值和最小值的管理是不在分块数组内部的，而是作为当前树的缓存额外存储。
+  - 在插入过程中，如果最小值被替换，原先的最小值需要被插入，因此可以等效的交换两者
+  - 如果最大值被替换，因为最大值被正常的插入，因此只需要正常的更新就可以了。
+  - 注意，一棵树的最小值的节点是不存储在 Bit Vector 里面的！这样是为了保证对于空树的递归调用实现不要太多次。
+]
+
+==== Deletions Operations
+
+#recordings("Deletions")[
+  - 如果需要删除最小值
+    - vEB 树的精妙之处，额外缓存数据结构的最小值，因此这样就可以找到第二小的元素！
+      - i = V.summary.min
+      - second_min = index(i, V.cluster[i].min)
+    - 接着，删除这个第二小的元素，因为他不可以在 Vector Bit 中出现，然后把这个元素的值更新到最小缓存中。
+  - 如果删除中间值或者最大值：
+    - 直接递归调用子簇 `Delete(T.cluster[i], low(x))`
+  - 如果删除后的子簇是空的：
+    - 直接删掉 Summary 对应的部分 (Second Call)
+  - 如果删除最大值
+    - 因为 max 是正常被储存的，因此我们需要更新 max
+    - 找到新的 max：
+      - 如果 Summary 是空的，那么新的 T.max 就是 T.min
+      - 如果不是，就更新为最大簇的最大元素
+]
+
+#figure(
+  image("images/veb.png"),
+)
+
+
 
 
 = Conclusion

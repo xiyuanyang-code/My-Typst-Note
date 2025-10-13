@@ -235,9 +235,18 @@ $ H(N) = Theta(log N) $
 $ integral^1_0 1/x "d"x <= sum^n_(i=1) 1/i <= integral^1_0 1/x "d"x + 1 $
 
 
-= Divide and Conquer
+= Simple Data Structure
 
+#example("翻转单项链表")[
+  给定一个长度为 $N$ 的链表，在 $O(1)$ 空间复杂度和 $O(N)$ 的时间复杂度实现单项链表的翻转
+]
 
+Solution: 使用三指针实现
+
+#recordings("三指针实现")[
+  - 从最基本的情况开始，如果只有三个节点，很显然，只需要修改两条链表边的指向就可以
+  - 在跟一般的情况，认为第三个节点的后继结点被占满了，这只需要存储一个 variable 保证链表不断裂就可以
+]
 
 = Computational Complexity
 
