@@ -13,7 +13,7 @@
 #outline()
 
 // uncomment for changing to a new page
-// #pagebreak()
+#pagebreak()
 
 = Introduction
 
@@ -765,7 +765,29 @@ $
   image("images/veb.png"),
 )
 
+= Amortization
 
+#definition("Amortization")[
+  - 摊还分析 (Amortized Analysis) 的基本思想是：分析一系列操作的总成本，并将这个总成本平摊（平均）到每一个操作上。
+  - 它关注的不是单个操作的“最坏情况”耗时，而是保证即使某个操作（例如每隔一段时间发生的重置/扩容操作）成本非常高，在考虑了所有操作的成本后，平均到每个操作上的成本仍然很低。
+]
 
+= Randomization and Randomized Algorithms
+
+= Advanced Dynamic Programming
+
+= Greedy Algorithms
+
+= Graph Algorithms
+
+= Linear Programming
+
+= Complexity
+
+= More Advanced Algorithms
+
+#recordings("More advanced algorithms")[
+  You know, algorithms are fascinating...
+]
 
 = Conclusion
