@@ -316,9 +316,9 @@ $
   - 泊松分布本质上可以看成是一种针对二项分布的近似过程
     - $X tilde B(n,p)$, $n$ is large and $p$ is small, and $n p = lambda$
   - 在使用泊松分布的使用，不要忘了这个式子，有时可以化简无穷项的求和：
-$
-  sum^(infinity)_(k=0) e^(-lambda) lambda^k / k! = 1
-$
+  $
+    sum^(infinity)_(k=0) e^(-lambda) lambda^k / k! = 1
+  $
 ]
 
 $
@@ -341,11 +341,143 @@ $
   $
 ]
 
+#recordings("有关概率密度函数")[
+  - 概率密度函数，概率，概率分布函数是完全不同的三个概念！
+  - 因为对于连续性随机变量而言很多情况下会出现单点概率 $P(x = x_0) = 0$的情况，在这种情况下需要一个概念来衡量：
+    - 从定义上，概率密度函数是连续性随机变量的求导结果，或者说概率密度函数的变上限积分就是分布函数
+  - 描述的是 $x$ 附近单位长度的区间内取值的概率
+  $
+    P(x < X < x + Delta x) approx f(x) Delta x
+  $
+  - 存在既不连续也不离散的随机变量，对于间断点，此处不存在概率密度函数
+    - 例如单点跳跃的情况
+]
 
+#recordings("不影响区间的概率")[
+  - 因为概率值不会收到端点值的影响，因此讨论断点的概率密度函数是无意义的
+  $
+    P(a <= X <= b) = P(a < X < b) = P(a <= X < b) = P(a < X <= b)
+  $
+  - 连续性概率密度函数因为分布函数保证连续，因此不存在 $P(x = x_0) != 0$ 的情况。
+]
 
+=== 均匀分布
 
+$
+  x ~ U(a,b)
+$
 
+概率密度函数：
 
+$
+  f(x) = cases(1/(b-a) "if" x in (a,b), 0 "else")
+$
+
+分布函数
+
+$
+  F(x) = cases(0 "if" x<a, (x-a)/(a-b) "if" x in [a,b), 1 "if" x>=b)
+$
+
+概率函数
+
+$
+  P(c < X < d) = (d-c)/(a-b), forall (c,d) subset (a,b)
+$
+
+=== 指数分布
+
+$
+  X ~ E(lambda)
+$
+
+$
+  f(x) = cases(lambda e^(-lambda x) "if" x >= 0, 0 "if" x<0)
+$
+
+$
+  F(x) = cases(1-e^(-lambda x) "if" x>=0, 0 "if" x<0)
+$
+
+#recordings("有关指数分布")[
+  - 指数分布具有无记忆性
+  $
+    P(X > s+t|X>s) = P(X>t)
+  $
+
+  - 指数分布的形式和泊松分布很像！
+]
+
+=== 高斯分布
+
+$
+  X ~ N(mu, sigma^2)
+$
+
+$
+  f(x) = 1/(sqrt(2 pi) sigma) e^(-(x-mu)^2/(2 sigma^2)), - infinity < x < infinity
+$
+
+标准正态分布 $X ~ N(0,1)$:
+
+$
+  phi(x) = 1/(sqrt(2 pi) ) e^(-x^2/2), - infinity < x < infinity
+$
+
+$
+  Phi(x) = integral^(x)_(-infinity) phi(t) "d"t = 1/sqrt(2 pi) integral^(x)_(-infinity) e^((-t^2)/2) "d"t
+$
+
+#recordings("标准正态分布和正态分布的性质")[
+  - 对于正态分布：
+  $
+    P(|X| < x) = 2 Phi(x) - 1
+  $
+  - 转化为标准正态分布：
+  $
+    Phi(x) = Phi_0 ((x-mu)/sigma)
+  $
+]
+
+== 随机变量的函数及其分布
+
+用函数来描绘两个随机变量之间的映射关系
+
+$
+  Y = g(X)
+$
+
+=== 离散型随机变量函数的概率分布
+
+#definition()[
+  Given the definition of distribution $X$:
+  $
+    P(X = x_k) = p_k
+  $
+
+  We can calculate:
+
+  $
+    P(Y = y_i) = sum_(k:g(x_k) = y_i) P(X = x_k)
+  $
+]
+
+=== 连续型随机变量函数的概率分布
+
+#theorem()[
+  - 随机变量 $X$ 的密度函数分布为 $f_X (x), x in (-infinity, +infinity)$
+  - $y = g(x)$ 为 $(-infinity,infinity)$ 上的单调可导函数
+
+  $
+    f_Y (y) = cases(|h'(y)| dot f_X [h(y)] "if" alpha < y < beta, 0 "else")
+  $
+
+  推广到若干子区间的分段：
+
+  $
+    f_Y (y) = sum_(i=1)^n |h'_i(y)| dot f_X [h_i(y)] 
+  $
+]
 
 
 

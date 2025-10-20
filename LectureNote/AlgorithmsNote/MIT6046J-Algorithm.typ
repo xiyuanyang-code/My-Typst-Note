@@ -772,7 +772,221 @@ $
   - 它关注的不是单个操作的“最坏情况”耗时，而是保证即使某个操作（例如每隔一段时间发生的重置/扩容操作）成本非常高，在考虑了所有操作的成本后，平均到每个操作上的成本仍然很低。
 ]
 
+#example("Table Doubling")[
+  - Like the rehash operations in hashmap.
+  为什么要双倍扩容？因为这样可以保证在单次扩容是 $O(N)$ 的，但是均摊的每一次操作就是 $O(1)$的。
+]
+
+== Aggregate Method
+
+#definition("Aggregate Method")[
+  $
+    "Amortized Operation Cost" = sum_(i = 0)^K "Cost"("operation"_i) / K
+  $
+]
+
+== Amortized Bound Definition
+
+assign amortized cost for each operations, and we need to ensure it is a upperbound!
+
+#recordings("Amortized Bound Definition")[
+  $
+    sum_("amortized cost") >= sum_("actual cost")
+  $
+]
+
+
+#recordings("To be done in the future.")[
+  To be done in the future.
+]
+
+
 = Randomization and Randomized Algorithms
+
+#recordings("Generating a random numbers")[
+  - 计算机中生成随机数往往是根据随机数种子而生成伪随机数
+  - 在这里，认为这个操作不会随着数据的规模而不断变大，因此可以认为是 $O(1)$ 操作。
+]
+
+#definition("Randomized Algorithms")[
+  - Will generate a random number $r in {1,2,3,dots,R}$ and make decisions based on $r$'s value.
+  - Same input, different results.
+  - It will be classified into:
+    - *Monte Carlo*: runs in polynomial time always output is correct with high probability
+    - *Las Vegas*: runs in expected polynomial time output always correct
+]
+
+#recordings("Monte Carlo Tree Search")[
+  Sometime, we just need to ensure the algorithms are correct *enough*, not absolutely correct.
+]
+
+== Matrix Product
+
+=== Matrix Product Checker
+
+Simple Algorithms: $O(n^3)$.
+
+Strassen Algorithms using divide and conquer optimization: $O(n^(log_2 7)) approx O(n^(2.81))$.
+
+Coppersmith-Winograd: $O(n^(2.2376))$
+
+But considering the constant factors, this optimization is not really useful.
+
+Goal: Get an $O(n^2)$ algorithms:
+- If $A times B = C$, then the $"Pr"["output"="Yes"] = 1$.
+- If $A times B != C$, then the $"Pr"["output"="Yes"] <= 1/2$ (We get the upper-bound).
+
+We can run this checker in many times! $O(k n^2)$ (For these are independent.)
+
+=== Frievald’s Algorithm
+
+Choose a random binary vector $r[1...n]$ which sampled from ${0,1}$, such that Pr[$r_i$ = 1] = 1/2 independently for
+$r = 1, ..., n$. The algorithm will output ’YES’ if A(Br) = Cr and ’NO’ otherwise.
+
+#recordings("")[
+  - 使用 向量和矩阵的乘法
+  - The validation time complexity is $O(n^2)$ instead of $O(n^3)$.
+  - three times of matrix-vector multiplications.
+]
+
+=== Analysis
+
+- No False Negative Here.
+  - We will ensure for the correct answer, the final result will respond to yes!
+
+- We need to prove the upper-bound for the True-Negative.
+
+#lemma()[
+  We need to claim:
+
+  $
+    "If" A B != C, "then" "Pr"[A (B r) != C r] >= 1/2
+  $
+]
+
+#proof[
+  Define $D = A B - C$.
+
+  $A(B r) = C r arrow D r = 0$
+
+  Then, we need to prove:
+
+  $
+    "If" D != 0, "then" "Pr"[D r = 0] <= 1/2
+  $
+
+  For $D != 0$, we assume and consider there $exists j$, $d_j != 0$.
+
+  Then, we just need to prove:
+
+  $
+    "Pr"[d_1 r = 0] <= 1/2
+  $
+
+  for we have: $"Pr"[D r = 0] <= "Pr"[d_1 r = 0]$
+
+  Then, we can use the *Principle of Deferred Decisions* and prove it!
+]
+
+#recordings("Principle of Deferred Decisions")[
+  在分析一个涉及一系列随机选择的算法或过程时，不需要假设所有的随机选择都是在开始时一次性确定的。相反，可以想象这些随机选择是随着算法的执行一步一步、在需要用到它们的时候才进行决定的，而这种“延迟”并不会改变最终的概率分布或结果。
+]
+
+#figure(
+  image("images/analysis_frievald.png"),
+  caption: [Analysis of correctness if $A B != C$],
+)
+
+#recordings("The basic principle")[
+  从 $D != 0$ 的条件出发，确定关键的非零元素
+  - 从 $D r = 0$，根据 $r$ 构建一个新的向量 $r'$，形成一个映射，并且可以保证每一个 $r$ 都可以找到一个 $r' = r + v "s.t." D r' = D(r+v) = D v != 0$.
+  - Then we can construct an injection which guarantee that $|{D r = 0}| <= |{D r != 0}|$.
+    - For the vector $r$ is arbitrarily chosen, thus $P >= 1/2$.
+]
+
+== QuickSort
+
+- In place sorting. (Compared with merge sort.)
+- All the work is the divide step.
+  - For the merge sort, all the work is all the merge step!
+
+
+== Basic Quick Sort
+
+For the worst case:
+
+$
+  T(n) & = T(0) + T(n-1) + Theta(n) \
+       & = Theta(n^2)
+$
+
+Thus, for the worst cases, its time complexity is $Theta(n^2)$.
+
+#recordings("The core is pivot")[
+  - 和之前分治的基本分析情况保持一致。
+  - 关键在于子问题的切分需要保证足够均衡。
+]
+
+
+== Pivot Selection Using Median Finding
+
+
+Using pivot selection optimization like Median Findings, we can select the pivot:
+
+$
+  T(n) &= 2 T(n/2) + underbrace(Theta(n), "The time cost for median findings") + underbrace(Theta(n), "The time cost for dividing.")\
+  &= Theta(n log n)
+$
+
+It has the better asymptotic complexity, the performance of it loses in practice. For finding the median will brings a relative large constant numbers.
+
+== Randomized QuickSort
+
+The core selection is *select pivot intelligently*!
+
+$
+  n/4 <= |L| <= (3n)/4\
+  n/4 <= |G| <= (3n)/4
+$
+
+#figure(
+  image("images/paranoid.png"),
+)
+
+- time needed to sort left sub-array.
+- time needed to sort right sub-array.
+- the number of iterations to get a good call. Denote as $c n$ the cost of the
+partition step.
+
+We can use the expectations:
+
+$
+  T(n) <= max_(n/4 <= i <= (3n)/4) (T(i), T(n-i)) + EE("iterations") dot c n
+$
+
+For the probability of the good pivot $p >= 1/2$, thus the expectations is:
+
+$
+  EE("iterations") <= 2
+$
+
+Thus:
+
+$
+  T(n) <= max_(n/4 <= i <= (3n)/4) (T(i), T(n-i)) + 2 c n
+$
+
+Drawing the recursion tree, we can get the height of the tree is at most $log_(4/3) (2 c n)$ and at each level, we do the total of $2 c n$ work. Thus the total time complexity is:
+
+$
+  T(n) = Theta(n log n)
+$
+
+== SkipList
+
+== Hashing
+
+
 
 = Advanced Dynamic Programming
 
