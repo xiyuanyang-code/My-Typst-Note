@@ -6,4 +6,8 @@
 images/
 **/*.synctex.gz
 
+**/*.jpg
+**/*.png
+**/*.gif
+
 !/result/**/*.pdf
