@@ -16,20 +16,75 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   │   ├── Leetcode.typ
 │   │   ├── MIT6006-DP.typ
 │   │   ├── MIT6046J-Algorithm.typ
+│   │   ├── images
+│   │   ├── lecture_pdf
+│   │   │   ├── notes
+│   │   │   └── slides
 │   │   └── tex_note
 │   │       └── code_demo.tex
+│   ├── DeepLearning
+│   │   ├── slides
+│   │   └── src
+│   │       ├── cnn-cifar10
+│   │       │   └── CNN-Cifar10.ipynb
+│   │       ├── fnn-mnist
+│   │       │   └── MNIST_AND_MLP.ipynb
+│   │       ├── lstm-transformer
+│   │       │   └── lstm-transformer-imdb.ipynb
+│   │       └── training-dynamics
+│   │           ├── condensation
+│   │           │   ├── condense.ipynb
+│   │           │   ├── initial_condense.ipynb
+│   │           │   └── pic
+│   │           └── frequency-principle
+│   │               ├── README.md
+│   │               ├── example.ipynb
+│   │               ├── f-principle_nd.ipynb
+│   │               ├── fprinciple.ipynb
+│   │               ├── fprinciple_brief.ipynb
+│   │               ├── pic
+│   │               └── utils.py
 │   ├── MachineLearning
 │   │   ├── AI1811-ML.typ
-│   │   └── ML
+│   │   ├── ML
+│   │   │   ├── Dimensionality_reduction.md
+│   │   │   ├── Model_selection.md
+│   │   │   ├── Parameter_Estimation.md
+│   │   │   ├── classification.md
+│   │   │   ├── clustering.md
+│   │   │   ├── clustering_full.md
+│   │   │   ├── intro.md
+│   │   │   ├── regression.md
+│   │   │   └── regression_full.md
+│   │   └── src
+│   │       └── clustering.py
 │   ├── NumericalAnalysis
 │   │   ├── AI1807-Numerical.typ
+│   │   ├── images
+│   │   ├── lecture-slides
 │   │   └── src
-│   │       └── demo.py
+│   │       ├── demo.py
+│   │       ├── fp.py
+│   │       ├── homework
+│   │       │   └── hm1.py
+│   │       ├── interpolation.py
+│   │       └── interpolation_for_torch.py
 │   ├── Probability
 │   │   └── MATH1207-Probability.typ
 │   └── RL
-│       └── CS234-RL.typ
+│       ├── CS234-RL.typ
+│       └── images
 ├── Makefile
+├── README.md
+├── result
+│   ├── AI1804-Algorithm.pdf
+│   ├── AI1807-Numerical.pdf
+│   ├── AI1811-ML.pdf
+│   ├── CS234-RL.pdf
+│   ├── Leetcode.pdf
+│   ├── MATH1207-Probability.pdf
+│   ├── MIT6006-DP.pdf
+│   └── MIT6046J-Algorithm.pdf
 ├── run.sh
 ├── scripts
 │   ├── install.sh
