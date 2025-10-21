@@ -643,6 +643,86 @@ $
 
 只考虑一阶导数，并且函数值和导数值的个数相等的情况。一共有 $2 n + 2$ 个条件，因此可以唯一确定一个次数不超过 $2 n +1$ 的多项式。
 
+$
+  f(x_j) = g(x_j) ," "f'(x_k) = g'(x_j) " "(0 <= j <= n-1)
+$
+
+#recordings("Selecting the base function")[
+  $
+    H(x) = H_(2n+1)(x)
+  $
+
+  对于上面的函数，直接确定系数矩阵 coefficient 是非常困难的（相当于选择标准基），原则上，你只需要选择一组正交基即可。因此确定基函数非常重要！
+]
+
+$
+  H(x_i) = y_i\
+  H'(x_i) = m_i
+$
+
+We will do the same thing like lagrange:
+
+$
+  H_(2n+1)(x) = sum_(i=1)^(n) y_i alpha_i (x) + m_i beta_i(x)
+$
+
+基函数需要满足：
+
+$
+  alpha_i (x_k) = cases(1 "if" k=i, 0 "if" k!=i), alpha'(x_k) = 0
+$
+
+$
+  beta'_i (x_k) = cases(1 "if" k=i, 0 "if" k!=i), beta_(x_k) = 0
+$
+
+可以看到，相比于拉格朗日的条件，$alpha(x)$ 还多了一个导数为 0 的额外限制，因此可以尝试用 n 次拉格朗日基函数 $l_i (x)$ 来表示 $alpha_i (x)$。
+
+$
+  alpha(x) = (a x + b) l_i^2 (x)
+$
+
+$ l_j (x) = (product^(n)_(i=0) (x - x_i)(i != j))/(product^(n)_(i=0) (x_j - x_i)) $
+
+$
+  l'_j (x_j) = sum_(k=0\ k!= j)^(n) 1/(x_j -x_k)
+$
+
+带入具体的值，可得：
+
+$
+  a & = -2 l'_i (x_i) = \
+  b & = 1 + 2 x_i l'_i (x_i)
+$
+
+$
+  alpha_j (x) = [1 - 2 (x - x_j) sum_(k=0\ k!= j)^(n) 1/(x_j -x_k)] l_j^2(x)
+$
+
+同样的方法，可以求解 $beta_i (x)$ 的函数值，使用待定系数法。
+
+#figure(
+  image("images/beta.png"),
+)
+
+#theorem()[
+  $
+    H_(2n+1)(x) = sum_(i=1)^(n) y_i alpha_i (x) + m_i beta_i(x)
+  $
+
+  $
+    alpha_j (x) = [1 - 2 (x - x_j) sum_(k=0\ k!= j)^(n) 1/(x_j -x_k)] l_j^2(x)
+  $
+
+  $
+    beta_j (x) = (x - x_j) l_j^2(x)
+  $
+
+  $
+    R(x) = f(x) - H_(2n+1) (x) = (f^((2n+2))(xi))/((2n+2)!) omega^2_(2n+1)(x)
+  $
+
+]
 
 
 
