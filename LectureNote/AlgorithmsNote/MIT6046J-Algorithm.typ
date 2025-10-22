@@ -984,7 +984,125 @@ $
 
 == SkipList
 
+#recordings("SkipList")[
+  To be done in the future.
+]
+
 == Hashing
+
+=== ADT and Dictionary
+
+For abstract data type *dictionary*, this data structure supports several operations:
+
+- `insert(item)`
+- `delete(item)`
+- `search(key)`
+
+By implementing this ADT, we can use:
+
+- We can use the `AVL Tree` or `RB Tree` to implement the data structure from scratch, which is called `set` in C++ STL. Several operations achieve $O(log n)$ time.
+
+- We can use hash-table to implement the data structure for unsorted conditions. Time complexity is average $O(1)$ but worst $O(n)$.
+
+=== Simple Hashing
+
+#definition("Several Definitions")[
+  - $u$ = number of keys over all possible items
+  - $n$ = number of keys/items currently in the table
+  - $m$ = number of slots in the table
+]
+
+具体的数据结构：Bucket and chaining.
+
+=== Simple Uniform Hashing
+
+$
+  "Pr"()_(k_1 != k_2) {h(k_1) = h(k_2)} = 1/m
+$
+
+We achieve time complexity for $O(1 + alpha)$, $alpha = n/m$ which is called load factor.
+
+#recordings("Simple Uniform Hashing")[
+  - 使用 Linked HashList 实现的哈希表可以达到接近常数的均摊时间复杂度，但是这是在最理想不产生哈希冲突的情况下才会出现的。
+  - 因此保证简单一致哈希需要保证数据分布必须是均匀并且随机的，或者所选择的哈希函数可以保证均匀的处理数据分布到不同的桶中。
+  - 因此，我们需要 Universal Hashing，这个技术可以保证不需要雨来键的输入的随机性而保证非常快速的平均性能。
+]
+
+=== Universal Hashing
+
+- choose a random hash function $h$ from $cal(H)$
+
+- require $cal(H)$ to be a *universal hash family* such that:
+
+$
+  "Pr"_(h in cal(H)) {h(k) = h(k')} <= 1/m " "forall k != k'
+$
+
+
+#theorem()[
+  For $n$ arbitrary distinct keys and random $h in cal(H)$, where $cal(H)$ is a universal hashing family:
+
+  $
+    EE["numbers of keys colliding in a slot"] <= 1 + n/m = 1 + alpha
+  $
+]
+
+#proof()[
+  $
+    EE["keys hashing to the same slot as" k_i] = EE[sum^n_(j=1) I_(i,j)]
+  $
+
+  Then, due to the linearity of expectations and the independence, we can have:
+
+  $
+    EE[sum^n_(j=1) I_(i,j)] = sum_(j=1)^n EE[I_(i,j)] = sum_(j != i) EE[I_(i,j)] + EE[I_(i,i)] <= n/m +1
+  $
+]
+
+
+Thus, we need to define the hash family $cal(H) = {"all hash functions" h: {0,1,dots,u-1} arrow {0,1,dots,m-1}}$.
+
+We want to store and select the hash function in an efficient way.
+
+==== Dot Product Hash Family
+
+We assume $m$ is an integer and $u = m^r$.
+
+We view the key in the hash function $k = (k_0, k_1, dots, k_(r-1))$ and each hash function in the hash family is defined by a randomized parameter vector $a = (a_0, a_1, dots, a_(r-1))$.
+
+$
+  h_a (k) = (sum_(i=0)^(r-1) a_i k_i) (mod m)
+$
+
+Thus, the hash family is:
+$
+  cal(H) = {h_a|a in {0,1,dots,u-1}}
+$
+
+In the word RAM model, manipulating $O(1)$ machine words takes O(1) time and “objects of interest” (here, keys) fit into a machine word. Thus computing ha(k) takes O(1) time.
+
+简单来说，我们只需要保证 $r$ 是 $O(1)$ 的。在具体的操作过程中，对于超大整数的切分也是根据字长来实现的，这样能保证单个字节的运算是 $O(1)$ 的操作。
+
+#figure(
+  image("images/dot-product.png"),
+)
+
+#recordings("Another universal hash family")[
+  $
+    h_(a b) (k) = [(a k + b) mod p] mod m
+  $
+
+  And let $cal(H)$ to be: ${h_(a b)|a, b in {0,1,dots, u-1}}$
+]
+
+=== Perfect Hashing
+
+In the worst case of universal hashing, it has little probability for hashing collusion. (For every time we build a hash table or rehash a hash table, we will choose a hash function from the hash family randomly.) But in the worse case, the time complexity is still $O(n)$.
+
+For dynamic dictionary problem, we cannot achieve perfect hashing. But we can do this for static ones!
+
+Static dictionary problem: Given n keys to store in table, only need to support `search(k)`. No insertion or deletion will happen. We can achieve searching with $O(1)$ time complexity!
+
 
 
 
