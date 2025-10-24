@@ -1103,6 +1103,83 @@ For dynamic dictionary problem, we cannot achieve perfect hashing. But we can do
 
 Static dictionary problem: Given n keys to store in table, only need to support `search(k)`. No insertion or deletion will happen. We can achieve searching with $O(1)$ time complexity!
 
+从数学的角度出发，完美哈希需要保证：
+
+$
+  forall x,y in S, h(x) != h(y)
+$
+
+#recordings("Perfect Hashing")[
+  - 桶查找就是一种比较基础的完美哈希，因为他可以保证不发生哈希冲突
+  - 注意！完美哈希的定义域中包含元素的个数一定小于值域中包含元素的个数
+    - If m = n, then it is called minimum perfect hashing
+]
+
+==== Two Level Hashing
+
+#recordings("Selection of hash function")[
+  All the functions selected below are from a universal hash family.
+]
+
+- For the main hash table, allocate $n$ keys into $m$ buckets. (Where $m approx n$)
+- Define $n_i$ to be the numbers of keys mapped into main hashing table for index $i$.
+  - For some cases, $n_i >= 1$, thus collusion happens!
+
+- For the next level of hash table, build a hash table $S_i$, where:
+
+$
+  |S_i| = n_i^2
+$
+
+对于全域哈希族存在如下定理，如果从一个全域哈希族中随机选择一个哈希函数 $h$，将 $n_i$ 个关键字映射到一个大小为 $m_i$ 的哈希表，那么发生冲突的总次数
+
+$
+  EE[C] <= (n_i (n_i -1))/(2 m_i)
+$
+
+Thus, we select $m_i = n_i^2$, then we have:
+
+$
+  EE[C] <= (n_i (n_i -1))/(2 n_i^2) <= 1/2
+$
+
+Due to the markov equation, we have:
+
+$
+  "Pr"[X >= a] <= EE[X]/a
+$
+
+Thus, we can ensure:
+
+$
+  "Pr"[C = 0] >= 1/2
+$
+
+Then, we can prove that for each random selection in the universal hash function, we can ensure a high probability for no hash collusion!
+
+#recordings("Algorithms")[
+  - Pick h1 : ${0, 1, . . . , u − 1} → {0, 1, . . . , m − 1}$ from a universal hash family for $m = Θ(n)$ (e.g., nearby prime). Hash all items with chaining using h1.
+  - Step 1.5: If $sum^(m-1)_(j=0) l_j^2 > c n$ where c is a chose constant, then redo Step 1.
+    - 这一步是为了保证哈希冲突发生被一个线性约束
+  - For each slot $j ∈ {0, 1, . . . , m − 1}$, let $l_j$ be the number of items in slot j. $l_j = |{i | h(k_i) = j}|$. Pick $h_(2,j)$ : ${0, 1, . . . , u − 1} → {0, 1, . . . , m_j }$ from a universal hash family for $l_j^2 ≤ m_j ≤ O(l_j^2)$ (e.g., nearby prime). Replace chain in slot j with hashing-with-chaining using h2,j
+    - 设置平方级别的二级哈希表
+]
+
+For the space usage:
+
+$
+  EE[sum m_i] = EE[sum_(i=0)^(m-1) n_i^2] = EE[sum_(i=0)^(m-1) n_i (n_i - 1)] + EE[sum_(i=0)^(m-1) n_i] = EE[2C] + EE[n] = O(n)
+$
+
+For the time complexity: building the 2-level hash table needs $O(n log^2 n)$ time.
+
+
+#recordings("bout Perfect Hashing")[
+  - 完美哈希是在保证期望非常好的情况下做了 repick 机制，保证最终一定不会哈希冲突
+  - 只针对不涉及插入函数只涉及查询的静态哈希表
+  - 直接使用桶哈希去做无法处理分布很广泛的数据分布
+    - 可以做离散化的预处理，但是这又会导致查询的时候的复杂度降低为 $O(log n)$
+]
 
 
 
