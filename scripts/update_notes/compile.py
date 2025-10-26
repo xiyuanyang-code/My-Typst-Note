@@ -98,7 +98,7 @@ def compile(input_files):
 
     for input_file in tqdm(input_files, total=length, desc="Compiling"):
         output_path = generate_output_path(input_file)
-        root_dir = "/home/xiyuanyang/Note/TypstNote/"
+        root_dir = "/Users/xiyuanyang/Desktop/Dev/Note/TypstNote"
         command_list = [
             "make",
             f"TYPST_ROOT={root_dir}",
