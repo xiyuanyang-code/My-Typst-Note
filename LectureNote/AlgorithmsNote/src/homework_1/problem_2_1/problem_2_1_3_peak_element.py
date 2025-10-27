@@ -2,8 +2,8 @@
 AI1804 算法设计与分析 - 第2次课上练习
 问题2-1.3：寻找峰值元素
 
-学生姓名：___________
-学号：___________
+学生姓名：杨希渊
+学号：524531910015
 """
 
 def find_peak_element(arr):
@@ -169,7 +169,9 @@ def main():
 
     # test case 6
     arr6 = [1,1,1,2,2,2,4,4,4,5,5,5]
-    print(find_peak_naive(arr6))
+
+    # todo about this strange testcase?
+    # print(find_peak_naive(arr6))
     # print(find_peak_element(arr6))
     
     print("\n=== 算法要求 ===")
