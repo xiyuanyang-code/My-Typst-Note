@@ -1,6 +1,8 @@
 /target
 .vscode
 
+**/*.DS_Store
+
 # ignore all pdf files when compiling
 **/*.pdf
 images/

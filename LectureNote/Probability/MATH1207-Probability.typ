@@ -479,6 +479,36 @@ $
   $
 ]
 
+= 多维随机变量的分布
+
+== 二维随机变量及其分布
+
+$
+  F(x,y) = P(X <= x, Y <= y)
+$
+
+#recordings("二维随机变量的分布函数")[
+  $
+    P(x_1 <= X <= x_2, y_1 <= Y <= y_2) &= F(x_2, y_2) + F(x_1, y_1) - F(x_1, y_2) - F(x_2, y_1)\
+    &in [0,1]
+  $
+
+]
+
+
+$
+  F(x,y) = integral^(x)_(-infinity)integral^(y)_(-infinity) f(u,v) "d"u "d"v
+$
+
+$
+  P((X,Y) in D) = integral.double_D f(x, y) "d"x "d"y
+$
+
+$
+  (partial^2 F(x,y))/(partial x partial y) = f(x,y)
+$
+
+
 
 
 = Conclusion
