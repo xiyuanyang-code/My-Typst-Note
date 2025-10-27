@@ -10,35 +10,54 @@ class SortedArraySet:
     def __init__(self):
         """初始化集合"""
         self._data = []  # 存储数据的有序列表
-    
+
     def _binary_search(self, x):
-        """
-        二分查找元素x的位置，返回(found, index)
-        found: 是否找到元素
-        index: 如果找到，返回元素位置；如果没找到，返回应该插入的位置
-        """
+        """二分查找元素x的位置，返回(found, index)"""
         # TODO: 实现二分查找算法
-        pass
-    
+        length = self.size()
+        left_bound = 0
+        right_bound = length - 1
+
+        while left_bound <= right_bound:
+            target_index = (left_bound + right_bound) // 2
+
+            if self._data[target_index] == x:
+                return (True, target_index)
+            elif self._data[target_index] > x:
+                right_bound = target_index - 1
+            else:  # self._data[target_index] < x
+                left_bound = target_index + 1
+
+        return (False, left_bound)
+
     def insert(self, x):
         """向集合中插入元素x"""
         # TODO: 实现插入操作
-        pass
-    
+        found, index = self._binary_search(x)
+        if not found:
+            self._data.insert(index, x)
+
     def delete(self, x):
-        """从集合中删除元素x，返回True如果成功，False如果元素不存在"""
+        """
+        从集合中删除元素x
+        """
         # TODO: 实现删除操作
-        pass
-    
+        found, index = self._binary_search(x)
+        if found:
+            self._data.pop(index)
+            return True
+        return False
+
     def find(self, x):
         """查找元素x是否在集合中"""
         # TODO: 实现查找操作
-        pass
-    
+        found, _ = self._binary_search(x=x)
+        return found
+
     def size(self):
         """返回集合大小"""
         return len(self._data)
-    
+
     def to_list(self):
         """返回集合的有序列表表示"""
         return self._data.copy()

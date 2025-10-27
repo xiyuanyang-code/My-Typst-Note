@@ -8,41 +8,28 @@ AI1804 算法设计与分析 - 第2次课上练习
 
 def find_peak_element(arr):
     """
-    找到数组中的峰值元素，返回其索引
+    找到数组中的峰值元素，返回其索引 (迭代/非递归实现)
     
-    峰值元素定义：大于相邻元素的元素
-    - arr[i] > arr[i-1] 且 arr[i] > arr[i+1]
-    - 边界元素只需要大于一个邻居
-    
-    算法要求：
-    - 使用分治+二分思想
-    - 时间复杂度：O(log n)
-    - 空间复杂度：O(log n)
-    
-    参数：
-    - arr: 输入数组
-    
-    返回：
-    - 峰值元素的索引，如果数组为空返回-1
+    时间复杂度：O(log n)
+    空间复杂度：O(1)
     """
+    length = len(arr)
+    if length == 0:
+        return -1
+    if length == 1:
+        return 0
     
-    def find_peak_helper(arr, left, right):
-        """
-        递归查找峰值的辅助函数
-        
-        参数：
-        - arr: 数组
-        - left: 左边界
-        - right: 右边界
-        
-        返回：
-        - 峰值元素的索引
-        """
-        # TODO: 实现递归查找峰值
-        pass
+    left = 0
+    right = length - 1 
     
-    # TODO: 实现主函数逻辑
-    pass
+    while left < right:
+        mid = left + (right - left) // 2
+        if arr[mid] < arr[mid + 1]:
+            left = mid + 1
+        elif arr[mid] > arr[mid + 1]:
+            right = mid
+
+    return left
 
 def find_peak_naive(arr):
     """
@@ -179,6 +166,11 @@ def main():
         print("✓ 单个元素正确识别为峰值")
     else:
         print("✗ 单个元素应该是峰值")
+
+    # test case 6
+    arr6 = [1,1,1,2,2,2,4,4,4,5,5,5]
+    print(find_peak_naive(arr6))
+    # print(find_peak_element(arr6))
     
     print("\n=== 算法要求 ===")
     print("时间复杂度: O(log n) - 每次排除一半搜索空间")

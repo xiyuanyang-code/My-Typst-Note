@@ -2,8 +2,8 @@
 AI1804 算法设计与分析 - 第2次课上练习
 问题2-1.1：Two Sum问题
 
-学生姓名：___________
-学号：___________
+学生姓名：杨希渊
+学号：524531910015
 """
 
 def two_sum_sorted(arr, target):
@@ -24,7 +24,26 @@ def two_sum_sorted(arr, target):
     - 如果没找到，返回 None
     """
     # TODO: 实现Two Sum算法
-    pass
+    array_sorted = sorted(arr)
+    index_i = 0
+    index_j = len(arr) - 1
+    while True:
+        if array_sorted[index_i] + array_sorted[index_j] == target:
+            # find the index
+            index_i_origin = 0
+            index_j_origin = 0
+            for index, value in enumerate(arr):
+                if array_sorted[index_i] == value:
+                    index_i_origin = index
+                if array_sorted[index_j] == value:
+                    index_j_origin = index
+            return (index_i_origin, index_j_origin)
+        elif array_sorted[index_i] + array_sorted[index_j] > target:
+            index_j -= 1
+        else:
+            index_i += 1
+        if index_i == index_j:
+            return None
 
 def main():
     """测试函数"""

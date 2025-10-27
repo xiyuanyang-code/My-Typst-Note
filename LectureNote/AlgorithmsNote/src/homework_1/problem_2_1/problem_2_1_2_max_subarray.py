@@ -2,11 +2,38 @@
 AI1804 算法设计与分析 - 第2次课上练习
 问题2-1.2：最大子数组和
 
-学生姓名：___________
-学号：___________
+学生姓名：杨希渊
+学号：524531910015
 """
 
-def find_max_subarray_sum(arr):
+def find_max_subarray_sum(array: list[int]):
+    length = len(array)
+    if length == 0:
+        return 0
+    if length == 1:
+        return array[0]
+    elif length == 2:
+        return max(array[0], array[1], array[0] + array[1])
+    split = length // 2
+    # 0..split
+    # split..length
+    sum_left = find_max_subarray_sum(array=array[:split])
+    sum_right = find_max_subarray_sum(array=array[split:])
+    # compute medium max sum
+    sum_medium_left = 0
+    sum_medium_max_left = array[split - 1]
+    sum_medium_right = 0
+    sum_medium_max_right = array[split]
+    for i in range(split - 1, -1, -1):
+        sum_medium_left += array[i]
+        sum_medium_max_left = max(sum_medium_max_left, sum_medium_left)
+    for j in range(split, length):
+        sum_medium_right += array[j]
+        sum_medium_max_right = max(sum_medium_max_right, sum_medium_right)
+
+    return max(sum_medium_max_left + sum_medium_max_right, sum_left, sum_right)
+
+def find_max_subarray_sum_(arr):
     """
     找到数组中连续子数组的最大和
     

@@ -12,25 +12,41 @@ def merge_sort_with_inversion_count(arr):
     参数: arr - 待排序的数组
     返回: (sorted_arr, inversion_count) - 排序后的数组和逆序对数量
     """
-    
+
     def merge(left, right):
-        """
-        合并两个有序数组，并统计跨越逆序对
-        参数: left, right - 两个有序数组
-        返回: (merged_array, cross_inversions) - 合并后的数组和跨越逆序对数量
-        """
+        """合并两个有序数组，并统计跨越逆序对"""
         # TODO: 实现合并逻辑，同时统计逆序对
-        pass
-    
+        index_i = 0
+        index_j = 0
+        merge_count = 0
+        new_array = []
+        while index_i < len(left) and index_j < len(right):
+            if left[index_i] > right[index_j]:
+                merge_count += len(left) - index_i
+                new_array.append(right[index_j])
+                index_j += 1
+            else:
+                new_array.append(left[index_i])
+                index_i += 1
+        new_array.extend(left[index_i:])
+        new_array.extend(right[index_j:])
+        return new_array, merge_count
+
     def merge_sort_helper(arr):
-        """
-        递归实现归并排序并统计逆序对
-        参数: arr - 待排序的数组
-        返回: (sorted_arr, inversion_count) - 排序后的数组和逆序对数量
-        """
+        """递归实现归并排序并统计逆序对"""
         # TODO: 实现归并排序的递归逻辑
-        pass
-    
+
+        if len(arr) == 1:
+            return arr, 0
+        if len(arr) == 0:
+            return arr, 0
+
+        pivot = len(arr) // 2
+        merge_left, count_left = merge_sort_helper(arr[:pivot])
+        merge_right, count_right = merge_sort_helper(arr[pivot:])
+        merge_new, merge_count = merge(merge_left, merge_right)
+        return merge_new, merge_count + count_left + count_right
+
     return merge_sort_helper(arr)
 
 def count_inversions_naive(arr):

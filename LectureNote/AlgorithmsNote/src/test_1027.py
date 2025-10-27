@@ -22,8 +22,6 @@ def two_sum(array: list[int], target: int):
 
 
 def max_sum_array(array: list[int]):
-    # dp[i] means the max sum array for [0,i]
-    # we want to solve dp[len-1]
     length = len(array)
     if length == 1:
         return array[0]
