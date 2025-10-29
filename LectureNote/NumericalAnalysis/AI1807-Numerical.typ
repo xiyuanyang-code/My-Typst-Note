@@ -1042,6 +1042,122 @@ if __name__ == "__main__":
     plt.savefig("./images/interpolation.pdf")
 ```
 
+== 样条插值
+
+#definition("Spline Interpolation")[
+  $a <= x_0 < x_1 < dots < x_n <= b$, S in C^2 [a,b] are n times polynomial.
+]
+
+例如，我们考虑三次样条插值：
+
+- 函数在区间内二阶导数连续（非常严格的限制！）
+- $S(x_k) = y_k$
+- 函数在每个区间内都是三次多项式
+
+For $x$ in $[x_k, x_(k+1)]$:
+
+- $S(x) = a_k + b_k x + c_k x^2 + d_k x^3$
+
+We have such properties:
+
+- $S(x_k) = y_k$
+- $S(x_k^-) = S(x_k^+)$
+- $S'(x_k^-) = S'(x_k^+)$
+- $S''(x_k^-) = S''(x_k^+)$
+
+The above equations use $4 n -2$ equations to solve $4 n$ variables. We need more!
+
+边界条件：实际问题通常对样条函数在两个端点 $a$, $b$ 处的状态有要求:
+
+$
+  S(x_0^+) = S(x_n^+)
+$
+
+$
+  S'(x_0^+) = S'(x_n^+)
+$
+
+$
+  S''(x_0^+) = S''(x_n^+)
+$
+
+The, we make this Spline Interpolation cyclic!
+
+=== Another Definition
+
+We can make the interpolation more fluent:
+
+
+#figure(
+  image("images/spline.png")
+)
+
+=== solve
+
+在厄尔米特插值的过程中，整体的插值公式如下：
+
+$
+  H_(2n+1)(x) = sum_(i=1)^(n) y_i alpha_i (x) + m_i beta_i(x)
+$
+
+For the interval:
+
+$
+  s_k (x) = y_k alpha_k (x) + y_(k+1) alpha_(k+1) (x) + m_k beta_k(x) + m_(k+1) beta_(k+1) (x)
+$
+
+Then solve the $s''_k (x)$ for unknown variables $m_i$. We can use the continuity:
+
+$
+  s''_(k-1) (x^-_k) = s''_k (x^+_k)
+$
+
+Then, we can have $n-1$ equations for $n+1$ unknown variables:
+
+$
+  lambda_k m_(k-1) + 2 m_k + mu_k m_(k+1) = g_k\
+  lambda_k = (h_k)/(h_(k-1) + h_k)\
+  mu_k = (h_(k-1))/(h_(k-1) + h_(k))\
+  g_k = 3 (lambda_k f[x_(k-1), x_k] + mu_k f[x_k, x_(k+1)])
+$
+
+And the boundaries: 
+
+- $s'_0 (x^+_0) = m_0 = m_n = s'_(n-1) (x^-_n)$
+- $s''_0 (x_0^+) = s''_(n-1) (x_n^-)$
+
+
+#figure(
+  image("images/solve_spline.png")
+)
+
+#recordings("钳制样条")[
+  为了保持周期性等良好性质，往往已知两个端点的一一阶导数值和二阶导数值，并且约束其相等。
+]
+
+
+We define:
+
+$
+  g_0 = 2m_0 + m_1 = 3 f[x_0, x_1] - h_0/2 f''_0
+$
+
+$
+  g_n = m_(n-1) + 2 m_n = 6 f[x_(n-1), x_n] + h_(n-1)/2 f''_n
+$
+
+#figure(
+  image("images/sanzhuanjiao.png")
+)
+
+#recordings("三转角矩阵")[
+  - 三转角方程保证系数矩阵对角元素均为2，并且非对角元素满足 $mu_k + lambda_k = 1 < 2$.
+  - 系数矩阵具有强对角优势，是非奇异矩阵
+  - 保证方程有解并且有唯一解
+]
+
+
+
 == 深度学习中的插值计算
 
 在深度学习中，输入张量（通常是特征图）往往需要经过若干的处理来调整特征尺寸，具体的技术包括上采样和下采样两种。
