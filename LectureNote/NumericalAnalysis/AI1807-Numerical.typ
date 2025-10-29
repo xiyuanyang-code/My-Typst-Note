@@ -1058,6 +1058,8 @@ For $x$ in $[x_k, x_(k+1)]$:
 
 - $S(x) = a_k + b_k x + c_k x^2 + d_k x^3$
 
+=== Definition
+
 We have such properties:
 
 - $S(x_k) = y_k$
@@ -1092,7 +1094,7 @@ We can make the interpolation more fluent:
   image("images/spline.png")
 )
 
-=== solve
+=== Solving Spline Interpolation
 
 在厄尔米特插值的过程中，整体的插值公式如下：
 
@@ -1132,11 +1134,27 @@ And the boundaries:
 )
 
 #recordings("钳制样条")[
-  为了保持周期性等良好性质，往往已知两个端点的一一阶导数值和二阶导数值，并且约束其相等。
+  - 样条插值需要给出两个边界条件，来保证结果的唯一性
+    - 否则仅仅依靠其他约束无法确定唯一的样条差值多项式，必须要对此进行约束
+  - 边界条件的给出往往有以下两种形式：
+    - 完备样条：给出 $f'(x_0)$, $f'(x_n)$
+    - Natural Spline: $S''(x_0) = S''(x_n) = 0$
 ]
 
+根据不同的边界条件的给出，我们有若干种三转角方程的形式：
 
-We define:
+==== $f'_0$ and $f'_n$ are known
+
+此时相当于未知数 $m_0$ and $m_n$ 都是已知量，只需要求解剩下的量。
+
+#figure(
+  image("images/sanzhuanjiao1.png", width: 12cm)
+)
+
+
+==== $f''_0$ and $f''_n$ are known
+
+Based on the boundaries we have, we can manually define $g_0$ and $g_n$:
 
 $
   g_0 = 2m_0 + m_1 = 3 f[x_0, x_1] - h_0/2 f''_0
@@ -1147,7 +1165,15 @@ $
 $
 
 #figure(
-  image("images/sanzhuanjiao.png")
+  image("images/sanzhuanjiao2.png", width: 12cm)
+)
+
+
+==== $m_0 = m_n$ and $s_0''(x_0^+) = s_(n-1)''(x_n^-)$
+
+
+#figure(
+  image("images/sanzhuanjiao3.png", width: 12cm)
 )
 
 #recordings("三转角矩阵")[
@@ -1156,6 +1182,21 @@ $
   - 保证方程有解并且有唯一解
 ]
 
+=== Error Analysis
+
+#theorem("Error Analysis for spline interpolation")[
+  $
+    max_(a <= x <= b) |f(x) - S(x)| <= 5/384 max_(a<x<b) |f^((4)) (x)| h^4
+  $
+
+  $
+    max_(a <= x <= b) |f'(x) - S'(x)| <= 1/24 max_(a<x<b) |f^((4)) (x)| h^3
+  $
+
+  $
+    max_(a <= x <= b) |f''(x) - S''(x)| <= 3/8 max_(a<x<b) |f^((4)) (x)| h^2
+  $
+]
 
 
 == 深度学习中的插值计算
