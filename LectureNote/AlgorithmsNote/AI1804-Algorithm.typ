@@ -248,10 +248,60 @@ Solution: 使用三指针实现
   - 在跟一般的情况，认为第三个节点的后继结点被占满了，这只需要存储一个 variable 保证链表不断裂就可以
 ]
 
-= Computational Complexity
+= Linear Time Sorting
 
-Lecture notes for MIT 6.006 Lecture 19: Complexity
+Analysis and more advanced sorting algorithm with more constraints.
 
-= Future of Algorithms
+== Basic Analysis for Sorting
+
+=== The UpperBound Analysis
+
+Consider the decision tree which contains all the output of all the possible inputs. (Based on selections.)
+
+Formally, you are given an array with random values. (The candidate of the values are fixed but the sequence are random generated.) $[a_1, a_2, a_3, dots, a_(n-1)]$. At the leaf node of the decision binary tree, we know:
+
+$
+  "Count"("Leaf Node") = n!
+$
+
+Thus, the optimal time complexity for general sorting algorithm (based on selections) are $O(log(n!)) = O(n log n)$ (Suppose the tree are balanced, like the process of merge sort.)
+
+However, when we have a huge amount of data to be sorted, the time complexity $O(n log n)$ is unaffordable, thus we can sacrifice generalization for speeding up.
+
+== Direct Access Array sorting
+
+We need to do following assumptions:
+
+- We have the upperbound $u$: Suppose all keys are unique non-negative integers in range ${0, . . . , u - 1}$, thus $u >= n$.
+
+Then, we can use the bucket, so called *direct access array*!
+
+- Insert each item in the direct access array with size $u$ in $Theta(n)$.
+
+- Return and sort the array with time $Theta(u)$.
+
+Thus, the total time complexity is $Theta(n + u)$.
+
+== Radix Sort or Tuple Sort
+
+For case that $u = n^2$, the time complexity is $O(n^2)$.
+
+We can split the number into a *tuple*, where $x = a n + b$.
+
+Then, we can do direct access array in 2 turns, in each turn, we ensure $u_0 - n$, ensuring the linear time complexity.
+
+More generally, if we do $c$ turns, then the time complexity is $O(c n)$, but the upperbound of $u$ can up to $n^c$. Thus, the time complexity can be optimized into $O(n + n log_n u)$
+
+== Counting Sort
+
+Define the maximum value and minimum value of the array $a[i]$, we can use linear time to scan them. The, we can define the maximum gap $d <= u$, and we create an array with size $d$.
+
+Then, we count all the numbers in the array and accumulate:
+
+$
+  C[i] = C[i] + C[i-1]
+$
+
+Finally, if $x = C[i]$, it means the last final positions for i should be $x$. *It can ensure the stability for the sorting*.
 
 = Conclusion
