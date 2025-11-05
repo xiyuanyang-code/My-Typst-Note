@@ -1476,3 +1476,112 @@ if __name__ == "__main__":
 - 例如在卷积神经网络中的 *Pooling Layer* 等操作。
 - *Strided Convolution*
 - Attention 操作也可以看做是一种下采样的方式
+
+= Function Approximation
+
+- 函数插值实现了简单函数 $p(x)$ 在某些特定点下和复杂函数 $f(x)$ 的相等关系，实现拟合，但是在复杂的情况下，会出现荣格现象
+
+- 因此，在度量意义下，我们需要实现函数逼近：
+  - 函数逼近
+  - 曲线拟合
+
+简单函数类：
+
+- $p_n(x)$: polynomial
+- $R_(n m)(x) = P_n(x)/Q_m(x)$
+- $T(x)$: Fourier
+
+常见的度量标准：
+
+- 一致逼近：
+
+$
+  ||f(x) - p(x)||_(infinity) = max_(a <= x <= b) |f(x) - p(x)|
+$
+
+- 平方逼近：
+
+$
+  ||f(x) - p(x)||_2 = sqrt(integral_a^b [f(x) - p(x)]^2 "d"x)
+$
+
+#definition("范数")[
+  $
+    ||f||_(infinity) = max_(a <= x <= b) (|f(x)|)
+  $
+
+  满足范数的正定性，齐次性和三角不等式
+]
+
+== 最佳一致逼近
+
+#definition("最佳逼近函数")[
+  Given the functional space $Phi$, and function $f in C[a,b]$, if a function $g*(x) in Phi$ satisfy:
+
+  $
+    ||f(x) - g*(x)|| = min_(g(x) in Phi) ||f(x) - g(x)||
+  $
+]
+
+对于最佳一致逼近：
+
+$
+  ||f(x) - g*(x)||_(infinity) = min_(g(x) in Phi) ||f(x) - g(x)||_(infinity) = min_(g(x) in Phi) max_(a <= x <= b) |f(x) - p(x)|
+$
+
+=== 偏差点和偏差点的性质
+
+定义上偏差点就是函数值偏差最大值取到的地方，包含正偏差点和负偏差点。
+
+- 可以利用反证法证明一定即存在正偏差点和负偏差点
+- 偏差点的偏差程度直接影响了最佳逼近的最小偏差 $E_n$
+
+但是节点的选取会严重影响具体的函数表现。
+
+#figure(
+  image("images/chebyshev.png")
+)
+
+#theorem("Chebyshev Theorem")[
+  $p_n(x)$ 是最佳一致逼近多项式的充分必要条件：
+  至少有 n+2 个轮流为正负的偏差点：
+  $
+    p_n (t_k) - f(t_k) = plus.minus (-1)^k ||p_n (x) - f(x)||_(infinity)
+  $
+]
+
+证明见PPT，可以根据同号性利用反证法证明
+
+可以推导出下面的推论：
+
+#corollary[
+  $f(x) in C[a,b]$ 的 $n$ 次最佳一致逼近多项式存在并且唯一，并且一定是 $f(x)$ 的一个 Lagrange 多项式。
+]
+
+- 存在性证明：
+
+- 唯一性证明：同一法
+
+=== 一次最佳一致逼近多项式
+
+假设 $f(x) = C^2[a,b]$ 并且 $f''(x)$ 在区间 $[a,b]$ 内部不变号。下面求解最佳一直逼近多项式 $p_1 (x) = c_0 + c_1 x$.
+
+具体的求解过程：
+
+因为二阶导不变号，故 $f(x)$ 的一阶导数单调，故存在唯一的点 $t_2$, s.t. $f'(t_2) = c_1$. 剩下的两个偏差点一定在区间的端点。
+
+$
+  p_1 (x) = (f(a) + f(t_2))/2 + c_1 (x - (a+t_2)/2)
+$
+
+根据拉格朗日中值定理：
+
+$
+  c_1 = (f(b) - f(a))/(b-a) = f'(t_2)
+$
+
+
+$
+  c_0 = (f(a) + f(t_2))/2 - (f(b) - f(a))/(b-a) (a+t_2)/2
+$
+
