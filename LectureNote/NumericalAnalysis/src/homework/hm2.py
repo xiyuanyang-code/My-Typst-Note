@@ -13,12 +13,14 @@ def resample(series, tgt_length):
     src_length = len(series)
     x_old = np.linspace(0, src_length - 1, num=src_length)
     y_old = np.array(series)
+    x_new = np.linspace(0, src_length - 1, num=tgt_length)
+
+    resampled_series = np.interp(x_new, x_old, y_old).tolist()
 
     # 分段线性插值
-    interpolator = interp1d(x_old, y_old, kind="linear")
-    x_new = np.linspace(0, src_length - 1, num=tgt_length)
-    resampled_series = interpolator(x_new)
-    return resampled_series.tolist()
+    # interpolator = interp1d(x_old, y_old, kind="linear")
+    # resampled_series = interpolator(x_new).tolist()
+    return resampled_series
 
 
 def test(series, tgt_length, gt):
