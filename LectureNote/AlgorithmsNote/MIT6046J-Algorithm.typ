@@ -1,8 +1,8 @@
 #import "@preview/dvdtyp:1.0.1": *
 #show: dvdtyp.with(
-  title: "MIT6.046J Design and Analysis of Algorithms",
+  title: "MIT6.046J Algorithms",
   author: "Xiyuan Yang",
-  abstract: [Lecture Notes for advanced algorithms for Open lecture MIT 6.046J],
+  abstract: [Lecture Notes for MIT 6.046J: *Design and Analysis of Algorithms*],
 )
 #show link: set text(fill: blue, weight: 700)
 #show link: underline
@@ -537,7 +537,7 @@ We know, if we have $N$ samples for two polynomials, just calculate $A(x_k) dot 
 因此，如果我们需要解决多项式乘法的问题，实际上我们可以将问题拆分为：
 
 - 预处理计算 $"FFT"(A)$ and $"FFT"(B)$: we want it to be $O(N log N)$
-- $C_"point" = A_"point" dot.circle B_"point"$: it is $O(N)$, not the bottleneck
+- $C_"point" = A_"point" dot B_"point"$: it is $O(N)$, not the bottleneck
 - $"IFFT"(C_"point")$: we want it to be $O(N log N)$
 
 ==== How to divide?
@@ -1181,9 +1181,140 @@ For the time complexity: building the 2-level hash table needs $O(n log^2 n)$ ti
     - 可以做离散化的预处理，但是这又会导致查询的时候的复杂度降低为 $O(log n)$
 ]
 
-
-
 = Advanced Dynamic Programming
+
+== DP Notions
+
+#recordings("DP Notions")[
+  - Characterize the structure for an optimal solution.
+  - Recursively define the value of an optimal solution *based on the solution of sub-problems*.
+  - *Memorization* are the key to DP!
+]
+
+== Longest Palindromic Sequence
+
+#recordings[
+  Palindromic 就是回文数的意思，我们希望算法可以找到一个字符串中最长的回文序列。
+]
+
+Very simple dp problems for sub-strings and sub-lists.
+
+- `L(i,j)` means the sub-strings for `s[i:j]`.
+- Consider whether `X[i] == X[j]`:
+  - `L(i+1,j-1) -> L(i,j)`
+- else:
+  - `max(L(i, j-1)`, `max(L(i+1, j))`
+
+#recordings("What Else")[
+  - 在动态规划判断情况分支的时候，可以判断在这种情况下当前问题的退化情况：
+    - 证明退化情况在特定条件下一定会发生
+    - 证明如果如果退化情况发生，在当前子问题下也一定是正确的结果，这样就可以取最大值或者最小值
+]
+
+Using Memorization:
+
+- Time Complexity: $O(N^2)$
+- Space Complexity: $O(N^2)$
+
+== Optimal Binary Search Tree (CLRS 15.5)
+
+#recordings[
+  给定 $n$ 个不同的关键字，每一个关键字都确定一个访问频率，构建一个二叉搜索树，我们希望最小化这样的二叉搜索树：
+
+  $
+    sum_(i=1)^n W_i ("depth"_T (K_i) + 1)
+  $
+
+  $("depth"_T (K_i) + 1)$ 代表每一次在二叉搜索树中的查找次数。
+]
+
+这个问题非常的经典，类似于霍夫曼树，但是霍夫曼树更多是在编码长度上的优化，并且不需要保证有序性。
+
+Similar to using dp to find all the available binary search trees, we define the sub-problems:
+
+Define $e(i,j)$ means the cost of optimal BST on $K_i, K_(i+1), dots, K_j$, and finally we want the $e(1,n)$.
+
+Thus, we can form the DP strategy:
+
+$
+  e(i,j) = cases(W_i "if " i = j, min_(i <= r <= j) (e(i, r-1)+e(r+1,j)+W(i,j)))
+$
+
+$W(i,j)$ 代表因为拼接了根节点，因此每个节点在搜索的时候都要多做一次比较，因此对应的 cost 也会增加。
+
+#recordings[
+  When we don't know what to do in DP, we can guess all the possible guesses and we just select the optimal one!
+]
+
+
+同时，我们也可以记录最优的根节点，方便我们最后重建树的结构：
+
+```
+// K：关键字数组
+// R：最优根节点索引表
+// i：子序列起始索引
+// j：子序列结束索引
+
+BuildOptimalBST(i, j, K, R):
+    // 边界条件：如果子序列为空，返回空 (NULL)
+    if i > j:
+        return NULL
+    
+    // 1. 获取当前最优子树的根节点索引
+    r = R[i, j]
+    
+    // 2. 创建根节点
+    root = new Node(key = K[r])
+    
+    // 3. 递归构建左子树
+    // 左子树区间：[i, r-1]
+    root.left = BuildOptimalBST(i, r - 1, K, R)
+    
+    // 4. 递归构建右子树
+    // 右子树区间：[r+1, j]
+    root.right = BuildOptimalBST(r + 1, j, K, R)
+    
+    // 5. 返回根节点
+    return root
+
+// 调用：
+// root = BuildOptimalBST(1, n, K, R)
+```
+
+=== Why Greedy Fails?
+
+一种类似于哈夫曼树的做法是维护最小堆，每次选择一个概率最大的树节点放在顶层，然后递归的选择后续的子树结构。
+
+这样看似正确，但是 *this is a search tree*!!! We must ensure the tree is in perfectly ordered. 搜索树对树的结构有更加严格的限制，无法简单的做上面的切割。
+
+
+
+#figure(
+  image("images/OBST.png")
+)
+
+== Alternating Coin Games
+
+#definition("Alternating Coin Games")[
+  Row of n coins of values $V_1, V_2, dots, V_n$, n is even. In each turn, a player selects either the first or last coin from the row, removes it permanently, and receives the value of the coin.
+]
+
+Define $V(i,j)$ is the max value we can definitely win if it is *our turn* and only coins $V_i, V_(i+1), dots, V_j$ remains.
+
+We can have thus transformation:
+
+$
+  V(i,j) = max{"Final result after selecting v_i" + V_i,"Final result after selecting v_j" + V_j}
+$
+
+Define another sub-problems with opponent picking for $V(i+1,j)$. Thus, the opponent will pick the minimum!
+
+$
+  V(i,j) = max{min{V(i+1, j-1), V(i+2, j)}+V_i, min{V(i,j-2), V(i+1, j-1)} + V_j}
+$
+
+Time Complexity: $Theta(n^2)$.
+
 
 = Greedy Algorithms
 
