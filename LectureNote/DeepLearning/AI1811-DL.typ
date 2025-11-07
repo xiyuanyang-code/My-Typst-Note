@@ -218,7 +218,7 @@ $
   (partial C_(t+1))/(partial C_t) = f_t in [0,1]
 $
 
-Thus, we can reduce VG and EG!
+Thus, we can reduce VG and EG for we can controlling the gradient compute into a relative medium range.
 
 
 
