@@ -1,103 +1,127 @@
 # My Typst Note
 
-## Introduction
-
 A simple CLI tool for quickly generating formatted notes written in typst and deploying them in PDF.
 
 ## File Structure
-
+<!-- INSERT BEGIN -->
 ```text
 .
 ├── Cargo.lock
 ├── Cargo.toml
 ├── LectureNote
-│   ├── AlgorithmsNote
-│   │   ├── AI1804-Algorithm.typ
-│   │   ├── Leetcode.typ
-│   │   ├── MIT6006-DP.typ
-│   │   ├── MIT6046J-Algorithm.typ
-│   │   ├── images
-│   │   ├── lecture_pdf
-│   │   │   ├── notes
-│   │   │   └── slides
-│   │   └── tex_note
-│   │       └── code_demo.tex
-│   ├── DeepLearning
-│   │   ├── slides
-│   │   └── src
-│   │       ├── cnn-cifar10
-│   │       │   └── CNN-Cifar10.ipynb
-│   │       ├── fnn-mnist
-│   │       │   └── MNIST_AND_MLP.ipynb
-│   │       ├── lstm-transformer
-│   │       │   └── lstm-transformer-imdb.ipynb
-│   │       └── training-dynamics
-│   │           ├── condensation
-│   │           │   ├── condense.ipynb
-│   │           │   ├── initial_condense.ipynb
-│   │           │   └── pic
-│   │           └── frequency-principle
-│   │               ├── README.md
-│   │               ├── example.ipynb
-│   │               ├── f-principle_nd.ipynb
-│   │               ├── fprinciple.ipynb
-│   │               ├── fprinciple_brief.ipynb
-│   │               ├── pic
-│   │               └── utils.py
-│   ├── MachineLearning
-│   │   ├── AI1811-ML.typ
-│   │   ├── ML
-│   │   │   ├── Dimensionality_reduction.md
-│   │   │   ├── Model_selection.md
-│   │   │   ├── Parameter_Estimation.md
-│   │   │   ├── classification.md
-│   │   │   ├── clustering.md
-│   │   │   ├── clustering_full.md
-│   │   │   ├── intro.md
-│   │   │   ├── regression.md
-│   │   │   └── regression_full.md
-│   │   └── src
-│   │       └── clustering.py
-│   ├── NumericalAnalysis
-│   │   ├── AI1807-Numerical.typ
-│   │   ├── images
-│   │   ├── lecture-slides
-│   │   └── src
-│   │       ├── demo.py
-│   │       ├── fp.py
-│   │       ├── homework
-│   │       │   └── hm1.py
-│   │       ├── interpolation.py
-│   │       └── interpolation_for_torch.py
-│   ├── Probability
-│   │   └── MATH1207-Probability.typ
-│   └── RL
-│       ├── CS234-RL.typ
-│       └── images
+│   ├── AlgorithmsNote
+│   │   ├── AI1804-Algorithm.typ
+│   │   ├── lecture_pdf
+│   │   │   ├── notes
+│   │   │   └── slides
+│   │   ├── Leetcode.typ
+│   │   ├── MIT6006-DP.typ
+│   │   ├── MIT6046J-Algorithm.typ
+│   │   ├── src
+│   │   │   └── homework_1
+│   │   │       ├── homework1_assignment
+│   │   │       │   ├── problem
+│   │   │       │   │   ├── 题目描述.md
+│   │   │       │   │   ├── 1_1_Maximum_Subarray.py
+│   │   │       │   │   ├── 1_2_Find_Peak_Element.py
+│   │   │       │   │   ├── 1_3_Majority_Element.py
+│   │   │       │   │   ├── 1_4_Find_the_Duplicate_Number.py
+│   │   │       │   │   ├── 2_1_Kth_Largest_Element.py
+│   │   │       │   │   ├── 3_1_Hospital_Clinic_Allocation_System.py
+│   │   │       │   │   └── Problem Description.md
+│   │   │       │   ├── README.md
+│   │   │       │   └── test
+│   │   │       │       ├── test_1_1_maximum_subarray.py
+│   │   │       │       ├── test_1_2_find_peak_element.py
+│   │   │       │       ├── test_1_3_majority_element.py
+│   │   │       │       ├── test_1_4_find_the_duplicate_number.py
+│   │   │       │       ├── test_2_1_kth_largest_element.py
+│   │   │       │       ├── test_3_1_hospital_clinic_allocation_system.py
+│   │   │       │       └── test_utils.py
+│   │   │       └── homework1_original
+│   │   │           ├── problem_2_1_1_two_sum.py
+│   │   │           ├── problem_2_1_2_max_subarray.py
+│   │   │           ├── problem_2_1_3_peak_element.py
+│   │   │           ├── problem_2_1_4_majority_element.py
+│   │   │           ├── problem_2_2_sorted_set.py
+│   │   │           ├── problem_2_3_merge_sort_inversions.py
+│   │   │           ├── problem_2_4_hospital_system.py
+│   │   │           └── README.md
+│   │   └── tex_note
+│   │       └── code_demo.tex
+│   ├── DeepLearning
+│   │   ├── AI1811-DL.typ
+│   │   ├── homework
+│   │   │   ├── hm1.md
+│   │   │   └── hm1.py
+│   │   └── slides
+│   ├── MachineLearning
+│   │   ├── AI1811-ML.typ
+│   │   ├── hm
+│   │   │   ├── coding.py
+│   │   │   ├── decision-tree.py
+│   │   │   ├── pca-2.py
+│   │   │   ├── pca.py
+│   │   │   └── Source Code for Problem7 PCA.md
+│   │   ├── src
+│   │   │   └── clustering.py
+│   │   └── src_scripts
+│   │       ├── classification.md
+│   │       ├── clustering_full.md
+│   │       ├── clustering.md
+│   │       ├── Dimensionality_reduction.md
+│   │       ├── intro.md
+│   │       ├── Model_selection.md
+│   │       ├── Parameter_Estimation.md
+│   │       ├── regression_full.md
+│   │       └── regression.md
+│   ├── NumericalAnalysis
+│   │   ├── AI1807-Numerical.typ
+│   │   ├── lecture-slides
+│   │   └── src
+│   │       ├── demo.py
+│   │       ├── fp.py
+│   │       ├── homework
+│   │       │   ├── hm1.py
+│   │       │   ├── hm2.py
+│   │       │   └── visualize_resample.py
+│   │       ├── interpolation_for_torch.py
+│   │       ├── interpolation.py
+│   │       └── spline.py
+│   ├── Probability
+│   │   └── MATH1207-Probability.typ
+│   └── RL
+│       └── CS234-RL.typ
 ├── Makefile
 ├── README.md
 ├── result
-│   ├── AI1804-Algorithm.pdf
-│   ├── AI1807-Numerical.pdf
-│   ├── AI1811-ML.pdf
-│   ├── CS234-RL.pdf
-│   ├── Leetcode.pdf
-│   ├── MATH1207-Probability.pdf
-│   ├── MIT6006-DP.pdf
-│   └── MIT6046J-Algorithm.pdf
+│   ├── AI1804-Algorithm.pdf
+│   ├── AI1807-Numerical.pdf
+│   ├── AI1811-DL.pdf
+│   ├── AI1811-ML.pdf
+│   ├── CS234-RL.pdf
+│   ├── Leetcode.pdf
+│   ├── MATH1207-Probability.pdf
+│   ├── MIT6006-DP.pdf
+│   └── MIT6046J-Algorithm.pdf
 ├── run.sh
 ├── scripts
-│   ├── install.sh
-│   ├── refresh.py
-│   └── update_notes
-│       └── compile.py
+│   ├── install.sh
+│   ├── refresh.py
+│   ├── update_files.py
+│   └── update_notes
+│       └── compile.py
 ├── src
-│   └── main.rs
+│   └── main.rs
 └── template
     ├── backup.typ
     ├── empty.typ
     └── format.typ
+
+31 directories, 81 files
+
 ```
+<!-- INSERT LAST -->
 
 ## Template
 
@@ -105,7 +129,9 @@ We use [dvdtyp](https://github.com/DVDTSB/dvdtyp) as the template for notes. Rea
 
 > Several modifications based on personal needs are made.
 
-## Installation
+## Usage for Typst CLI tools
+
+### Installation
 
 First, ensure you have [Rust](https://www.rust-lang.org/tools/install) and [Cargo](https://doc.rust-lang.org/cargo/) installed.
 
@@ -142,7 +168,7 @@ cargo install --path .
 
 Then restart your terminal with `source ~/.zshrc`, etc.
 
-## Usage
+### Usage
 
 To create a new note, run the following command, replacing `"<note title>"` with your desired title:
 
@@ -170,9 +196,7 @@ note pdf algebra
 
 ## Lecture Notes
 
-All my lecture notes written in typst will be stored in `./LectureNote` folder, including there courses...
-
-For all the lecture notes, see [Release Page](https://github.com/xiyuanyang-code/My-Typst-Note/releases/latest) for more information!
+All my lecture notes written in typst will be stored in `./LectureNote` folder. All open source. You can see [Github Release Page](https://github.com/xiyuanyang-code/My-Typst-Note/releases/latest) for more information!
 
 Finished Courses:
 
@@ -184,6 +208,7 @@ Current Updating Courses:
 - SJTU-AI1804 Analysis of Algorithms
 - LeetCode Daily Problems
 - SJTU-AI1811 Machine Learning
+- SJTU-AI1811 Deep Learning
 - SJTU-MATH1207 Probability
 - MIT6046J Analysis of Algorithms
 - CS234 Reinforcement Learning

@@ -2,6 +2,9 @@
 # compile and make
 python scripts/update_notes/compile.py
 
+# update readme
+python scripts/update_files.py
+
 # generate new tags
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 VERSION_NO_V=$(echo "$LATEST_TAG" | sed 's/^v//')
