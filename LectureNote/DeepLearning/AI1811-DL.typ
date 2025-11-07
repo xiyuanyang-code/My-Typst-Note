@@ -136,7 +136,89 @@ $
   f(x;theta) = sum^m_(k=1) a_k sigma (w^T_k x) = a^T sigma (W x)
 $
 
+= Recurrent Neural Network
+
+循环神经网络相信状态随着时间的变化，因此训练可学习矩阵来表示隐状态：
+
+$
+  S_0 = 0\
+  S_t = f(U x_t + W S_(t-1) + b), t = 1,2,3,dots,n\
+  o_t = g(V s_t)
+$
+
+where $f$ is the activate functions, and g is the softmax functions for final output.
+
+For each state, $S_t$ represents the memory statement for current state $t$.
+
+From this statement, we can design *encoder-decoder* structure for machine translation.
+
+== BackPropagation Through Time (BPTT)
+
+$ frac(partial L_t, partial W_(h h)) = sum_(k=1)^t frac(partial L_t, partial h_t) dot (product_(j=k)^(t-1) frac(partial h_(j+1), partial h_j)) dot frac(partial h_k, partial W_(h h)) $
+
+While doing back propagations, the computation of gradient requires many time steps multiplications, which will result to *Vanishing Gradient* (VG) or *Exploding Gradient* (EG).
+
+== LSTM
+
+We have a sequence: $x_1, x_2, dots, x_n$.
+
+#figure(
+  image("images/LSTM.png")
+)
+
+For current state $t$, we will do operations as follows:
+
+- Input new knowledge:
+
+$
+  accent(C,"~")_(t+1)  = tanh(W_(s c) S_t + W_(x C) x_(t+1) + b_C)
+$
+
+- Choose to forget:
+
+$
+  F_t = sigma(W_(S f) S_t + W_(x f) x_(t+1) b_f)
+$
+
+- Choose to write into long-term memory:
+
+$
+  I_t = sigma(W_(S i) S_t + W_(x i) x_(t+1) + b_i)
+$
+
+Then, we can update our memory status:
+
+$
+  C_(t+1)  = I_t accent(C,"~")_(t+1) + F_t C_t
+$
+
+Now, we consider the output gate:
+
+$
+  s_(t+1) = o_t * tanh(C_(t+1))
+$
+
+$
+  o_t = sigma(W_(s o) S_t + W_(x o) x_(t+1) + b_o)
+$
+
+#recordings("Why two state?")[
+  Why we design the internal memory state and hidden state?
+  - 记忆门的控制代表着模型的输入信息如何更新到长期的记忆中，我们可以从公式中看到，记忆门的状态矩阵的更新是不需要通过激活函数的
+  - 隐藏状态在 LSTM 中代表浅层记忆，控制输入和输出，并且每一步都会重新计算，快速改变
+]
+
+$f_t in [0,1]$. Thus it could control the gradient in a relative bounds.
+
+$
+  (partial L)/(partial C_t) = (partial L)/(partial C_(t+1)) * (partial C_(t+1))/(partial C_t)
+$
+
+$
+  (partial C_(t+1))/(partial C_t) = f_t in [0,1]
+$
+
+Thus, we can reduce VG and EG!
 
 
 
-= Conclusion
