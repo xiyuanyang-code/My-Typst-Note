@@ -1315,10 +1315,131 @@ $
 
 Time Complexity: $Theta(n^2)$.
 
+== All-Pairs Shortest Paths
+
+=== Recall
+
+For single shortest path problems, given a directed graph $G = (V,E)$, vertex $s in V$ and edge weights $w: E arrow RR$. We need to find $delta(s,v)$, equal to the shortes-path weight from $s$ to $v$, $forall v in V$.
+
+#recordings[
+  - $delta(u,v) = infinity$: there is no path.
+  - $delta(u,v) = -infinity$: there is negative loops.
+]
+
+- Unweighted: *BFS* Algorithms for $O(V+E)$ times.
+- non-negative edge weight: *Dijkstra* for $O(E + V log V)$ (Using Fibonacci heaps.)
+- acyclic graph: *Topological Sort* and one-pass of Bellman-Ford (relaxation): $O(V + E)$
+- general: *Bellman-Ford*: $O(V E)$.
+
+=== All-pairs shortest path
+
+#definition[
+  Given edge-weighted graph, $G = (V,E, w)$, and find $delta(u,v)$ for all $u, v in V$.
+]
+
+One obvious way to run SSSP for $V$ times!
+
+- Unweighted: *BFS* Algorithms for $O(V^2+E V)$ times.
+- non-negative edge weight: *Dijkstra* for $O(E V + V^2 log V)$ (Using Fibonacci heaps.)
+- acyclic graph: *Topological Sort* and one-pass of Bellman-Ford (relaxation): $O(V^2 + E V)$
+- general: *Bellman-Ford*: $O(V^2 E)$.
+
+Consider a special case where $E = Theta(V^2)$, then we have time complexity $O(V^4)$ for general cases using $|V|$ times Bellman-Ford algorithm.
+
+For *Johnson's* algorithms, we can optimize this by $O(V^3)$ times!
+
+=== Solving APSP
+
+==== Dynamic Programming, attempt 1
+
+Define sub-problems: $d^((m))_(u v)$ means the weight of the shortest-path $u arrow v$ using $<= m$ edges.
+
+$
+  delta(u,v) = d^(|V|)_(u,v)
+$
+
+How to update? We can guess!
+
+$
+  d^((m))_(u v) = min(d^((m-1))_(u x) + w(x,v) "for" x in V)
+$
+
+Time Complexity: $O(V^4)$. We have $O(V^3)$ sub-problems.
+
+==== Optimization for Divide and Conquer
+
+We can optimize one iterations using divide and conquer! ($O(V^3 log V)$).
+
+$
+  d^((m))_(u v) = min(d^((ceil m/2 ceil.r))_(u x) + d^((ceil m/2 ceil.r))_(x v) "for" x in V)
+$
+
+我们也可以根据这个判断是否存在负环。
+
+==== Matrix Multiplication
+
+Connection to APSP problems, for simple matrix multiplication:
+
+$
+  C = A times B arrow c_(i j) = sum_k (a_(i k) times b_(k j))
+$
+
+We define the operations below:
+
+$
+  plus.o = min
+$
+
+$
+  dot.o = +
+$
+
+Then, the matrix multiplication can be written into:
+
+$
+  C = A times B arrow c_(i j) = min_k (a_(i k) + b_(k j))
+$
+
+#recordings[
+  - 这一点和图论最短算法中的松弛操作非常类似
+  - 从计算模型的角度出发，这样的运算操作不会带来任何的复杂度变化，因为默认这些操作都是 $O(1)$ 的。
+]
+
+在完成如下的计算复杂度替换后，我们可以把 APSP 问题建模成一个矩阵乘法的求解问题：
+
+Define $D^((m))$ as $(d_(i j)^((m)))$ （一个矩阵，矩阵的每一个元素代表之前在动态规划中定义的元素）, $W = (w(i,j))$ （权重矩阵）.
+
+$
+  D^((m)) = D^((m-1)) dot.o W
+$
+
+In other words, all you need is to compute $W^(n-1)$ and $W^(n)$.
+
+在这里可以使用基于分治的快速幂运算，实现复杂度的优化：$O(n^3 log n)$.
+
+==== Floyd-Warshall Algorithms
+
+Define another sub-problems: define $c_(u v)^((k))$ as the weight of the shortes-path $u arrow v$ whose intermediate vertices in ${1,2,3,dots,k}$.
+
+Then we can update the dp:
+
+$
+  c_(u v)^((k)) = min(c_(u v)^((k-1)), c_(u k)^((k-1)) + c_(k v)^((k-1)))
+$
+
+$
+  c_(u v)^((0)) = w(u,v)
+$
+
+Time Complexity: $O(V^3)$.
+
+==== Johnson’s algorithm
+
+For sparse graphs, we can achieve better.
+
+
 
 = Greedy Algorithms
-
-= Graph Algorithms
 
 = Linear Programming
 
