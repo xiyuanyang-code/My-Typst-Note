@@ -31,11 +31,10 @@ Recordings for my LeetCode Journey.
 
 = Dynamic Programming
 
-== Classical Problems
 
-=== T72 Edit Distance
+== T72 Edit Distance
 
-==== Problems
+=== Problems
 
 - Url: https://leetcode.com/problems/edit-distance/
 
@@ -95,11 +94,11 @@ You have the following three operations permitted on a word:
 - 状态转移方程？
 - 初始化？
 
-==== 1-based 的情况下初始化的好处
+=== 1-based 的情况下初始化的好处
 
 在 1-based 的情况下，初始化很简单，填满 i = 0 和 j = 0 的两条边，因为这也对应着空字符串的情况
 
-==== 状态转移方程
+=== 状态转移方程
 
 考虑计算 `dp[i][j]`，我们首先考虑从 `dp[i-1][j-1]` 的状态转移。
 
@@ -112,7 +111,7 @@ You have the following three operations permitted on a word:
   - 在末尾替换：需要考虑 `dp[i-1][j-1]`
   - 最后去 min 加 1
 
-==== Results
+=== Results
 
 ```cpp
 #include <cmath>
@@ -157,7 +156,7 @@ public:
 };
 ```
 
-=== T121 Best Time to Buy Stocks
+== T121 Best Time to Buy Stocks
 
 #problem("T121")[
   You are given an array prices where prices`[i]` is the price of a given stock on the ith day.
@@ -167,7 +166,7 @@ public:
   Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
 ]
 
-==== Method1 Using Dynamic Programming
+=== Method1 Using Dynamic Programming
 
 为了简化问题和状态转移方程，如果能给 dp 数组降维就需要降维。同样，对于离散的状态标记，也可以增加一个维度来存储，这不会提高时间复杂度。
 
@@ -280,6 +279,124 @@ class Solution:
 
 # @lc code=end
 
+```
+
+== K 路归并问题
+
+#recordings[
+  K 路归并的堆优化操作是非常经典的算法题目！
+]
+
+基本思路：
+
+- 在数据量非常多的情况下，我们希望能够实现归并是尽可能少的比较元素就找到全局最大元素
+  - 不考虑极端情况（考虑 K 路比较均衡的情况），K 路归并的优势是：
+    - 可以实现流式输入（在线算法、实时更新）
+    - 可以达到更快的时间复杂度
+- 基本思想：*维护堆结构来找到局部最大和全局最大*
+  - 对每一个分路维护堆结构，找到局部最大的元素
+  - 局部最大元素组成一个堆，从而可以实现在 $O(log K)$ 的时间复杂度下找到全局最大值。
+
+=== Basic 链表格式的 K 路归并
+
+```python
+#
+# @lc app=leetcode id=23 lang=python3
+#
+# [23] Merge k Sorted Lists
+#
+
+import heapq
+from typing import List, Optional
+
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+    
+class Solution:
+    def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
+        
+        min_heap = []
+        counter = 0 
+        
+        for head in lists:
+            if head:
+                heapq.heappush(min_heap, (head.val, counter, head))
+                counter += 1
+        
+
+        dummy = ListNode(0)
+        current = dummy
+        
+        while min_heap:
+            val, _, node = heapq.heappop(min_heap)
+            current.next = node
+            current = current.next
+            
+            if node.next:
+                heapq.heappush(min_heap, (node.next.val, counter, node.next))
+                counter += 1
+                
+        return dummy.next
+
+# @lc code=end
+
+```
+
+=== Advanced 去重版的集合 K 路归并
+
+#figure(
+  image("images/kmerge.png")
+)
+
+```python
+import heapq
+
+def merge_k_unsorted_lists_top_n(lists, n):
+    if not lists or n <= 0:
+        return []
+    
+    negated_lists = []
+    # 建队 O（N）
+    for list_index, list in enumerate(lists):
+        if list:
+            negated_list = [(-b,a) for a,b in list]
+            heapq.heapify(negated_list)
+            negated_lists.append(negated_list)
+        else:
+            negated_lists.append([])
+
+    # 初始化全局最小堆 O（N log N）
+    # * 最坏情况 K 路分布不均匀，因此内部循环+弹出的时间复杂度最坏可能达到 N log N
+    global_dict = {}
+    global_heap = []
+    heapq.heapify(global_heap)
+    for list_index in range(len(lists)):
+        while negated_lists[list_index]:
+            new_element, new_id = heapq.heappop(negated_lists[list_index])
+            if new_id not in global_dict or (-new_element) > global_dict[new_id]:
+                global_dict[new_id] = -new_element
+                heapq.heappush(global_heap, (new_element, new_id, list_index))
+                break
+
+    result = []
+    # 寻找新的最大元素 O（n log N）
+    while global_heap and len(result) < n:
+        global_max, global_max_item_id, list_index = heapq.heappop(global_heap)
+        result.append((global_max_item_id,-global_max))
+
+        # inserting new elements into it
+        if negated_lists[list_index]:
+            new_element, new_id = heapq.heappop(negated_lists[list_index])
+            if new_id not in global_dict or (-new_element) > global_dict[new_id]:
+                global_dict[new_id] = -new_element
+                heapq.heappush(global_heap, (new_element, new_id, list_index))
+   
+    return result
+
+    # 总时间复杂度：O（N log N）
 ```
 
 = Conclusion

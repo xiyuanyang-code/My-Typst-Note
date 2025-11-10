@@ -990,6 +990,8 @@ $
 
 == Hashing
 
+=== Simple Hash Function in Python 
+
 === ADT and Dictionary
 
 For abstract data type *dictionary*, this data structure supports several operations:
