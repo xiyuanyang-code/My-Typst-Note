@@ -183,6 +183,92 @@ public:
 - 如果在第 i 天不持有：
   - `dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])`
 
+
+== T152 Max Product Sum SubArray
+
+Given an integer `array` nums, find a subarray that has the largest product, and return the product.
+
+=== Solution1 Simple Definition with $O(N^2)$.
+
+定义如下的状态转移方程：
+
+- `dp[i]` means the max product sum sub-arrays for `array[0:i+1]`
+- All we want to solve is `dp[len(array)-1]`
+- 对于最大最小值的最优解问题，可以分情况做分类讨论
+  - 如果新加入的元素在对应的最大序列中，因为连续性可以保证一次遍历就可以找到当前情况的最大值
+  - 如果不在，退化复用过去的子问题
+- Time Complexity: $O(N^2)$
+
+Aha, TLE.
+
+```python
+#
+# @lc app=leetcode id=152 lang=python3
+#
+# [152] Maximum Product Subarray
+#
+
+# @lc code=start
+from typing import List
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        length_nums = len(nums)
+        if length_nums == 1:
+            return nums[0]
+        dp = [None] * (length_nums)
+        dp[0] = nums[0]
+        for i in range(1, length_nums):
+            # find the current maximum
+            current_maximum = nums[i]
+            current_value = nums[i]
+            for j in range(i-1,-1,-1):
+                current_value *= nums[j]
+                current_maximum = max(current_maximum, current_value)
+            dp[i] = max(dp[i-1], current_maximum)
+        return dp[length_nums-1]
+        
+# @lc code=end
+```
+
+=== Solution 2 Optimization for Linear Time Complexity
+
+考虑简单的情况：如果数组元素全部是正整数，那最大的肯定是全部的数组，因为乘积会越乘越大。
+- 考虑加入 0 的情况，则当前子数组乘积变为 0
+- 考虑加入负数的情况，会导致正负翻转，当前的最小乘积可能在之后就变成了最大乘积
+
+因此，我们需要在转移的过程中维护更多的信息，这样可以提高记忆化的效率，防止内部循环再来一次线性遍历。
+
+#definition[
+  - `max_ending[i]`: The maximum product for all the sub-arrays ending with index i.
+  - `min_ending[i]`: The minimum product for all the sub-arrays ending with index i.
+
+  在第一种算法中，加入新元素后采用粗暴的遍历方法，但是经过分析之后我们发现，我们可以 $O(1)$ 直接分析出最大值。这就是时间复杂度优化的关键。
+]
+
+```py
+class Solution:
+    def maxProduct(self, nums: List[int]) -> int:
+        length_nums = len(nums)
+        if length_nums == 1:
+            return nums[0]
+        max_end = [None] * length_nums
+        min_end = [None] * length_nums
+        max_end[0] = nums[0]
+        min_end[0] = nums[0]
+        for i in range(1, length_nums):
+            if nums[i] > 0:
+                max_end[i] = max(max_end[i-1] * nums[i], nums[i])
+                min_end[i] = min(min_end[i-1] * nums[i], nums[i])
+            elif nums[i] == 0:
+                max_end[i] = 0
+                min_end[i] = 0
+            else:
+                max_end[i] = max(min_end[i-1] * nums[i], nums[i])
+                min_end[i] = min(max_end[i-1] * nums[i], nums[i])
+        return max(max_end)
+```
+
+
 = Divide and Conquer
 
 #recordings("Divide and Conquer")[
