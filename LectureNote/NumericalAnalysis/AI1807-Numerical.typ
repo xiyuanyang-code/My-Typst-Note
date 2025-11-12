@@ -1585,3 +1585,251 @@ $
   c_0 = (f(a) + f(t_2))/2 - (f(b) - f(a))/(b-a) (a+t_2)/2
 $
 
+== 最佳平方逼近
+
+考虑*带权范数*的更加一般的情况：
+
+$
+  ||f(x) - p^*(x)||^2_2 = min_(p(x) in H_n) integral_a^b rho(x) [f(x) - p(x)]^2 "d"x
+$
+
+=== 内积空间
+
+- 线性空间
+- 内积 & 正交的公理化定义
+
+对于实数域上的线性空间 $C[a,b]$，定义这个线性空间的标准内积:
+$
+  (f,g) = integral^b_a f(x) g(x) "d"x
+$
+
+对于上述的式子，可以讲函数视为无穷维度的向量，转化到向量内积做向量的点乘。
+
+连续函数的二范数也由该标准定义导出：
+
+$
+  ||f||_2 = (f,f)^(1/2) = integral_a^b f(x)^2 "d"x
+$
+
+=== 权函数
+
+#definition[
+  - $integral_a^b |x|^k rho(x) "d"x$ 存在并且为有限值
+  - $integral_a^b g(x) rho(x) "d"x = 0$, then $g(x) == 0$
+]
+
+- $rho(x) = 1, x in [-1,1]$
+- $rho(x) = 1/(sqrt(1 - x^2)), x in [-1,1]$
+- $rho(x) = e^(-x), x in [0, infinity)$
+- $rho(x) = e^(-x^2), x in (-infinity, infinity)$
+
+#definition("带权正交")[
+  $
+    (f,g) = integral_a^b rho(x) f(x) g(x) "d"x = 0
+  $
+]
+
+For example, $1, cos x, sin x, cos 2x, sin 2x, dots$ 在区间 $[-pi, pi]$ 上相互正交：傅里叶级数的基函数
+
+#definition("正交多项式")[
+  $
+    (g_i, g_j) = integral^b_a rho(x) g_i (x) g_j (x) "d"x = 0 (i != j)
+  $
+]
+
+
+=== 正交多项式
+
+正交多形式是 $n$ 次多项式。找到一组 k 次正交多项式可以认为是带权 k 次正交多项式。并且构成一组基：
+
+$
+  {phi_0 (x), phi_1(x), dots, phi_n (x)}
+$
+
+Define:
+
+$
+  u_k = (1/(||phi_k||)) phi_k
+$
+
+可以作为规范正交基。
+
+#proposition[
+  $phi_n (x)$ 和所有次数小于 n 的多项式正交。
+
+  $
+    (p(x), phi_n (x)) = integral_a^b rho(x) p(x) phi_n (x) "d"x = 0
+  $
+]
+
+#proposition[
+  ${phi_k}_(k=0)^(infinity)$的首项系数均为 1，则对于 $n in NN$:
+
+  $
+    phi_(n+1) (x) = (x- beta_n) phi_n (x) - gamma_n phi_(n-1) (x)
+  $
+
+  $
+    phi_(-1) = 0, phi_0 = 1, gamma_0 = 1
+  $
+
+  $
+    beta_n = ((phi_n, x phi_n))/((phi_n, phi_n))
+  $
+
+  $
+    gamma_n = ((phi_n, phi_n))/((phi_(n-1), phi_(n-1)))
+  $
+]
+
+#figure(
+  image("images/zuijiaoinfang.png")
+)
+
+#proposition[
+  $phi_n (x)$ 在开区间中存在 n 个不同的零点
+]
+
+==== 正交多项式的构造
+
+$
+  g_0 = 1
+$
+
+$
+  g_n (x) = x^n - sum_(k=0)^(n-1) ((x^n, g_k))/((g_k, g_k)) g_k (x)
+$
+
+$p(x)$ 可以表示一组正交多项式的线性组合，则可以求解简化的过程：
+
+$
+  p^* (x) = sum_(j=0)^n alpha_j phi_j (x)
+$
+
+$
+  I(a_0, a_1,dots, a_n) = integral_a^b rho(x) [f(x) - sum_(j=0)^n alpha_j phi_j (x)]^2 "d"x
+$
+
+We want to let $I(a_0, a_1, dots, a_n)$ to be the minimum, then we can solve:
+
+$
+  (partial I)/(partial alpha_k) = 2 integral_a^b rho(x) [f(x) - sum_(j=0)^n alpha_j phi_j (x)] phi_k (x) "d"x
+$
+
+因此，我们可以得到*法方程*:
+
+对于更加一般的情况，也适用非正交多项式的基：
+
+$
+  sum_(j=0)^n (phi_k, phi_j )alpha_j = (f, phi_k)
+$
+
+对于正交多项式的基，可以简化为：
+
+$
+  a_k = ((f, phi_k))/((phi_k, phi_k))
+$
+
+比如，如果采用幂基 $x^i$（注意这个不是正交多项式基）:
+
+$
+  (phi_k, phi_j) = integral_0^1 x^(k+j) "d"x = 1/(k+j+1)
+$
+
+$
+  (f, phi_k) = integral_0^1 f(x) x^k "d"x = d_k
+$
+
+则求解法方程等价于求解线性方程组：
+
+$
+  H a = d
+$
+
+$det(H) != 0$ 是基函数线性无关的充要条件，例如对于幂基，可以保证最佳平方逼近多项式存在且具有唯一性。
+
+$
+  sum_(j=0)^n (phi_k, phi_j) a_j = (f, phi_k)
+$
+
+We have:
+
+$
+  (f - p^*, phi_k) = 0
+$
+
+$
+  ||delta(x)||_2^2 = (f-p^*,f-p^*) = (f - p^*,f) = (f,f) - (p^*,f) = ||f(x)||^2_2 - sum_(j=0)^n a_j (phi_j,f)
+$
+
+如果我们给定了一组正交多项式，则直接求解系数即可。
+
+$
+  ||delta(x)||_2^2 = (f,f) - (p^*,f) = ||f(x)||^2_2 - sum_(j=0)^n ((f, phi_j)^2)/((phi_k, phi_j)) 
+$
+
+正交多项式的构造见前面正交多项式的章节。
+
+==== 常见的正交多项式
+
+===== Legendre
+
+$
+  P_n (x) = 1/(2^n n!) ("d"^n)/("d" x^n) [(x^2 - 1)^n] = a_n x^n + a_(n-1) x^(n-1) + dots\
+  a_n = ((2n)!)/(2^n (n!)^2)
+$
+
+$
+  (n+1) P_(n+1)(x) = (2 n+1)x P_n (x) - n P_(n-1)(x)
+$
+
+$
+  integral_(-1)^(1) P_n (x) P_m (x) "d"x = 2/(2 n+1) ,m=n
+$
+
+$
+  P_n(-x) = (-1)^n P_n(x)
+$
+
+#figure(
+  image("images/legendre.png")
+)
+
+
+===== Chebyshev
+
+
+$x in [-1,1]$, $rho(x) = 1/(sqrt(1-x^2))$:
+
+$
+  T_n (x) = cos(n arccos x)
+$
+
+$
+  T_(n+1)(x) = 2x T_n (x)  - T_(n-1) (x)
+$
+
+最高次项系数为 $2^(n-1)$
+
+$
+  integral_(-1)^1 (T_n(x) T_m(x))/(sqrt((1 - x^2))) "d"x = cases(0 " "m!= n,pi/2 " "m = n != 0, pi " "m = n = 0)
+$
+
+#figure(
+  image("images/chebtshev_poly.png", width: 10cm)
+)
+
+#figure(
+  image("images/chebyshev_poly_1.png")
+)
+
+#theorem[
+  $
+    ||f(x) - L_n (x)||_(infinity) = max_(-1 <= x <= 1) |R_n (x)| <= M_(n+1)/(2^n (n+1)!)
+  $
+
+  $
+    M_(n+1) = max_(a <= x <= b) |f^((n+1)) (x)|
+  $
+]
+
