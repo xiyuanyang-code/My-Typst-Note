@@ -9,6 +9,7 @@ python scripts/update_files.py
 LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 VERSION_NO_V=$(echo "$LATEST_TAG" | sed 's/^v//')
 IFS='.' read -r -a VERSION_ARRAY <<< "$VERSION_NO_V"
+echo "Latest Tag: $LATEST_TAG"
 
 MAJOR=${VERSION_ARRAY[0]}
 MINOR=${VERSION_ARRAY[1]}
