@@ -6,7 +6,8 @@ python scripts/update_notes/compile.py
 python scripts/update_files.py
 
 # generate new tags
-LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+LATEST_TAG=$(git tag -l 'v*' --sort=-v:refname | head -1)
+LATEST_TAG=${LATEST_TAG:-v0.0.0}
 VERSION_NO_V=$(echo "$LATEST_TAG" | sed 's/^v//')
 IFS='.' read -r -a VERSION_ARRAY <<< "$VERSION_NO_V"
 echo "Latest Tag: $LATEST_TAG"
