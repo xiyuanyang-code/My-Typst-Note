@@ -1435,11 +1435,125 @@ $
 
 Time Complexity: $O(V^3)$.
 
-==== Johnson’s algorithm
+==== Johnson’s Algorithm
 
-For sparse graphs, we can achieve better.
+对于没有负权边的情况，Johnson 算法可以在稀疏图上达到更好的性能。首先，我们需要保证这个图中不存在负权环。
 
+For the sparse graph, we consider $E = O(V)$, but not $E = O(V^2)$.
 
+- 对于没有负权的图，直接运行 Dijkstra 可以达到很好的性能: $O(E + V log V) = O(V log V)$.
+
+因此，基本想法是：
+
+#recordings[
+  把有负权边的图“重新加权”成*无负权边的图*，使得每对顶点的最短路顺序保持不变（即不会改变哪条路是最短），然后在加权后的图上对每个源点运行 Dijkstra（快），最后把结果换回原图的距离。
+]
+
+- find function $h$ and assign weights to vertices: $h: V arrow RR$.
+- Updated the new weights: 
+
+$
+  w_h (u,v) = w(u,v) + h(u) - h(v) >= 0
+$
+
+- run Dijkstra: we can get $delta_h(u,v)$ for all $u,v in V$.
+
+- compute $delta(u,v)$.
+
+#proposition[
+  $
+    delta(u,v) = delta_h (u,v) - h(u) + h(v)
+  $
+]
+
+We can prove that all $u arrow v$ paths change in weight by the same offset $h(u) - h(v)$, which implies that the shortest path is preserved (but offset).
+
+===== How to find the $h$?
+
+All we want to do is:
+
+$
+  w_h (u,v) = w(u,v) + h(u) - h(v) >= 0
+$
+
+This is equivalent to:
+
+$
+  h(v) - h(u) <= w(u,v) forall (u,v) in V
+$
+
+This is a *system of difference constraints*.
+
+#theorem[
+  If the graph has the negative weight cycles, then there exists no solution to the above system of difference constraints.
+]
+
+In contradiction, if we have a negative weight cycles and a solutions, we can easily construct:
+
+$
+  h(v_1) - h(v_0) <= w(v_0, v_1)
+$
+
+$
+  h(v_2) - h(v_1) <= w(v_1, v_2)
+$
+
+$
+  h(v_k) - h(v_(k-1)) <= w(v_k, v_(k-1))
+$
+
+$
+  h(v_0) - h(v_k) <= w(v_k, v_0)
+$
+
+Adding them all, we can prove:
+
+$
+  0 <= w("cycle") < 0
+$
+
+#theorem[
+  If $(V,E,w)$ has no negative-weight cycle, then we can find a solution the difference constraints.
+]
+
+- We can *add a new vertex $s$ to $G$*, and we can add edges $(s,v)$ for weight 0 for all $v in V$.
+- After adding this super source, we can ensure that $delta(s,v)$ is for all $v in V$.
+  - $delta(s,v)$ 可能并不是 0，因为原来的图允许负权边的出现。
+- We now claim that $h(v) = delta(s,v)$:
+
+$
+  delta(s,u) + w(u,v) >= delta(s,v)
+$
+
+Thus we have:
+
+$
+  w(u,v) >= delta(s,v) - delta(s,u) = h(v) - h(u)
+$
+
+===== Time Complexity Analysis
+
+- To compute the reweighted graphs, we need to run Bellman-Ford for $O(V E)$ time. Then, we pay a pre-processing cost for reweight all the edges $O(E)$.
+
+- Running Dijkstra: $O(V E + V^2 log V)$
+- reweight the shortest path $delta(u,v)$ for all the vertex pair for $O(V^2)$ times.
+
+Total time complexity: $O(V E + V^2 log V)$
+
+- For dense graphs, which $O(E) = O(V^2)$, the total time complexity is the same as $O(V^3)$, the same as the Floyd-Warshall Algorithm.
+- For sparse graphs ($O(E) = O(V)$), then the time complexity is $O(V^2 log V)$.
+
+=== More Applications
+
+The strength of the *any systems of difference constraints*.
+
+#recordings[
+  任何一组形如 $x_i - x_j ≤ c$ 的不等式约束，都可以用图论中的最短路径来求解。
+]
+
+We can model is as a graph, where vertex $j$ points to the vertex $i$ with the weight $c$. 因为最短路算法的更新本质就是不断的利用这个不等式来更新最短路径的取值，最终在节点中加入一个超级源点，计算得到的最短路径就是对应的不等式的解。如果建模存在负环，则说明这个约束无解。
+
+例如，在实际的工程调度中，我们可以利用图建模来解决最小化最大延迟的问题。
 
 = Greedy Algorithms
 
