@@ -70,6 +70,10 @@ def cleanup_orphaned_pdfs():
     orphaned_count = 0
 
     for output_pdf_path in tqdm(output_files, desc="Checking PDFs"):
+        # * alpha build for exceptions
+        if "alphabuild" in str(output_pdf_path):
+            continue
+        
         # We need to check if the corresponding .typ file exists anywhere
         # under TARGET_FILE_PATH.
         source_typ_path = generate_source_path(output_pdf_path)
