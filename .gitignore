@@ -16,3 +16,4 @@ images/
 !/result/**/*.pdf
 
 **/*.npy
+**/target
