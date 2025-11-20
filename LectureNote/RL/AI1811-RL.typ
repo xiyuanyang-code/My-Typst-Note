@@ -1,6 +1,6 @@
 #import "@preview/dvdtyp:1.0.1": *
 #show: dvdtyp.with(
-  title: "AI1811-RL.typ",
+  title: "AI1811 Reinforcement Learning Introduction",
   author: "Xiyuan Yang",
   abstract: [Introduction to Reinforcement Learning, AI1811.],
 )

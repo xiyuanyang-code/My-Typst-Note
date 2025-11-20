@@ -103,8 +103,10 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   ├── Probability
 │   │   └── MATH1207-Probability.typ
 │   ├── RL
+│   │   ├── AI1811-RL-slides
 │   │   ├── AI1811-RL.typ
-│   │   └── CS234-RL.typ
+│   │   ├── CS234-RL.typ
+│   │   └── CS285-RL.typ
 │   └── SoftwareDevelopment
 │       ├── README.md
 │       └── src
@@ -137,6 +139,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   ├── AI1811-RL.pdf
 │   ├── alphabuild.pdf
 │   ├── CS234-RL.pdf
+│   ├── CS285-RL.pdf
 │   ├── Leetcode.pdf
 │   ├── MATH1207-Probability.pdf
 │   ├── MIT6006-DP.pdf
@@ -156,7 +159,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
     ├── empty.typ
     └── format.typ
 
-45 directories, 105 files
+46 directories, 107 files
 
 ```
 <!-- INSERT LAST -->
