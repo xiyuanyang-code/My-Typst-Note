@@ -129,19 +129,17 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │                       └── java
 │                           └── MainTest.java
 ├── Makefile
-├── README.md
-├── result
+├── note
 │   ├── AI1804-Algorithm.pdf
 │   ├── AI1807-Numerical.pdf
 │   ├── AI1811-DL.pdf
-│   ├── AI1811-ML.pdf
 │   ├── AI1811-RL.pdf
-│   ├── alphabuild.pdf
 │   ├── CS234-RL.pdf
 │   ├── Leetcode.pdf
 │   ├── MATH1207-Probability.pdf
 │   ├── MIT6006-DP.pdf
 │   └── MIT6046J-Algorithm.pdf
+├── README.md
 ├── run.sh
 ├── scripts
 │   ├── install.sh
@@ -156,7 +154,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
     ├── empty.typ
     └── format.typ
 
-45 directories, 105 files
+45 directories, 103 files
 
 ```
 <!-- INSERT LAST -->

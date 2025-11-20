@@ -3,7 +3,7 @@ import subprocess
 from tqdm import tqdm
 
 TARGET_FILE_PATH = os.path.abspath("./LectureNote")
-OUTPUT_DIR = "./result"  # Define the output directory once
+OUTPUT_DIR = "./note"  # Define the output directory once
 
 
 def get_all_notes():
