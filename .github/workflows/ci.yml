@@ -20,8 +20,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
+            # Lecture Notes - ${{ github.ref_name }}
             Less is More.
           files: |
-            ./result/*
+            ./note/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

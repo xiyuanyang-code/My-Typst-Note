@@ -13,7 +13,7 @@ images/
 **/*.png
 **/*.gif
 
-!/result/**/*.pdf
+!/note/**/*.pdf
 
 **/*.npy
 **/target
