@@ -484,7 +484,7 @@ $ y'/(1-y') = m^-/m^+ y/(1-y) $
 决策树的 Intuition 非常的简单，通过树状结构来模拟人类决策的 Options，是一种很自然的模拟机制。最终，当决策过程达到最大深度的叶子结点时，就代表一个最终的分类结果。同时，这也是一种简单而直观的“分而治之”的策略。但是决策树非常容易陷入在训练数据的过拟合中，我们希望产生一颗泛化能力强的决策树。
 
 #figure(
-  image("ML/decision-tree.png"),
+  image("src_scripts/decision-tree.png"),
   caption: [Simple algorithm for decision trees],
 )
 
@@ -555,7 +555,7 @@ $ text("Gain")(D,a) = text("Ent")(D) - sum^(V)_(v = 1) (|D^v|)/(|D|) text("Ent")
 
 
 #figure(
-  image("ML/missing.png"),
+  image("src_scripts/missing.png"),
   caption: [对缺失值的处理],
 )
 
@@ -599,7 +599,7 @@ $
 在给定参考模型的聚类结果，我们可以检查每一个数据点的聚类结果是否和 references model 相同来判断具体聚类的优劣。具体来说，两两配对得到 $(n(n+1))/2$ 的点对，考虑每个点对是否被正确的分类到相同或者不同的聚类中。
 
 #figure(
-  image("ML/clustering1.png"),
+  image("src_scripts/clustering1.png"),
 )
 
 根据这些，可以推导一些聚类性能的外部指标。
@@ -648,7 +648,7 @@ $
 $
 
 #figure(
-  image("ML/kmeans.png"),
+  image("src_scripts/kmeans.png"),
 )
 
 Recommended Websites:
@@ -806,7 +806,7 @@ $
 $
 
 #figure(
-  image("ML/GMM.png"),
+  image("src_scripts/GMM.png"),
 )
 
 ==== Continuity and Soft Assignment
@@ -1228,7 +1228,7 @@ if __name__ == "__main__":
 DBSCAN 的算法非常类似于寻找联通分量的 Tarjan 算法，实际上，这个问题本身也可以看做寻找联通分量。形式化来说，DBSCAN 实际上要找到由密度关系导出的最大的密度相连样本集合。
 
 #figure(
-  image("ML/dbscan.png"),
+  image("src_scripts/dbscan.png"),
 )
 
 
@@ -1264,7 +1264,7 @@ $b_(i,j) = z_i^TT z_j$
 考虑降维后的样本被中心化，则内积矩阵具有良好的性质：每一行和每一列都是和为0的。
 
 #figure(
-  image("ML/MDS.png"),
+  image("src_scripts/MDS.png"),
   caption: [MDS Proof],
 )
 
@@ -1296,7 +1296,7 @@ $ Z = sqrt(diag(lambda_1, lambda_2, dots, lambda_(d^*))) V_*^TT $
 ==== Prof1 for PCA
 
 #figure(
-  image("ML/PCA_1.png", height: 10cm),
+  image("src_scripts/PCA_1.png", height: 10cm),
 )
 
 下面我们来对上式进行具体证明：
@@ -1548,7 +1548,7 @@ $
 矩阵形式表达：
 
 #figure(
-  image("ML/lle.png"),
+  image("src_scripts/lle.png"),
   caption: [LLE Algorithms],
 )
 
