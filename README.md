@@ -135,6 +135,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   ├── AI1811-DL.pdf
 │   ├── AI1811-ML.pdf
 │   ├── AI1811-RL.pdf
+│   ├── alphabuild.pdf
 │   ├── CS234-RL.pdf
 │   ├── Leetcode.pdf
 │   ├── MATH1207-Probability.pdf
@@ -155,7 +156,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
     ├── empty.typ
     └── format.typ
 
-45 directories, 104 files
+45 directories, 105 files
 
 ```
 <!-- INSERT LAST -->
