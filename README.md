@@ -18,6 +18,10 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   │   ├── MIT6006-DP.typ
 │   │   ├── MIT6046J-Algorithm.typ
 │   │   ├── src
+│   │   │   ├── difference_const
+│   │   │   │   ├── difference_const_simple.py
+│   │   │   │   ├── difference_const.py
+│   │   │   │   └── test_simple.py
 │   │   │   ├── homework_1
 │   │   │   │   ├── homework1_assignment
 │   │   │   │   │   ├── problem
@@ -47,9 +51,14 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   │   │   │       ├── problem_2_3_merge_sort_inversions.py
 │   │   │   │       ├── problem_2_4_hospital_system.py
 │   │   │   │       └── README.md
-│   │   │   └── quiz_2
-│   │   │       ├── problem_3_1.py
-│   │   │       └── problem_3_2.py
+│   │   │   ├── quiz_2
+│   │   │   │   ├── problem_3_1.py
+│   │   │   │   └── problem_3_2.py
+│   │   │   └── quiz_4
+│   │   │       ├── 1.py
+│   │   │       ├── 2.py
+│   │   │       ├── codebase.py
+│   │   │       └── README.md
 │   │   └── tex_note
 │   │       └── code_demo.tex
 │   ├── DeepLearning
@@ -94,21 +103,31 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   ├── Probability
 │   │   └── MATH1207-Probability.typ
 │   ├── RL
+│   │   ├── AI1811-RL.typ
 │   │   └── CS234-RL.typ
 │   └── SoftwareDevelopment
 │       ├── README.md
 │       └── src
-│           └── behave_test
-│               └── features
-│                   ├── demo.feature
-│                   ├── environment.py
-│                   ├── login.feature
-│                   ├── register.feature
-│                   └── steps
-│                       ├── common_steps.py
-│                       ├── demo.py
-│                       ├── login_steps.py
-│                       └── register_steps.py
+│           ├── behave_test
+│           │   └── features
+│           │       ├── demo.feature
+│           │       ├── environment.py
+│           │       ├── login.feature
+│           │       ├── register.feature
+│           │       └── steps
+│           │           ├── common_steps.py
+│           │           ├── demo.py
+│           │           ├── login_steps.py
+│           │           └── register_steps.py
+│           └── test_demo
+│               ├── pom.xml
+│               └── src
+│                   ├── main
+│                   │   └── java
+│                   │       └── Example.java
+│                   └── test
+│                       └── java
+│                           └── MainTest.java
 ├── Makefile
 ├── README.md
 ├── result
@@ -116,6 +135,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
 │   ├── AI1807-Numerical.pdf
 │   ├── AI1811-DL.pdf
 │   ├── AI1811-ML.pdf
+│   ├── AI1811-RL.pdf
 │   ├── alphabuild.pdf
 │   ├── CS234-RL.pdf
 │   ├── Leetcode.pdf
@@ -136,7 +156,7 @@ A simple CLI tool for quickly generating formatted notes written in typst and de
     ├── empty.typ
     └── format.typ
 
-37 directories, 93 files
+45 directories, 105 files
 
 ```
 <!-- INSERT LAST -->

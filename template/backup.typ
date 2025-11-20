@@ -48,7 +48,9 @@
 
   set heading(numbering: "1.")
   show heading: it => {
-    set text(font: "Noto Serif")
+    // set text(font: "Palatino")
+    set text(font: "Noto Serif", lang: "en")
+    // set text(font: "Songti SC", lang: "zh")
     set par(first-line-indent: 0em)
 
     if it.numbering != none {
@@ -59,7 +61,8 @@
     it.body
   }
 
-  set text(font: "New Computer Modern", lang: "en")
+  set text(font: "Noto Serif", lang: "en")
+  set text(font: "Songti SC", lang: "zh")
 
   show math.equation: set text(weight: 400)
 
@@ -84,9 +87,13 @@
 
   show outline.entry.where(level: 1): it => {
     text(font: "Noto Serif", accent)[#strong[#it]]
+    set text(font: "Noto Serif", lang: "en")
+    set text(font: "Songti SC", lang: "zh")
   }
   show outline.entry: it => {
     text(font: "Noto Serif", accent)[#it]
+    set text(font: "Noto Serif", lang: "en")
+    set text(font: "Songti SC", lang: "zh")
   }
 
 
@@ -100,10 +107,10 @@
 }
 
 #let thmtitle(t, color: rgb("#000000")) = {
-  text(font: "Noto Serif", weight: "semibold", fill: color)[#t]
+  text(font: "Noto Serif", fill: color, weight: "extrabold")[#t]
 }
 #let thmname(t, color: rgb("#000000")) = {
-  text(font: "Noto Serif", fill: color)[(#t)]
+  text(font: "Songti SC", fill: color)[#t]
 }
 
 #let thmtext(t, color: rgb("#000000")) = {
@@ -113,7 +120,8 @@
   }
   t = a.join()
 
-  text(font: "New Computer Modern", fill: color)[#t]
+  // text(font: "Noto Serif", lang: "en", fill: color)[#t]
+  text(font: "Songti SC", fill: color)[#t]
 }
 
 #let thmbase(
