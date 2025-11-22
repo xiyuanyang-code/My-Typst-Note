@@ -115,17 +115,181 @@ real-time reward is hard to design.
 
 Will RL be the way to AGI? (using a *general learning algorithms* for interacting observations and actions with the environment)
 
-== Supervised Learning of Behaviors
+= Supervised Learning of Behaviors
 
 - policy based on observations: $pi_theta (a_t|o_t)$
 - policy based on full observations: $pi_theta (a_t|s_t)$
 - policy are distributions (probability)
 
+We can form the bayes net.
+
 #figure(
   image("images/supervised-learning.png")
 )
 
+#recordings("Markov Properties")[
+  If you get the state $s_t$, then that is all you need to compute future state, and $s_1, s_2, dots, s_(t-1)$ does not matter.
 
+  This gives the properties of the state.
+]
+
+== Imitation Learning
+
+Target: Given the labeled data, trying to learn the $pi_theta (a_t|o_t)$ by supervised learning. Given the $o_t$ and $a_t$, it forms the training data.
+
+It is a kind of *behavior cloning*.
+
+这样的问题在于模型只会模仿先验的正确答案，而一旦预测出现微小的偏差，这一部分的偏差就会不断的方法，导致在多个时间步后模型的状态发生较大的偏移。
+
+例如，自动驾驶的三个前置摄像头可以保证一定的鲁棒性的提升。
+
+Core reason: *i.i.d* assumption does not work!
+
+- Data augmentation for Training Data
+- Algorithms Change
+- Multi-Task Learning
+
+=== Theory
+
+For the training loops, the distributions for the training data is $p_"data" (o_t)$, which is different from the distributions of the testing environment $p_(pi_theta)$. Thus when trained model encountered new observations that not appears in the training set, it will cause the bias.
+
+So how can we define a good policy? Assume *GT behavior* for expert is deterministic if given the whole observations $s_t$. (Just for simplify), and we can define the cost functions:
+
+$
+  c(s_t, a_t) = cases(0 " if " a_t = pi^* (s_t), 1 " otherwise")
+$
+
+And our goal is to minimize:
+
+$
+  EE_(s_t ~ p_(pi_theta)(s_t)) [c(s_t, a_t)]
+$
+
+注意！这里在训练是的分布就是 $pi_theta$ 相当于模型直接在训练过程中进行分布的采样，目标是最小化策略在自身轨迹上执行动作与专家动作不一致的概率。
+
+- This is some kind of *Dataset Aggregation*.
+- *Attention*! It is the state not the observations! We need to use the Markov properties for state.
+
+Assume supervised learning works:
+
+$
+  pi_theta (a != pi^*(s)|s) <= epsilon, forall s in cal(D)_"train"
+$
+
+在训练数据分布下，模型动作和专家动作不一致的概率不超过 $epsilon$.
+
+$
+  E[sum_t c(s_t, a_t)] <= epsilon T + (1-epsilon)(epsilon(T-1) + (1-epsilon))(dots)) = O(epsilon T^2)
+$
+
+This will leads to the cascading errors with many many time steps. (For the worse case.)
+
+More generally:
+
+$
+  p_theta (s_t) = (1-epsilon)^t p_("train")(s_t) + (1 - (1-epsilon)^t) p_"mistake" (s_t)
+$
+
+For the main distributions $p_"mistake"$, we don't see them in the training data.
+
+$
+  |p_theta (s_t) - p_"train" (s_t)| = (1 - (1-epsilon)^t) |p_"mistake" (s_t) - p_"train" (s_t)| <= 2 (1 - (1 - epsilon)^t) <= 2 epsilon t
+$
+
+Thus:
+
+$
+  sum_t P_(p_theta (s_t)) [c_t] = sum_t sum_(s_t) p_theta (s_t) c_t (s_t) &<= sum_t sum_(s_t) p_"train" (s_t) c_t (s_t) + |p_theta (s_t) - p_"train" (s_t)| c_max \
+  &<= sum_t epsilon + 2 epsilon t
+$
+
+#recordings[
+  - In reality, we can recover from mistakes.
+  - A paradox: imitation learning can work better if the data has more mistakes (and recoveries)!
+
+  - The imitation learning:
+    - Teach the models when the models are on the right way.
+    - *Teach the models to recover when the models are outside the right way*.
+]
+
+=== Data Augmentation
+
+- Intentionally add mistakes and corrections (The mistakes hurt, but the corrections help, often more than the mistakes hurt)
+
+- Use *data augmentation*. (e.g. side-facing cameras.), add some "fake" data that illustrates corrections.
+
+
+=== More Powerful Models
+
+#recordings[
+  - Non-Markovian behavior ($pi_theta (a_t|o_1, o_2, dots, o_t)$)
+    - Using histories
+  - Multimodal behavior
+]
+
+==== Using Histories
+
+Using the sequence model (LSTM, transformers.)
+
+However, learning from history may cause confusions: (ICLR-2019 Best Paper)
+
+Behavior Cloning will only learn about the correlations, but not the *cause and effect*, which is mortal in autonomous driving. (*casual confusion*)
+
+Solutions: data augmentation & diffusion models.
+
+
+==== Multimodal behavior
+
+- mixture of Gaussians
+
+$
+  pi(a|o) = sum_i w_i cal(N)(mu_i, sum_i)
+$
+
+More specifically, it can be written into:
+
+$
+  pi(a|o) = sum_(k=1)^(K) pi_k (o) N(a|mu_k (o), sum_k (o))
+$
+
+$mu_k (o)$ and $sum_k (o)$ means they are functions of given input observations, but not sharing the same global parameters.
+
+- latent variable models (conditional variant auto-encoder)
+
+#recordings[
+  Latent variable models（潜变量模型）在模仿学习中的核心原理是：用一个低维的、简单分布的潜变量 z，把专家的多模态连续动作分布 $p(a|s)$变得“可解析、可高效采样、可无限表达”。
+]
+
+$
+  pi (a|s) = integral p(a|z,s) p(z|s) "d"z approx integral cal(N) (a|f_theta (z,s), delta^2 II) cal(N) (z|g_phi (s,a), sum) "d"z
+$
+
+- diffusion models
+
+Diffusion models for image generations: $f(x_i) = x_i - x_(i-1)$
+
+For imitation learning:
+
+- $a_(t,0)$ is the true actions
+- $a_(t, i+1) = a_(t,i) + "noise"$
+- $a_(t, i-1) = a_(t,i) - f(s_t, a_(t,i))$
+
+- Autoregressive discretization (like the sequence language models)
+
+Do predictions: $p(a_(t,i)|s_t, a_(t,1),a_(t,2),dots,a_(t,(i-1)))$ (discretize one dimension at a time)
+
+To multiply together: $p(a_t|s_t)$, like the complexity in the model distributions.
+
+#recordings[
+  - 使用自回归分解来逐步离散化高维空间的正确性在于，只要维度之间存在任何相关性，自回归分解都能表达它。
+  - 并且自回归分解就像 token 生成一样，是一个信息不断增益的过程，不会对原有的信息造成影响。并且这样做离散化可以极大的减少状态空间的个数 $(K^D arrow K D)$
+  - 类似于语言模型逐 token 的生成，不限制句子的长度实现了最终的 adaptive compute 并且每一次输出的维度限制在了词表的维度。
+]
+
+=== Multi-Tasking Learning
+
+
+=== DAgger
 
 
 = Conclusion
