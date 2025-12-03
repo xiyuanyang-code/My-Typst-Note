@@ -306,7 +306,7 @@ $
   - 使用相关数学运算技巧，例如分母分子有理化等。不过先估值估计误差很重要。
 ]
 
-= 插值法
+= Interpolation
 
 == Definition
 
@@ -1832,4 +1832,34 @@ $
     M_(n+1) = max_(a <= x <= b) |f^((n+1)) (x)|
   $
 ]
+
+= Numerical Differentiation and Integration
+
+== Numerical Integration
+
+- 机械求积公式：将积分值的计算归结为被积函数函数值的计算
+
+- 插值型求积公式：
+
+$
+  I_n = L_n(x) = sum_(k=0)^n A_k f(x_k)
+$
+
+  - 等距步长的 Newton-Cotes Equations
+
+$
+  I_n = (b-a) sum_(k=0)^n C^((n))_k f(x_k)
+$
+
+  - 变步长的 Romberg Equations
+
+  - 分段插值的复化求积公式(复化求积公式本身无法提升代数精度)
+
+$
+  I = sum_(k=0)^n I_k
+$
+
+- 精确程度的衡量：
+  - 代数精度
+  - 提升代数精度的方式：Gauss Equations
 
