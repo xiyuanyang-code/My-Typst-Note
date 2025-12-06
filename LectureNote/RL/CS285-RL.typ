@@ -288,8 +288,45 @@ To multiply together: $p(a_t|s_t)$, like the complexity in the model distributio
 
 === Multi-Tasking Learning
 
+==== Goal Conditioned Behavioral Cloning
+
+At the training time, even if the expert trajectories fails to achieve the optimal state $s_T$, it may reach the sub-optimal state, and all we want is to maximize it:
+
+The goal state is to learn: $pi_theta (a|s, g)$
+
+For each demo, the trajectory ${s_1^i, a_1^i, dots, s_(T-1)^i,a_(T-1)^i, s_T^i}$, we can maximize $log pi_theta (a_t^i|s_t^i, g=s^i_T)$
 
 === DAgger
+
+DAgger: DataSet Aggregations
+
+The critical error for behavior cloning is the distributional shift problem caused by the difference of $p_"data"$ and $p_theta$, thus, we need to do some augmentation:
+
+*Enhancing the robustness of learned policy: Let the learned policy to make faults, and ask human experts to correct them in a fixed error state.*
+
+For the specific data:
+
+- Train the policy $pi_theta (a_t|o_t)$ from the original human datasets $D = {o_1, a_1, dots, o_N, a_N}$
+
+- run the trained policy to get dataset $D_pi = {o_1, o_2, dots, o_M}$.
+
+- Ask human to label the $D_pi$ with actions that should be correctly operated.
+
+- Aggregate: $D = D union D_pi$
+
+What is the problem: Stage3: *Human Annotations*.
+
+== Limitations of Behavioral Cloning
+
+- Machines just clone and learn from the human actions, but not the experience.
+
+  - We need curated designed *lost functions* and *reward functions*.
+
+- Human Annotations are not suitable for all categories of tasks.
+
+
+
+
 
 
 = Conclusion

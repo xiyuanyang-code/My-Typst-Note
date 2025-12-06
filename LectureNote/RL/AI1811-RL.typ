@@ -139,7 +139,39 @@ Optimize $pi_theta(a|s)$ directly!
   $
     PP[S_(t+1)|S_1, S_2, dots, S_t]
   $
+
+  随机过程研究动态随机现象的统计规律。
 ]
+
+The future is independent of the past given the present. 或者换句话说，当前状态是未来预测的充分统计量。
+
+给定同一个动态环境（即MDP），不同的策略采样出来的(状态-行动)
+对的分布是不同的,一方面，策略函数 $pi(a|s)$只能展示转移状态的概率分布，但是可以定义*占用度量*：
+
+$
+  rho^pi (s,a) = sum_(t=0)^T gamma^t P(s_t = s, a_t = a|s_0, pi)
+$
+
+占用度量和策略函数呈现一一对应的关系，并且如果由占用度量反向生成对应的策略是：
+
+$
+  pi_rho = pi(a|s) = (rho(s,a))/(sum_(a') rho(s,a')) = (rho(s,a))/(rho(s))
+$
+
+
+回到马尔科夫过程，占用度量从整体的角度刻画了策略本身对状态的覆盖率：
+
+$
+  V(pi) = sum_(s,a) rho^pi (s,a) r(s,a) = EE_pi [r(s,a)]
+$
+
+策略 π 的总期望回报 = 每个状态–动作对的奖励 × 策略在该状态–动作对上“花费的时间”（占用度量），再对所有 (s,a) 求和。
+
+=== ɛ-Greedy Policy
+
+$
+  pi(s,a) = cases(epsilon/m + 1 - epsilon " if" a = arg max_(a in A) Q(s,a), epsilon/m " otherwise")
+$
 
 
 

@@ -383,10 +383,133 @@ $
 Since we have an estimate of $V^pi$, we can use it to estimate the expected return:
 
 $
-  V^pi (s) = V^pi (s) + alpha ([r_t + gamma V^pi (s_(t+1))] - V^pi (s))
+  V^pi (s) = V^pi (s) + alpha ([r_t + gamma V^pi (s_(t+1))] - V^pi (s)) = (1 - alpha) V^pi (s) + alpha delta_t
 $
 
 - $[r_t + gamma V^pi (s_(t+1))]$ is the *bootstrapping*, where the model just take one single step forward!
+
+Define TD(0) error:
+
+$
+  delta_t = r_t + gamma V^pi (s_(t+1)) - V^pi (s)
+$
+
+=== TD0 Algorithms
+
+Just sample for current state $(s_t, a_t, r_t, s_(t+1))$, and do updates!
+
+Compared to monte-carlo, TD(0) will get the different rewards for the updating status is different.
+
+TD is just a kind of different approaches of sampling.
+
+- $alpha = 1$, $V^pi (s) = delta_t= r_t + gamma V^pi (s_(t+1)) - V^pi (s)$: 在这个情况下，每次只会使用一次采样的 TD Target，因此会出现随机波动的问题。
+
+Ideal State:
+
+$
+  V^pi (s) = EE[r_t + gamma V^pi (s_(t+1))| s_t = s]
+$
+
+What we do:
+
+$
+  V^pi (s) = r_t + gamma V^pi (s_(t+1))
+$
+
+For one step single sampling, the result cannot represent thr final result and may lead to chaos. However, there do exist several small MDPs that will converge in the end. (Simple Designed MDPs.)
+
+
+- $alpha=0$: No update.
+
+
+== Certainty Equivalence with Dynamic programming
+
+在面对不确定的环境动态（例如未知转移概率）时，把“当前学到的模型”当成是真的模型，并在此基础上用动态规划（DP）去求最优策略。
+
+#recordings[
+  其实很多强化学习的算法都使用了这样的 Approximations 的迭代策略，因为在数学上只要保证对应的迭代算子 (Bellman Equation) 是压缩映射，就可以保证收敛到最优点。
+]
+
+
+- 先估计环境模型（transition model、reward model）。
+- 把估计值当作确定的真值（certainty equivalence）。
+- 在这个“确定模型”上用动态规划求解最优策略
+
+=== Certainty Equivalence $V^pi$ MLE MDP Model Estimates
+
+Target: Given the collected data, our goal is to estimate the transition probability $p(s'|s,a)$.
+
+Recompute the maximum likelihood MDP model for $(s,a)$:
+
+$
+  hat(P)(s'|s,a) = 1/N(s,a) sum_(k=1)^i II(s_k = s, a_k = a, s_(k+1) = s')
+$
+
+$
+  hat(r)(s,a) = 1/N(s,a) sum_(k=1)^i II(s_k = s, a_k = a) r_k
+$
+
+After estimating the values, we can do policy evaluation and policy improvement.
+
+
+#recordings[
+  - MLE MDP is *Model-Based* Learning.
+  - TD(0) and monte-carlo are model-free learning, which estimates the $V^pi (s)$ directly instead of learning the reward models and probability transitions.
+]
+
+== Batch Policy Evaluation
+
+Batch (Offline) solution for finite dataset
+- Given set of K episodes
+- *Repeatedly sample* an episode from K
+- Apply MC or TD(0) to the sampled episode
+
+不再从环境中获取新的采样数据，而是从已经采样好的静态轨迹数据集中抽取一条。
+
+
+- Monte Carlo in batch setting converges to min MSE (mean squared error).
+- TD(0) converges to DP policy $V^pi$ for the MDP with the maximum likelihood model estimates.
+
+= Model Free Control and Functional Approximations
+
+== Review for MDP
+
+- 使用 $epsilon$ greedy 的探索策略只能保证模型在黑盒状态下避免收敛，尽可能采样丰富的数据点。
+  - 因此，如果直接从模型的轨迹中进行学习，especially for deterministic policy, the model will not sample all the actions for the given state, thus the estimation here contains huge bias.
+
+== Control without a model of how the world Works
+
+=== Model-Free Policy Evaluation
+
+We want the models cover more. *We want to explore*. ($epsilon$-greedy policies)
+
+A state-actions value $Q(s,a)$
+
+and we update the policy with:
+
+$
+  pi(a|s) = cases(arg max_a Q(s,a) "w. prob" 1 - epsilon + epsilon/(|A|), a' != arg max(Q(s,a)) "w. prob" epsilon / (|A|))
+$
+
+At this time, the policy is not deterministic, but we can prove we can still monotonic improve!
+
+#theorem[
+  For any $epsilon$-greedy policy $pi_i$, the $epsilon$-greedy policy $Q^(pi_i)$, and $pi_(i+1)$ is a monotonic improvement:
+
+  $
+    V^(pi_(i+1)) >= V^(pi_i)
+  $
+]
+
+
+=== Monte Carlo Control
+
+
+
+
+== Generalization and Value Function Approximations
+
+
 
 
 
