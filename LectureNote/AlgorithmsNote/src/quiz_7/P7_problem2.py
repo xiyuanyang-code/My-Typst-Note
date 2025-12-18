@@ -14,8 +14,8 @@ def career_fair_optimization(coolness, weights, times, b, h, k):
     时间复杂度目标: O(n*b*k)
     """
     n = len(coolness)
-    dp = [[0] * (b + 1) for _ in range(k + 2)]
-    for t in range(k + 2):
+    dp = [[0] * (b + 1) for _ in range(k + 1)]
+    for t in range(k + 1):
         for c in range(1, b + 1):
             for i in range(n):
                 if c - weights[i] >= 0 and t > times[i]:
@@ -27,7 +27,7 @@ def career_fair_optimization(coolness, weights, times, b, h, k):
                         dp[t][c],
                         dp[t - h - 1 - times[i] - 1][b - weights[i]] + coolness[i],
                     )
-    return dp[k + 1][b]
+    return dp[k][b]
 
 
 if __name__ == "__main__":
