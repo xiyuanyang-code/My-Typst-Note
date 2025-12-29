@@ -41,7 +41,7 @@ def dfs(graph: Dict, s: str, t: str):
             return [current]
         if current in visited:
             return None
-        
+
         visited.add(current)
 
         # do for all neighbors
@@ -57,6 +57,149 @@ def dfs(graph: Dict, s: str, t: str):
         return final_length, len(final_length) - 1
     else:
         return None, -1
+
+
+def connected_components(graph: dict):
+    """
+    找出所有连通分量
+
+    参数:
+        graph: 无向图，邻接表表示 {vertex: [neighbors]}
+
+    返回:
+        连通分量列表，每个分量是一个顶点列表
+
+    时间复杂度: O(|V| + |E|)
+    """
+    pass
+
+
+def topological_sort(graph: dict) -> list:
+    """
+    对有向无环图(DAG)进行拓扑排序
+
+    参数:
+        graph: 有向无环图，邻接表表示 {vertex: [neighbors]}
+
+    返回:
+        拓扑排序后的顶点列表，如果图包含环则返回None
+
+    时间复杂度: O(|V| + |E|)
+    """
+    # TODO: 实现Kahn算法或DFS-based拓扑排序
+    # 1. 计算所有顶点的入度
+    # 2. 将入度为0的顶点加入队列
+    # 3. 处理队列中的顶点并更新邻居的入度
+    # 4. 检测是否存在环（处理顶点数是否等于总顶点数）
+    pass
+
+
+def has_cycle(graph: dict) -> bool:
+    """
+    检测有向图中是否存在环
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+
+    返回:
+        如果存在环返回True，否则返回False
+
+    时间复杂度: O(|V| + |E|)
+    """
+    # TODO: 实现基于DFS的环检测
+    # 1. 维护visited集合和recursion_stack集合
+    # 2. 对每个未访问顶点进行DFS
+    # 3. 如果遇到在递归栈中的顶点，则存在环
+    # 4. 或者通过拓扑排序检测（排序后顶点数是否等于总顶点数）
+    pass
+
+
+def dag_shortest_paths(graph: dict, weights: dict, start: str) -> tuple:
+    """
+    计算有向无环图(DAG)中的单源最短路径
+
+    参数:
+        graph: 有向无环图，邻接表表示 {vertex: [neighbors]}
+        weights: 边权重字典 {(u, v): weight}
+        start: 源顶点
+
+    返回:
+        (dist, parents) 元组
+        - dist: 字典，dist[v]是从start到v的最短距离
+        - parents: 字典，parents[v]是v的前驱顶点
+
+    时间复杂度: O(|V| + |E|)
+    """
+    # TODO: 实现DAG松弛算法
+    # 1. 对图进行拓扑排序
+    # 2. 按照拓扑排序的顺序初始化距离
+    # 3. 按拓扑顺序松弛所有边
+    # 4. 返回距离和前驱数组
+    pass
+
+
+def bellman_ford(graph: dict, weights: dict, start):
+    """
+    实现Bellman-Ford算法
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+        weights: 边权重字典 {(u, v): weight}
+        start: 源顶点
+
+    返回:
+        (dist, parents, has_negative_cycle) 元组
+        - dist: 字典，dist[v]是从start到v的最短距离
+        - parents: 字典，parents[v]是v的前驱顶点
+        - has_negative_cycle: 布尔值，是否存在负权环
+
+    时间复杂度: O(|V| * |E|)
+    """
+    pass
+
+
+def dijkstra(graph: dict, weights: dict, start):
+    """
+    实现Dijkstra算法
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+        weights: 边权重字典 {(u, v): weight}，要求权重非负
+        start: 源顶点
+
+    返回:
+        (dist, parents) 元组
+        - dist: 字典，dist[v]是从start到v的最短距离
+        - parents: 字典，parents[v]是v的前驱顶点
+
+    时间复杂度: O((|V| + |E|) log |V|)
+    """
+    pass
+
+
+def johnson(graph: dict, weights: dict) -> tuple:
+    """
+    计算有向图中所有顶点对之间的最短路径（Johnson算法）
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+        weights: 边权重字典 {(u, v): weight}，允许负权边但不能有负权环
+
+    返回:
+        (dist_matrix, has_negative_cycle) 元组
+        - dist_matrix: 字典，dist_matrix[u][v]是从u到v的最短距离
+        - has_negative_cycle: 布尔值，是否存在负权环
+
+    时间复杂度: O(|V| * |E| + |V|^2 log |V|)
+    """
+    # TODO: 实现Johnson算法
+    # 1. 添加虚拟顶点s，连接到所有其他顶点（边权重为0）
+    # 2. 运行Bellman-Ford算法计算h值（从s到各点的最短距离）
+    # 3. 如果检测到负权环，返回错误
+    # 4. 重新赋权：w'(u, v) = w(u, v) + h[u] - h[v]
+    # 5. 对每个顶点运行Dijkstra算法
+    # 6. 恢复原始权重：d(u, v) = d'(u, v) - h[u] + h[v]
+    pass
 
 
 if __name__ == "__main__":
