@@ -24,6 +24,7 @@ def dfs(graph: dict, starting_index):
     dfs_recursive(graph, starting_index, visited, result)
     return result
 
+
 def topological_sort_dfs(graph: dict):
     """
     对有向图进行拓扑排序（DFS 实现）
@@ -40,9 +41,9 @@ def topological_sort_dfs(graph: dict):
     if not graph:
         return []
 
-    visited = set()      # 已完全处理
-    rec_stack = set()    # 递归栈：正在访问路径
-    result = []          # 后序结果（逆序即为拓扑序）
+    visited = set()  # 已完全处理
+    rec_stack = set()  # 递归栈：正在访问路径
+    result = []  # 后序结果（逆序即为拓扑序）
 
     def dfs(vertex):
         visited.add(vertex)
@@ -54,7 +55,7 @@ def topological_sort_dfs(graph: dict):
                     return True
             elif dependency in rec_stack:
                 # detecting loops
-                return True 
+                return True
 
         rec_stack.remove(vertex)
         result.append(vertex)
@@ -64,8 +65,9 @@ def topological_sort_dfs(graph: dict):
         if vertex not in visited:
             if dfs(vertex):
                 return None
-            
+
     return result
+
 
 def topological_sort_bfs(graph: dict):
     """
@@ -106,7 +108,7 @@ def topological_sort_bfs(graph: dict):
             in_degree[course] -= 1
             if in_degree[course] == 0:
                 queue.append(course)
-    
+
     return result if len(result) == len(graph) else None
 
 
@@ -184,7 +186,11 @@ if __name__ == "__main__":
 
         # 测试2: 检测环
         print("\n=== 测试2: 检测环 ===")
-        prerequisites2 = {"A": ["B"], "B": ["C"], "C": ["A"]}  # 形成环：A -> B -> C -> A
+        prerequisites2 = {
+            "A": ["B"],
+            "B": ["C"],
+            "C": ["A"],
+        }  # 形成环：A -> B -> C -> A
 
         result2 = topological_sort(prerequisites2)
         print(f"拓扑排序结果: {result2}")
@@ -213,7 +219,9 @@ if __name__ == "__main__":
                 if course in prerequisites1:
                     for dep in prerequisites1[course]:
                         if dep in plan:
-                            assert pos[dep] < pos[course], f"错误：{dep}应该在{course}之前"
+                            assert (
+                                pos[dep] < pos[course]
+                            ), f"错误：{dep}应该在{course}之前"
 
             print("✓ 课程学习计划验证通过")
         else:

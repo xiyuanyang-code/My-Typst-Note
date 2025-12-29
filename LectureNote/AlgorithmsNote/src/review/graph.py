@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Set
 from collections import deque
 
 
@@ -71,10 +71,71 @@ def connected_components(graph: dict):
 
     时间复杂度: O(|V| + |E|)
     """
-    pass
+    visited = set()
+    connected_components_list = []
+    for node, neighbors in graph.items():
+        if node in visited:
+            continue
+        else:
+            # start a new round
+            new_connected_part = []
+            queue = deque([node])
+            while queue:
+                current_node = queue.popleft()
+                new_connected_part.append(current_node)
+                visited.add(current_node)
+                for neighbor in graph[current_node]:
+                    if neighbor not in visited:
+                        queue.append(neighbor)
+            connected_components_list.append(new_connected_part)
+    return connected_components_list
 
 
-def topological_sort(graph: dict) -> list:
+def topological_sort_dfs(graph: dict):
+    """
+    对有向图进行拓扑排序（DFS 实现）
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [dependencies]}
+               例如 {'A': ['B', 'C']} 表示 A 依赖于 B 和 C（B 和 C 是 A 的先修）
+
+    返回:
+        拓扑排序列表（先修在前），如果存在环则返回 None
+
+    时间复杂度: O(|V| + |E|)
+    """
+    if not graph:
+        return []
+
+    visited = set()  # 已完全处理
+    rec_stack = set()  # 递归栈：正在访问路径
+    result = []  # 后序结果（逆序即为拓扑序）
+
+    def dfs(vertex):
+        visited.add(vertex)
+        rec_stack.add(vertex)
+
+        for dependency in graph.get(vertex, []):
+            if dependency not in visited:
+                if dfs(dependency):
+                    return True
+            elif dependency in rec_stack:
+                # detecting loops
+                return True
+
+        rec_stack.remove(vertex)
+        result.append(vertex)
+        return False
+
+    for vertex in list(graph.keys()):
+        if vertex not in visited:
+            if dfs(vertex):
+                return None
+
+    return result
+
+
+def topological_sort_bfs(graph: dict) -> list:
     """
     对有向无环图(DAG)进行拓扑排序
 
@@ -86,32 +147,36 @@ def topological_sort(graph: dict) -> list:
 
     时间复杂度: O(|V| + |E|)
     """
-    # TODO: 实现Kahn算法或DFS-based拓扑排序
-    # 1. 计算所有顶点的入度
-    # 2. 将入度为0的顶点加入队列
-    # 3. 处理队列中的顶点并更新邻居的入度
-    # 4. 检测是否存在环（处理顶点数是否等于总顶点数）
-    pass
+    in_degree = {}
+    result = []
+    queue = deque([])
 
+    # counting all the in_degree of the models
+    for node, neighbors in graph.items():
+        if node not in in_degree:
+            in_degree[node] = 0
+        for neighbor in neighbors:
+            if neighbor not in in_degree:
+                in_degree[neighbor] = 0
+            in_degree[neighbor] += 1
 
-def has_cycle(graph: dict) -> bool:
-    """
-    检测有向图中是否存在环
+    for node, neighbors in graph.items():
+        if in_degree[node] == 0:
+            queue.append(node)
 
-    参数:
-        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+    while queue:
+        current_node = queue.popleft()
+        result.append(current_node)
+        for neighbor in graph[current_node]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
 
-    返回:
-        如果存在环返回True，否则返回False
+    # cyclic detections
+    if len(result) != len(graph):
+        return None
 
-    时间复杂度: O(|V| + |E|)
-    """
-    # TODO: 实现基于DFS的环检测
-    # 1. 维护visited集合和recursion_stack集合
-    # 2. 对每个未访问顶点进行DFS
-    # 3. 如果遇到在递归栈中的顶点，则存在环
-    # 4. 或者通过拓扑排序检测（排序后顶点数是否等于总顶点数）
-    pass
+    return result
 
 
 def dag_shortest_paths(graph: dict, weights: dict, start: str) -> tuple:
@@ -130,12 +195,32 @@ def dag_shortest_paths(graph: dict, weights: dict, start: str) -> tuple:
 
     时间复杂度: O(|V| + |E|)
     """
-    # TODO: 实现DAG松弛算法
-    # 1. 对图进行拓扑排序
-    # 2. 按照拓扑排序的顺序初始化距离
-    # 3. 按拓扑顺序松弛所有边
-    # 4. 返回距离和前驱数组
-    pass
+    # * remember the core principles of dag relaxations
+    # $$dist(v) = \max_{(u, v) \in E} \{ dist(u) + w(u, v) \}$$
+    topological_sort_result = topological_sort_bfs(graph=graph)
+    dist = {}
+    prev = {}
+    # initialize dist
+    for node, _ in graph.items():
+        if node == start:
+            dist[node] = 0
+            prev[node] = None
+        else:
+            dist[node] = float("inf")
+
+    if not topological_sort_result:
+        print("This graph contains cyclic, skipped")
+
+    for node in topological_sort_result:
+        if dist[node] != float("inf"):
+            # it is reachable
+            # do relaxations
+            for neighbor in graph[node]:
+                if weights[(node, neighbor)] + dist[node] < dist[neighbor]:
+                    dist[neighbor] = weights[(node, neighbor)] + dist[node]
+                    prev[neighbor] = node 
+                
+    return dist, prev
 
 
 def bellman_ford(graph: dict, weights: dict, start):
@@ -202,10 +287,10 @@ def johnson(graph: dict, weights: dict) -> tuple:
     pass
 
 
-if __name__ == "__main__":
-    # 测试1: 最短路径查找
-    print("\n=== 测试1: 最短路径查找 ===")
-    graph1 = {
+def test_bfs():
+    """测试广度优先搜索算法"""
+    print("\n=== 测试 BFS ===")
+    graph = {
         "Alice": ["Bob", "Charlie"],
         "Bob": ["Alice", "David"],
         "Charlie": ["Alice", "Eve"],
@@ -217,45 +302,264 @@ if __name__ == "__main__":
     }
 
     # 测试路径存在
-    path1, length1 = bfs(graph1, "Alice", "Eve")
-    print(f"Alice到Eve的最短路径: {path1}")
-    print(f"路径长度: {length1}")
-    assert path1 == ["Alice", "Charlie", "Eve"], f"路径不正确: {path1}"
-    assert length1 == 2, f"期望长度2，实际{length1}"
+    path, length = bfs(graph, "Alice", "Eve")
+    print(f"Alice到Eve的最短路径: {path}")
+    print(f"路径长度: {length}")
+    assert path == ["Alice", "Charlie", "Eve"], f"路径不正确: {path}"
+    assert length == 2, f"期望长度2，实际{length}"
 
     # 测试路径不存在
-    path2, length2 = bfs(graph1, "Alice", "Frank")
-    print(f"Alice到Frank的最短路径: {path2}")
-    print(f"路径长度: {length2}")
-    assert path2 is None, f"期望None，实际{path2}"
-    assert length2 == -1, f"期望-1，实际{length2}"
+    path, length = bfs(graph, "Alice", "Frank")
+    print(f"Alice到Frank的最短路径: {path}")
+    print(f"路径长度: {length}")
+    assert path is None, f"期望None，实际{path}"
+    assert length == -1, f"期望-1，实际{length}"
 
     # 测试相同顶点
-    path3, length3 = bfs(graph1, "Alice", "Alice")
-    print(f"Alice到Alice的最短路径: {path3}")
-    print(f"路径长度: {length3}")
-    assert path3 == ["Alice"], f"期望['Alice']，实际{path3}"
-    assert length3 == 0, f"期望0，实际{length3}"
+    path, length = bfs(graph, "Alice", "Alice")
+    print(f"Alice到Alice的最短路径: {path}")
+    print(f"路径长度: {length}")
+    assert path == ["Alice"], f"期望['Alice']，实际{path}"
+    assert length == 0, f"期望0，实际{length}"
+
+    print("✓ BFS测试通过")
+
+
+def test_dfs():
+    """测试深度优先搜索算法"""
+    print("\n=== 测试 DFS ===")
+    graph = {
+        "Alice": ["Bob", "Charlie"],
+        "Bob": ["Alice", "David"],
+        "Charlie": ["Alice", "Eve"],
+        "David": ["Bob"],
+        "Eve": ["Charlie"],
+        "Frank": ["Grace"],
+        "Grace": ["Frank"],
+        "Henry": [],
+    }
 
     # 测试路径存在
-    path1, length1 = dfs(graph1, "Alice", "Eve")
-    print(f"Alice到Eve的最短路径: {path1}")
-    print(f"路径长度: {length1}")
-    assert path1 == ["Alice", "Charlie", "Eve"], f"路径不正确: {path1}"
-    assert length1 == 2, f"期望长度2，实际{length1}"
+    path, length = dfs(graph, "Alice", "Eve")
+    print(f"Alice到Eve的路径: {path}")
+    print(f"路径长度: {length}")
+    assert path == ["Alice", "Charlie", "Eve"], f"路径不正确: {path}"
+    assert length == 2, f"期望长度2，实际{length}"
 
     # 测试路径不存在
-    path2, length2 = dfs(graph1, "Alice", "Frank")
-    print(f"Alice到Frank的最短路径: {path2}")
-    print(f"路径长度: {length2}")
-    assert path2 is None, f"期望None，实际{path2}"
-    assert length2 == -1, f"期望-1，实际{length2}"
+    path, length = dfs(graph, "Alice", "Frank")
+    print(f"Alice到Frank的路径: {path}")
+    print(f"路径长度: {length}")
+    assert path is None, f"期望None，实际{path}"
+    assert length == -1, f"期望-1，实际{length}"
 
     # 测试相同顶点
-    path3, length3 = dfs(graph1, "Alice", "Alice")
-    print(f"Alice到Alice的最短路径: {path3}")
-    print(f"路径长度: {length3}")
-    assert path3 == ["Alice"], f"期望['Alice']，实际{path3}"
-    assert length3 == 0, f"期望0，实际{length3}"
+    path, length = dfs(graph, "Alice", "Alice")
+    print(f"Alice到Alice的路径: {path}")
+    print(f"路径长度: {length}")
+    assert path == ["Alice"], f"期望['Alice']，实际{path}"
+    assert length == 0, f"期望0，实际{length}"
 
-    print("✓ 最短路径测试通过")
+    print("✓ DFS测试通过")
+
+
+def test_connected_components():
+    """测试连通分量算法"""
+    print("\n=== 测试连通分量 ===")
+    graph = {
+        "A": ["B", "C"],
+        "B": ["A", "C"],
+        "C": ["A", "B"],
+        "D": ["E"],
+        "E": ["D"],
+        "F": ["G"],
+        "G": ["F"],
+        "H": [],
+    }
+
+    components = connected_components(graph)
+    print(f"连通分量数量: {len(components)}")
+    for i, component in enumerate(components, 1):
+        print(f"  分量{i}: {sorted(component)}")
+
+    # 验证连通分量数量
+    assert len(components) == 4, f"期望4个连通分量，实际{len(components)}"
+
+    # 验证每个分量的顶点
+    component_sets = [set(c) for c in components]
+    assert {"A", "B", "C"} in component_sets, "缺少分量 {A, B, C}"
+    assert {"D", "E"} in component_sets, "缺少分量 {D, E}"
+    assert {"F", "G"} in component_sets, "缺少分量 {F, G}"
+    assert {"H"} in component_sets, "缺少分量 {H}"
+
+    print("✓ 连通分量测试通过")
+
+
+def test_topological_sort():
+    """测试拓扑排序算法（待实现）"""
+    print("\n=== 测试拓扑排序 ===")
+
+    # 示例图（DAG）
+    graph = {
+        "A": ["C", "D"],
+        "B": ["C", "D"],
+        "C": ["E"],
+        "D": ["E"],
+        "E": [],
+    }
+    result = topological_sort_bfs(graph)
+    print(f"拓扑排序结果: {result}")
+    assert result is not None, "该图是DAG，应该有拓扑排序"
+    assert len(result) == 5, f"期望5个顶点，实际{len(result)}"
+    assert set(result) == set(graph.keys()), "拓扑排序应包含所有顶点"
+
+
+def test_has_cycle():
+    """测试环检测算法（待实现）"""
+    print("\n=== 测试环检测 ===")
+
+    # 有环图
+    graph_with_cycle = {
+        "A": ["B"],
+        "B": ["C"],
+        "C": ["A"],
+    }
+
+    # 无环图
+    graph_without_cycle = {
+        "A": ["B", "C"],
+        "B": ["C"],
+        "C": [],
+    }
+
+    assert topological_sort_bfs(graph_with_cycle) == None, "该图包含环"
+    assert topological_sort_bfs(graph_without_cycle) != None, "该图不包含环"
+
+
+def test_dag_shortest_paths():
+    """测试DAG最短路径算法（待实现）"""
+    print("\n=== 测试 DAG 最短路径 ===")
+
+    graph = {
+        "A": ["B", "C"],
+        "B": ["D"],
+        "C": ["D"],
+        "D": [],
+    }
+
+    weights = {
+        ("A", "B"): 3,
+        ("A", "C"): 6,
+        ("B", "D"): 4,
+        ("C", "D"): 2,
+    }
+
+    dist, parents = dag_shortest_paths(graph, weights, "A")
+    print(f"最短距离: {dist}")
+    print(f"前驱节点: {parents}")
+    assert dist["D"] == 7, f"期望A到D的最短距离为7，实际{dist['D']}"
+
+
+def test_bellman_ford():
+    """测试Bellman-Ford算法（待实现）"""
+    print("\n=== 测试 Bellman-Ford ===")
+    print("⚠ 该函数尚未实现，跳过测试")
+
+    graph = {
+        "A": ["B", "C"],
+        "B": ["D"],
+        "C": ["D"],
+        "D": [],
+    }
+
+    weights = {
+        ("A", "B"): 3,
+        ("A", "C"): 6,
+        ("B", "D"): 4,
+        ("C", "D"): 2,
+    }
+
+    # TODO: 当函数实现后，取消以下注释
+    # dist, parents, has_neg_cycle = bellman_ford(graph, weights, "A")
+    # print(f"最短距离: {dist}")
+    # print(f"前驱节点: {parents}")
+    # print(f"存在负权环: {has_neg_cycle}")
+    # assert has_neg_cycle == False, "该图不包含负权环"
+    # assert dist["D"] == 7, f"期望A到D的最短距离为7，实际{dist['D']}"
+
+
+def test_dijkstra():
+    """测试Dijkstra算法（待实现）"""
+    print("\n=== 测试 Dijkstra ===")
+    print("⚠ 该函数尚未实现，跳过测试")
+
+    graph = {
+        "A": ["B", "C"],
+        "B": ["A", "C", "D"],
+        "C": ["A", "B", "D"],
+        "D": ["B", "C"],
+    }
+
+    weights = {
+        ("A", "B"): 1,
+        ("A", "C"): 4,
+        ("B", "C"): 2,
+        ("B", "D"): 5,
+        ("C", "D"): 1,
+        ("B", "A"): 1,
+        ("C", "A"): 4,
+        ("C", "B"): 2,
+        ("D", "B"): 5,
+        ("D", "C"): 1,
+    }
+
+    # TODO: 当函数实现后，取消以下注释
+    # dist, parents = dijkstra(graph, weights, "A")
+    # print(f"最短距离: {dist}")
+    # print(f"前驱节点: {parents}")
+    # assert dist["D"] == 4, f"期望A到D的最短距离为4，实际{dist['D']}"
+
+
+def test_johnson():
+    """测试Johnson算法（待实现）"""
+    print("\n=== 测试 Johnson ===")
+    print("⚠ 该函数尚未实现，跳过测试")
+
+    graph = {
+        "A": ["B"],
+        "B": ["C"],
+        "C": [],
+    }
+
+    weights = {
+        ("A", "B"): 3,
+        ("B", "C"): 4,
+    }
+
+    # TODO: 当函数实现后，取消以下注释
+    # dist_matrix, has_neg_cycle = johnson(graph, weights)
+    # print(f"距离矩阵: {dist_matrix}")
+    # print(f"存在负权环: {has_neg_cycle}")
+    # assert has_neg_cycle == False, "该图不包含负权环"
+    # assert dist_matrix["A"]["C"] == 7, f"期望A到C的最短距离为7"
+
+
+if __name__ == "__main__":
+    print("=" * 50)
+    print("图算法测试套件")
+    print("=" * 50)
+
+    # 运行所有测试
+    test_bfs()
+    test_dfs()
+    test_connected_components()
+    test_topological_sort()
+    test_has_cycle()
+    test_dag_shortest_paths()
+    test_bellman_ford()
+    test_dijkstra()
+    test_johnson()
+
+    print("\n" + "=" * 50)
+    print("所有测试完成！")
+    print("=" * 50)
