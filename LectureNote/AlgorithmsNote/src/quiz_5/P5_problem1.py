@@ -61,6 +61,55 @@ def bellman_ford(graph: dict, weights: dict, start):
     return dist, parents, has_negative_cycle
 
 
+def bellman_ford(graph: dict, weights: dict, start):
+    """
+    实现Bellman-Ford算法
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+        weights: 边权重字典 {(u, v): weight}
+        start: 源顶点
+
+    返回:
+        (dist, parents, has_negative_cycle) 元组
+        - dist: 字典，dist[v]是从start到v的最短距离
+        - parents: 字典，parents[v]是v的前驱顶点
+        - has_negative_cycle: 布尔值，是否存在负权环
+
+    时间复杂度: O(|V| * |E|)
+    """
+    # * it is a dynamic programming!
+    # dp[k][v] = min(dp[k-1][v], min(dp[k-1][u] + w(u,v)))
+    dist = {}
+    parents = {}
+    for node, _ in graph.items():
+        if node == start:
+            dist[node] = 0
+        else:
+            dist[node] = float("inf")
+        parents[node] = None
+    has_negative_cycles = False
+    V_len = len(graph)
+    for k in range(V_len - 1):
+        updated = False
+        for (u, v), weight in weights.items():
+            if dist[u] + weight < dist[v]:
+                # do update
+                updated = True
+                dist[v] = dist[u] + weight
+                parents[v] = u
+
+        if not updated:
+            break
+
+    for (u, v), weight in weights.items():
+        if dist[u] + weight < dist[v]:
+            has_negative_cycles = True
+            break
+
+    return dist, parents, has_negative_cycles
+
+
 def reconstruct_path(parents, start, target):
     """
     从parents字典重构从start到target的路径

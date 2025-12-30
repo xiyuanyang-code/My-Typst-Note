@@ -1,5 +1,6 @@
 from typing import Dict, Set
 from collections import deque
+import heapq
 
 
 def bfs(graph: Dict, s: str, t: str):
@@ -218,8 +219,8 @@ def dag_shortest_paths(graph: dict, weights: dict, start: str) -> tuple:
             for neighbor in graph[node]:
                 if weights[(node, neighbor)] + dist[node] < dist[neighbor]:
                     dist[neighbor] = weights[(node, neighbor)] + dist[node]
-                    prev[neighbor] = node 
-                
+                    prev[neighbor] = node
+
     return dist, prev
 
 
@@ -240,7 +241,36 @@ def bellman_ford(graph: dict, weights: dict, start):
 
     时间复杂度: O(|V| * |E|)
     """
-    pass
+    # * it is a dynamic programming!
+    # dp[k][v] = min(dp[k-1][v], min(dp[k-1][u] + w(u,v)))
+    dist = {}
+    parents = {}
+    for node, _ in graph.items():
+        if node == start:
+            dist[node] = 0
+        else:
+            dist[node] = float("inf")
+        parents[node] = None
+    has_negative_cycles = False
+    V_len = len(graph)
+    for k in range(V_len - 1):
+        updated = False
+        for (u, v), weight in weights.items():
+            if dist[u] + weight < dist[v]:
+                # do update
+                updated = True
+                dist[v] = dist[u] + weight
+                parents[v] = u
+
+        if not updated:
+            break
+
+    for (u, v), weight in weights.items():
+        if dist[u] + weight < dist[v]:
+            has_negative_cycles = True
+            break
+
+    return dist, parents, has_negative_cycles
 
 
 def dijkstra(graph: dict, weights: dict, start):
@@ -259,32 +289,39 @@ def dijkstra(graph: dict, weights: dict, start):
 
     时间复杂度: O((|V| + |E|) log |V|)
     """
-    pass
+    # * it is a greedy algorithm!
+    dist = {}
+    parents = {}
+    visited = set()
 
+    pq = []
+    heapq.heapify(pq)
+    # initialize
+    for node, neighbors in graph.items():
+        if node == start:
+            dist[node] = 0
+            parents[node] = None
+        else:
+            dist[node] = float("inf")
+            parents[node] = None
 
-def johnson(graph: dict, weights: dict) -> tuple:
-    """
-    计算有向图中所有顶点对之间的最短路径（Johnson算法）
+    pq.append((0, start))
 
-    参数:
-        graph: 有向图，邻接表表示 {vertex: [neighbors]}
-        weights: 边权重字典 {(u, v): weight}，允许负权边但不能有负权环
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
+        visited.add(current_node)
 
-    返回:
-        (dist_matrix, has_negative_cycle) 元组
-        - dist_matrix: 字典，dist_matrix[u][v]是从u到v的最短距离
-        - has_negative_cycle: 布尔值，是否存在负权环
-
-    时间复杂度: O(|V| * |E| + |V|^2 log |V|)
-    """
-    # TODO: 实现Johnson算法
-    # 1. 添加虚拟顶点s，连接到所有其他顶点（边权重为0）
-    # 2. 运行Bellman-Ford算法计算h值（从s到各点的最短距离）
-    # 3. 如果检测到负权环，返回错误
-    # 4. 重新赋权：w'(u, v) = w(u, v) + h[u] - h[v]
-    # 5. 对每个顶点运行Dijkstra算法
-    # 6. 恢复原始权重：d(u, v) = d'(u, v) - h[u] + h[v]
-    pass
+        for neighbor in graph[current_node]:
+            if neighbor not in visited:
+                neighbor_weight = weights[(current_node, neighbor)]
+                if neighbor_weight < 0:
+                    raise ValueError("Error, Negative Weights")
+                if dist[current_node] + neighbor_weight < dist[neighbor]:
+                    # do relaxations
+                    dist[neighbor] = dist[current_node] + neighbor_weight
+                    parents[neighbor] = current_node
+                    heapq.heappush(pq, (dist[neighbor], neighbor))
+    return dist, parents
 
 
 def test_bfs():

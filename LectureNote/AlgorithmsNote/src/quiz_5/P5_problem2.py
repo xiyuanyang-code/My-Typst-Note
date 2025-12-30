@@ -74,6 +74,57 @@ def dijkstra(graph: dict, weights: dict, start):
     return dist, parents
 
 
+def dijkstra(graph: dict, weights: dict, start):
+    """
+    实现Dijkstra算法
+
+    参数:
+        graph: 有向图，邻接表表示 {vertex: [neighbors]}
+        weights: 边权重字典 {(u, v): weight}，要求权重非负
+        start: 源顶点
+
+    返回:
+        (dist, parents) 元组
+        - dist: 字典，dist[v]是从start到v的最短距离
+        - parents: 字典，parents[v]是v的前驱顶点
+
+    时间复杂度: O((|V| + |E|) log |V|)
+    """
+    # it is a greedy algorithms
+    dist = {}
+    parents = {}
+    visited = set()
+
+    pq = []
+    heapq.heapify(pq)
+    # initialize
+    for node, neighbors in graph.items():
+        if node == start:
+            dist[node] = 0
+            parents[node] = None
+        else:
+            dist[node] = float("inf")
+            parents[node] = None
+
+    pq.append((0, start))
+    
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
+        visited.add(current_node)
+
+        for neighbor in graph[current_node]:
+            neighbor_weight = weights[(current_node, neighbor)]
+            if neighbor_weight < 0:
+                raise ValueError("Error, Negative Weights")
+            if neighbor not in visited:
+                if dist[current_node] + neighbor_weight < dist[neighbor]:
+                    # do relaxations
+                    dist[neighbor] = dist[current_node] + neighbor_weight
+                    parents[neighbor] = current_node
+                    heapq.heappush(pq, (dist[neighbor], neighbor))
+    return dist, parents
+
+
 # ========== 测试代码 ==========
 
 if __name__ == "__main__":
