@@ -500,7 +500,6 @@ def test_dag_shortest_paths():
 def test_bellman_ford():
     """测试Bellman-Ford算法（待实现）"""
     print("\n=== 测试 Bellman-Ford ===")
-    print("⚠ 该函数尚未实现，跳过测试")
 
     graph = {
         "A": ["B", "C"],
@@ -516,19 +515,17 @@ def test_bellman_ford():
         ("C", "D"): 2,
     }
 
-    # TODO: 当函数实现后，取消以下注释
-    # dist, parents, has_neg_cycle = bellman_ford(graph, weights, "A")
-    # print(f"最短距离: {dist}")
-    # print(f"前驱节点: {parents}")
-    # print(f"存在负权环: {has_neg_cycle}")
-    # assert has_neg_cycle == False, "该图不包含负权环"
-    # assert dist["D"] == 7, f"期望A到D的最短距离为7，实际{dist['D']}"
+    dist, parents, has_neg_cycle = bellman_ford(graph, weights, "A")
+    print(f"最短距离: {dist}")
+    print(f"前驱节点: {parents}")
+    print(f"存在负权环: {has_neg_cycle}")
+    assert has_neg_cycle == False, "该图不包含负权环"
+    assert dist["D"] == 7, f"期望A到D的最短距离为7，实际{dist['D']}"
 
 
 def test_dijkstra():
     """测试Dijkstra算法（待实现）"""
     print("\n=== 测试 Dijkstra ===")
-    print("⚠ 该函数尚未实现，跳过测试")
 
     graph = {
         "A": ["B", "C"],
@@ -550,35 +547,11 @@ def test_dijkstra():
         ("D", "C"): 1,
     }
 
-    # TODO: 当函数实现后，取消以下注释
-    # dist, parents = dijkstra(graph, weights, "A")
-    # print(f"最短距离: {dist}")
-    # print(f"前驱节点: {parents}")
-    # assert dist["D"] == 4, f"期望A到D的最短距离为4，实际{dist['D']}"
+    dist, parents = dijkstra(graph, weights, "A")
+    print(f"最短距离: {dist}")
+    print(f"前驱节点: {parents}")
+    assert dist["D"] == 4, f"期望A到D的最短距离为4，实际{dist['D']}"
 
-
-def test_johnson():
-    """测试Johnson算法（待实现）"""
-    print("\n=== 测试 Johnson ===")
-    print("⚠ 该函数尚未实现，跳过测试")
-
-    graph = {
-        "A": ["B"],
-        "B": ["C"],
-        "C": [],
-    }
-
-    weights = {
-        ("A", "B"): 3,
-        ("B", "C"): 4,
-    }
-
-    # TODO: 当函数实现后，取消以下注释
-    # dist_matrix, has_neg_cycle = johnson(graph, weights)
-    # print(f"距离矩阵: {dist_matrix}")
-    # print(f"存在负权环: {has_neg_cycle}")
-    # assert has_neg_cycle == False, "该图不包含负权环"
-    # assert dist_matrix["A"]["C"] == 7, f"期望A到C的最短距离为7"
 
 
 if __name__ == "__main__":
@@ -595,7 +568,6 @@ if __name__ == "__main__":
     test_dag_shortest_paths()
     test_bellman_ford()
     test_dijkstra()
-    test_johnson()
 
     print("\n" + "=" * 50)
     print("所有测试完成！")
