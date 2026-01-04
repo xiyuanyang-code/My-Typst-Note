@@ -8,7 +8,6 @@ for implementing and testing various sorting algorithms.
 import random
 import time
 from typing import List, Callable, Tuple
-from collections import Counter
 
 
 def generate_random_array(size: int, min_val: int = 0, max_val: int = 100) -> list:
