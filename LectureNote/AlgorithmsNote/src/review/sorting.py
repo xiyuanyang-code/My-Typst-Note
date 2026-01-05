@@ -176,7 +176,6 @@ def radix_sort(arr: List[int]) -> List[int]:
     Returns:
         Sorted array in ascending order
     """
-    radix_value = 10
     if not arr:
         return arr
 
